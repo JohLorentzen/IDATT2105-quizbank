@@ -28,4 +28,10 @@ class QuizControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void deleteQuiz() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/rest/quiz/1"))
+                .andExpect(status().isNoContent());
+    }
+
 }

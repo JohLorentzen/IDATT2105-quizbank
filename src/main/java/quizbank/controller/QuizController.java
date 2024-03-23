@@ -36,6 +36,28 @@ public class QuizController {
         return new ResponseEntity<>(quizzes, HttpStatus.OK);
     }
 
+    @PostMapping("/quiz")
+    public ResponseEntity createOrUpdateQuiz(@RequestBody Quiz quiz) {
+        quizzes.add(quiz);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/quiz/")
+    public ResponseEntity<?> updateQuiz(@RequestBody Quiz quizDetails) {
+        Quiz updatedQuiz = quizzes.stream()
+                .filter(quiz -> quiz.getQuizId() == quizDetails.getQuizId())
+                .findFirst()
+                .orElse(null);
+        return new ResponseEntity<>(updatedQuiz, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/quiz/{quizId}")
+    public ResponseEntity<?> deleteQuiz(@PathVariable Integer quizId) {
+        quizzes.removeIf(quiz -> quiz.getQuizId() == quizId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
     @GetMapping("/quiz/{quizId}")
     public Quiz getQuiz(@PathVariable("quizId") int quizId) {
         if (quizId == 1) {
@@ -45,11 +67,5 @@ public class QuizController {
         } else {
             throw new IllegalArgumentException("Invalid quiz ID");
         }
-    }
-
-    @PostMapping("/quiz")
-    public ResponseEntity createOrUpdateQuiz(@RequestBody Quiz quiz) {
-        quizzes.add(quiz);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
