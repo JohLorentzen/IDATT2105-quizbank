@@ -1,0 +1,10 @@
+<script setup>
+</script>
+<template>
+    <div class="navbar">
+        <nav>
+        <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/about">About</RouterLink>
+      </nav>
+    </div>
+</template>
