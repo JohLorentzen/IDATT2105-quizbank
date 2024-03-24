@@ -38,7 +38,7 @@ public class QuizController {
 
     @PostMapping("/quiz")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity createOrUpdateQuiz(@RequestBody QuizDTO quiz) {
+    public ResponseEntity<?> createOrUpdateQuiz(@RequestBody QuizDTO quiz) {
         Quiz quizEntity = quizService.toEntity(quiz);
         if (quizEntity.getId() != null && quizRepository.existsById(quizEntity.getId())) {
             quizRepository.save(quizEntity);
