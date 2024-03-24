@@ -2,6 +2,8 @@ package quizbank.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -13,6 +15,9 @@ public class User {
     private String username;
 
     private String password;
+
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL)
+    private List<Quiz> quizzesCreated;
 
     public Long getId() {
         return id;
@@ -36,5 +41,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Quiz> getQuizzesCreated() {
+        return quizzesCreated;
+    }
+
+    public void setQuizzesCreated(List<Quiz> quizzesCreated) {
+        this.quizzesCreated = quizzesCreated;
     }
 }
