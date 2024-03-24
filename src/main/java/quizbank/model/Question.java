@@ -1,27 +1,46 @@
 package quizbank.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+
+@Entity
 public class Question {
-    private int questionId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @ManyToOne
+    private Quiz quiz;
+
     private String problem;
     private String solution;
 
-    // Constructor, getters and setters
     public Question() {
     }
 
-
-    public Question(int questionId, String problem, String solution) {
-        this.questionId = questionId;
+    public Question(Quiz quiz, String problem, String solution) {
+        this.quiz = quiz;
         this.problem = problem;
         this.solution = solution;
     }
 
-    public int getQuestionId() {
-        return questionId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setQuestionId(int questionId) {
-        this.questionId = questionId;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Quiz getQuiz() {
+        return quiz;
+    }
+
+    public void setQuiz(Quiz quiz) {
+        this.quiz = quiz;
     }
 
     public String getProblem() {
@@ -39,4 +58,5 @@ public class Question {
     public void setSolution(String solution) {
         this.solution = solution;
     }
+
 }

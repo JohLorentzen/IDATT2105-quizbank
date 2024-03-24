@@ -1,45 +1,59 @@
 package quizbank.model;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
 import java.util.List;
 
+@Entity
 public class Quiz {
-    private int quizId;
-    private String quizName;
-    private int createByUserId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
+    private String name;
+    private Integer createdByUserId;
+
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
     private List<Question> questions;
 
-    public Quiz(int quizId, String quizName, int createByUserId, List<Question> questions2) {
-        this.quizId = quizId;
-        this.quizName = quizName;
-        this.createByUserId = createByUserId;
-        this.questions = questions2;
+    public Quiz() {
     }
 
-    public int getQuizId() {
-        return quizId;
+    public Quiz(String name, Integer createdByUserId, List<Question> questions) {
+        this.name = name;
+        this.createdByUserId = createdByUserId;
+        this.questions = questions;
     }
 
-    public void setQuizId(int quizId) {
-        this.quizId = quizId;
+
+    public Integer getId() {
+        return id;
     }
 
-    public String getQuizName() {
-        return quizName;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public void setQuizName(String quizName) {
-        this.quizName = quizName;
+    public String getName() {
+        return name;
     }
 
-    public int getCreateByUserId() {
-        return createByUserId;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setCreateByUserId(int createByUserId) {
-        this.createByUserId = createByUserId;
+    public Integer getCreatedByUserId() {
+        return createdByUserId;
     }
 
+    public void setCreatedByUserId(Integer createdByUserId) {
+        this.createdByUserId = createdByUserId;
+    }
 
     public List<Question> getQuestions() {
         return questions;

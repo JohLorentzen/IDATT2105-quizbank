@@ -1,71 +1,64 @@
 package quizbank.controller;
 
-import quizbank.model.Question;
-import quizbank.model.Quiz;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import quizbank.dto.QuizDTO;
+import quizbank.model.Quiz;
+import quizbank.repository.QuizRepository;
+import quizbank.service.QuizService;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/rest")
 public class QuizController {
 
-    private List<Question> questions = Arrays.asList(
-            new Question(1, "Who is Johannes?", "Lorentzsen"),
-            new Question(2, "Where is Sondre?", "Hemsedal"),
-            new Question(3, "What is Jens doing?", "Coding")
-    );
+    @Autowired
+    private QuizRepository quizRepository;
 
-    private List<Question> questions2 = Arrays.asList(
-            new Question(4, "What is Trondheims national dish?", "Sodd"),
-            new Question(5, "Trondheim is the capital of Norway?", "No"),
-            new Question(6, "Is Gløshaugen better than Dragvoll?", "Yes")
-    );
-
-    private List<Quiz> quizzes = new ArrayList<>(Arrays.asList(
-            new Quiz(1, "Developer quiz", 101, questions),
-            new Quiz(2, "Trondheim quiz", 102, questions2)
-    ));
+    @Autowired
+    private QuizService quizService;
 
     @GetMapping("/quiz")
-    public ResponseEntity<List<Quiz>> getAllQuizzes() {
-        return new ResponseEntity<>(quizzes, HttpStatus.OK);
+    public ResponseEntity<List<QuizDTO>> getAllQuizzes() {
+        List<Quiz> quizzes = quizRepository.findAll();
+        List<QuizDTO> quizDTOs = quizzes.stream().map(quizService::toDto).collect(Collectors.toList());
+        return new ResponseEntity<>(quizDTOs, HttpStatus.OK);
     }
 
     @PostMapping("/quiz")
-    public ResponseEntity createOrUpdateQuiz(@RequestBody Quiz quiz) {
-        quizzes.add(quiz);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PutMapping("/quiz/")
-    public ResponseEntity<?> updateQuiz(@RequestBody Quiz quizDetails) {
-        Quiz updatedQuiz = quizzes.stream()
-                .filter(quiz -> quiz.getQuizId() == quizDetails.getQuizId())
-                .findFirst()
-                .orElse(null);
-        return new ResponseEntity<>(updatedQuiz, HttpStatus.OK);
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity createOrUpdateQuiz(@RequestBody QuizDTO quiz) {
+        Quiz quizEntity = quizService.toEntity(quiz);
+        if (quizRepository.existsById(quiz.getQuizId())) {
+            quizRepository.save(quizEntity);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            quizRepository.save(quizEntity);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
     }
 
     @DeleteMapping("/quiz/{quizId}")
     public ResponseEntity<?> deleteQuiz(@PathVariable Integer quizId) {
-        quizzes.removeIf(quiz -> quiz.getQuizId() == quizId);
+        quizRepository.deleteById(quizId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
     @GetMapping("/quiz/{quizId}")
-    public Quiz getQuiz(@PathVariable("quizId") int quizId) {
-        if (quizId == 1) {
-            return quizzes.get(0);
-        } else if (quizId == 2) {
-            return quizzes.get(1);
-        } else {
-            throw new IllegalArgumentException("Invalid quiz ID");
-        }
+    public QuizDTO getQuiz(@PathVariable("quizId") int quizId) {
+        Quiz quiz = quizRepository.findById(quizId).orElseThrow(() -> new IllegalArgumentException("Invalid quiz ID"));
+        return quizService.toDto(quiz);
     }
 }
