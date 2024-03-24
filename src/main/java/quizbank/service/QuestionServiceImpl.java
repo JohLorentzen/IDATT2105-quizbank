@@ -27,6 +27,8 @@ public class QuestionServiceImpl implements QuestionService {
             question.setProblem(dto.getProblem());
             question.setSolution(dto.getSolution());
             question.setQuiz(quiz);
+            question.setType(dto.getType());
+            question.setChoices(dto.getChoices());
             return question;
         }).collect(Collectors.toList());
     }
@@ -34,7 +36,13 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public QuestionDTO toDto(Question question) {
-        return new QuestionDTO(question.getId(), question.getProblem(), question.getSolution());
+        QuestionDTO questionDTO = new QuestionDTO();
+        questionDTO.setQuestionId(question.getId());
+        questionDTO.setProblem(question.getProblem());
+        questionDTO.setSolution(question.getSolution());
+        questionDTO.setType(question.getType());
+        questionDTO.setChoices((question.getChoices()));
+        return questionDTO;
     }
 
     @Override

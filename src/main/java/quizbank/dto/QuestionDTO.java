@@ -1,20 +1,15 @@
 package quizbank.dto;
 
+import quizbank.enums.QuestionType;
+
+import java.util.List;
+
 public class QuestionDTO {
     private Long questionId;
     private String problem;
     private String solution;
-
-    // Constructor, getters and setters
-    public QuestionDTO() {
-    }
-
-
-    public QuestionDTO(Long questionId, String problem, String solution) {
-        this.questionId = questionId;
-        this.problem = problem;
-        this.solution = solution;
-    }
+    private QuestionType type;
+    private List<String> choices; // Include this for multiple-choice questions
 
     public Long getQuestionId() {
         return questionId;
@@ -38,5 +33,21 @@ public class QuestionDTO {
 
     public void setSolution(String solution) {
         this.solution = solution;
+    }
+
+    public QuestionType getType() {
+        return type;
+    }
+
+    public void setType(QuestionType type) {
+        this.type = type;
+    }
+
+    public List<String> getChoices() {
+        return choices;
+    }
+
+    public void setChoices(List<String> choices) {
+        this.choices = choices;
     }
 }

@@ -8,6 +8,7 @@ import quizbank.model.Quiz;
 import quizbank.model.User;
 import quizbank.enums.DifficultyLevel;
 import quizbank.enums.Category;
+import quizbank.enums.QuestionType;
 import quizbank.repository.QuizRepository;
 import quizbank.repository.UserRepository;
 
@@ -31,9 +32,9 @@ public class LoadDatabase {
             quiz1.setCategory(Category.GENERAL_KNOWLEDGE);
             quiz1.setDifficultyLevel(DifficultyLevel.EASY);
             List<Question> questions = Arrays.asList(
-                    new Question(quiz1, "Who is Johannes?", "Lorentzsen"),
-                    new Question(quiz1, "Where is Sondre?", "Hemsedal"),
-                    new Question(quiz1, "What is Jens doing?", "Coding")
+                    new Question(quiz1, "Who is Johannes?", "Lorentzsen", QuestionType.FILL_IN_THE_BLANKS),
+                    new Question(quiz1, "Where is Sondre?", "Hemsedal", QuestionType.FILL_IN_THE_BLANKS),
+                    new Question(quiz1, "What is Jens doing?", "Coding", QuestionType.FILL_IN_THE_BLANKS)
             );
             quiz1.setQuestions(questions);
 
@@ -45,9 +46,9 @@ public class LoadDatabase {
             quiz2.setDifficultyLevel(DifficultyLevel.MEDIUM);
 
             List<Question> questions2 = Arrays.asList(
-                    new Question(quiz2, "What is Trondheims national dish?", "Sodd"),
-                    new Question(quiz2, "Trondheim is the capital of Norway?", "No"),
-                    new Question(quiz2, "Is Gløshaugen better than Dragvoll?", "Yes")
+                    new Question(quiz2, "What is Trondheims national dish?", "Sodd", QuestionType.MULTIPLE_CHOICE, Arrays.asList("Sodd", "Pizza", "Burger", "Pasta")),
+                    new Question(quiz2, "Trondheim is the capital of Norway?", "No", QuestionType.MULTIPLE_CHOICE, Arrays.asList("Yes", "No")),
+                    new Question(quiz2, "Is Gløshaugen better than Dragvoll?", "Yes", QuestionType.MULTIPLE_CHOICE, Arrays.asList("Yes", "No"))
             );
             quiz2.setQuestions(questions2);
 
