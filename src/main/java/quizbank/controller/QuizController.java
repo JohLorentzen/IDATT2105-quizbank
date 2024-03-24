@@ -40,7 +40,7 @@ public class QuizController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity createOrUpdateQuiz(@RequestBody QuizDTO quiz) {
         Quiz quizEntity = quizService.toEntity(quiz);
-        if (quizRepository.existsById(quiz.getQuizId())) {
+        if (quizEntity.getId() != null && quizRepository.existsById(quizEntity.getId())) {
             quizRepository.save(quizEntity);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
@@ -50,14 +50,14 @@ public class QuizController {
     }
 
     @DeleteMapping("/quiz/{quizId}")
-    public ResponseEntity<?> deleteQuiz(@PathVariable Integer quizId) {
+    public ResponseEntity<?> deleteQuiz(@PathVariable Long quizId) {
         quizRepository.deleteById(quizId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
     @GetMapping("/quiz/{quizId}")
-    public QuizDTO getQuiz(@PathVariable("quizId") int quizId) {
+    public QuizDTO getQuiz(@PathVariable("quizId") Long quizId) {
         Quiz quiz = quizRepository.findById(quizId).orElseThrow(() -> new IllegalArgumentException("Invalid quiz ID"));
         return quizService.toDto(quiz);
     }

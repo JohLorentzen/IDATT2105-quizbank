@@ -2,6 +2,8 @@ package quizbank.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import quizbank.dto.QuizDTO;
+import quizbank.enums.Category;
+import quizbank.enums.DifficultyLevel;
 import quizbank.model.Quiz;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,8 @@ public class QuizServiceImpl implements QuizService {
         dto.setQuizName(quiz.getName());
         dto.setCreatedByUserId(quiz.getCreatedByUserId());
         dto.setQuestions(new QuestionServiceImpl().toDto(quiz.getQuestions()));
+        dto.setCategory(quiz.getCategory().toString());
+        dto.setDifficultyLevel(quiz.getDifficultyLevel().toString());
         return dto;
     }
 
@@ -32,6 +36,8 @@ public class QuizServiceImpl implements QuizService {
         quiz.setName(quizDTO.getQuizName());
         quiz.setCreatedByUserId(quizDTO.getCreatedByUserId());
         quiz.setQuestions(questionService.toEntity(quizDTO.getQuestions(), quiz));
+        quiz.setCategory(Category.valueOf(quizDTO.getCategory()));
+        quiz.setDifficultyLevel(DifficultyLevel.valueOf(quizDTO.getDifficultyLevel()));
         return quiz;
     }
 

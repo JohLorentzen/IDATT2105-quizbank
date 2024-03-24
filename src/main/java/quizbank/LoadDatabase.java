@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import quizbank.model.Question;
 import quizbank.model.Quiz;
+import quizbank.enums.DifficultyLevel;
+import quizbank.enums.Category;
 import quizbank.repository.QuizRepository;
 
 import java.util.Arrays;
@@ -16,9 +18,11 @@ public class LoadDatabase {
     CommandLineRunner initDatabase(QuizRepository repository) {
         return args -> {
             Quiz quiz1 = new Quiz();
-            quiz1.setName("Quiz 1");
-            quiz1.setId(1);
-            quiz1.setCreatedByUserId(1);
+            quiz1.setName("Quizbank project");
+            quiz1.setId(1L);
+            quiz1.setCreatedByUserId(1L);
+            quiz1.setCategory(Category.GENERAL_KNOWLEDGE);
+            quiz1.setDifficultyLevel(DifficultyLevel.EASY);
             List<Question> questions = Arrays.asList(
                     new Question(quiz1, "Who is Johannes?", "Lorentzsen"),
                     new Question(quiz1, "Where is Sondre?", "Hemsedal"),
@@ -28,8 +32,10 @@ public class LoadDatabase {
 
             Quiz quiz2 = new Quiz();
             quiz2.setName("Trondheim quiz");
-            quiz2.setId(2);
-            quiz2.setCreatedByUserId(2);
+            quiz2.setId(2L);
+            quiz2.setCreatedByUserId(2L);
+            quiz2.setCategory(Category.GEOGRAPHY);
+            quiz2.setDifficultyLevel(DifficultyLevel.MEDIUM);
 
             List<Question> questions2 = Arrays.asList(
                     new Question(quiz2, "What is Trondheims national dish?", "Sodd"),

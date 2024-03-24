@@ -1,7 +1,7 @@
 package quizbank.dto;
 
 public class QuestionDTO {
-    private int questionId;
+    private Long questionId;
     private String problem;
     private String solution;
 
@@ -10,17 +10,17 @@ public class QuestionDTO {
     }
 
 
-    public QuestionDTO(int questionId, String problem, String solution) {
+    public QuestionDTO(Long questionId, String problem, String solution) {
         this.questionId = questionId;
         this.problem = problem;
         this.solution = solution;
     }
 
-    public int getQuestionId() {
+    public Long getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(int questionId) {
+    public void setQuestionId(Long questionId) {
         this.questionId = questionId;
     }
 
