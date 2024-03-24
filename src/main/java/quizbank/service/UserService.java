@@ -26,7 +26,7 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
         if (user == null) {
-            throw new UsernameNotFoundException("User not found");
+            return null;
         }
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), new ArrayList<>());
     }
@@ -38,6 +38,7 @@ public class UserService implements UserDetailsService {
 
     public User toEntity(UserDTO userDTO) {
         User user = new User();
+        user.setId(userDTO.getId());
         user.setUsername(userDTO.getUsername());
         user.setPassword(userDTO.getPassword());
         return user;
@@ -50,6 +51,11 @@ public class UserService implements UserDetailsService {
         }
         UserDTO userDTO = new UserDTO();
         userDTO.setUsername(user.getUsername());
+        userDTO.setId(user.getId());
         return userDTO;
+    }
+
+    public User findUserById(Long createdByUserId) {
+        return userRepository.findById(createdByUserId).orElse(null);
     }
 }

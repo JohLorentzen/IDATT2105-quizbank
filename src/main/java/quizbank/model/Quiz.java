@@ -7,6 +7,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import quizbank.enums.Category;
 import quizbank.enums.DifficultyLevel;
@@ -20,7 +22,6 @@ public class Quiz {
     private Long id;
 
     private String name;
-    private Long createdByUserId;
 
     @Enumerated(EnumType.STRING)
     private Category category;
@@ -28,16 +29,14 @@ public class Quiz {
     @Enumerated(EnumType.STRING)
     private DifficultyLevel difficultyLevel;
 
+    @ManyToOne
+    @JoinColumn(name = "created_by_user_id")
+    private User createdBy;
+
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
     private List<Question> questions;
 
     public Quiz() {
-    }
-
-    public Quiz(String name, Long createdByUserId, List<Question> questions) {
-        this.name = name;
-        this.createdByUserId = createdByUserId;
-        this.questions = questions;
     }
 
 
@@ -57,12 +56,12 @@ public class Quiz {
         this.name = name;
     }
 
-    public Long getCreatedByUserId() {
-        return createdByUserId;
+    public User getCreatedBy() {
+        return createdBy;
     }
 
-    public void setCreatedByUserId(Long createdByUserId) {
-        this.createdByUserId = createdByUserId;
+    public void setCreatedByUser(User createdBy) {
+        this.createdBy = createdBy;
     }
 
     public List<Question> getQuestions() {

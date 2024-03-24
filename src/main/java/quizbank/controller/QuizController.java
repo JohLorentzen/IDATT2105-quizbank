@@ -13,52 +13,54 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import quizbank.dto.QuizDTO;
 import quizbank.model.Quiz;
-import quizbank.repository.QuizRepository;
 import quizbank.service.QuizService;
+import quizbank.service.UserService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/rest")
 public class QuizController {
 
     @Autowired
-    private QuizRepository quizRepository;
+    private QuizService quizService;
 
     @Autowired
-    private QuizService quizService;
+    private UserService userService;
 
     @GetMapping("/quiz")
     public ResponseEntity<List<QuizDTO>> getAllQuizzes() {
-        List<Quiz> quizzes = quizRepository.findAll();
-        List<QuizDTO> quizDTOs = quizzes.stream().map(quizService::toDto).collect(Collectors.toList());
+        List<QuizDTO> quizDTOs = quizService.getAllQuizzes();
         return new ResponseEntity<>(quizDTOs, HttpStatus.OK);
     }
 
     @PostMapping("/quiz")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> createOrUpdateQuiz(@RequestBody QuizDTO quiz) {
-        Quiz quizEntity = quizService.toEntity(quiz);
-        if (quizEntity.getId() != null && quizRepository.existsById(quizEntity.getId())) {
-            quizRepository.save(quizEntity);
+        QuizDTO savedQuiz = quizService.createOrUpdateQuiz(quiz);
+        if (savedQuiz.getQuizId() != null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            quizRepository.save(quizEntity);
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
     }
 
     @DeleteMapping("/quiz/{quizId}")
     public ResponseEntity<?> deleteQuiz(@PathVariable Long quizId) {
-        quizRepository.deleteById(quizId);
+        quizService.deleteQuiz(quizId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-
     @GetMapping("/quiz/{quizId}")
     public QuizDTO getQuiz(@PathVariable("quizId") Long quizId) {
-        Quiz quiz = quizRepository.findById(quizId).orElseThrow(() -> new IllegalArgumentException("Invalid quiz ID"));
-        return quizService.toDto(quiz);
+        return quizService.getQuizById(quizId);
+    }
+
+    @GetMapping("/quiz/user/{userId}")
+    public ResponseEntity<List<QuizDTO>> getQuizzesCreatedByUser(@PathVariable("userId") Long userId) {
+        List<Quiz> quizzesCreatedByUserId = quizService.getQuizzesCreatedByUserId(userId);
+        List<QuizDTO> list = quizzesCreatedByUserId.stream().map(quiz -> quizService.toDto(quiz)).toList();
+        return new ResponseEntity<>(list, HttpStatus.OK);
+
     }
 }

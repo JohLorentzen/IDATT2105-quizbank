@@ -5,9 +5,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import quizbank.model.Question;
 import quizbank.model.Quiz;
+import quizbank.model.User;
 import quizbank.enums.DifficultyLevel;
 import quizbank.enums.Category;
 import quizbank.repository.QuizRepository;
+import quizbank.repository.UserRepository;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,12 +17,17 @@ import java.util.List;
 @Configuration
 public class LoadDatabase {
     @Bean
-    CommandLineRunner initDatabase(QuizRepository repository) {
+    CommandLineRunner initDatabase(QuizRepository quizRepository, UserRepository userRepository) {
         return args -> {
+            User user = new User();
+            user.setUsername("admin");
+            user.setPassword("admin");
+            userRepository.save(user);
+
             Quiz quiz1 = new Quiz();
             quiz1.setName("Quizbank project");
             quiz1.setId(1L);
-            quiz1.setCreatedByUserId(1L);
+            quiz1.setCreatedByUser(user);
             quiz1.setCategory(Category.GENERAL_KNOWLEDGE);
             quiz1.setDifficultyLevel(DifficultyLevel.EASY);
             List<Question> questions = Arrays.asList(
@@ -33,7 +40,7 @@ public class LoadDatabase {
             Quiz quiz2 = new Quiz();
             quiz2.setName("Trondheim quiz");
             quiz2.setId(2L);
-            quiz2.setCreatedByUserId(2L);
+            quiz2.setCreatedByUser(user);
             quiz2.setCategory(Category.GEOGRAPHY);
             quiz2.setDifficultyLevel(DifficultyLevel.MEDIUM);
 
@@ -44,9 +51,7 @@ public class LoadDatabase {
             );
             quiz2.setQuestions(questions2);
 
-
-            repository.saveAll(Arrays.asList(quiz1, quiz2));
+            quizRepository.saveAll(Arrays.asList(quiz1, quiz2));
         };
     }
-
 }
