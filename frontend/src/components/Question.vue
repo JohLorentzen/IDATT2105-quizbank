@@ -1,28 +1,21 @@
-<script>
+<script setup>
 import { defineProps, ref } from 'vue';
- const props = defineProps({
-    question: String,
-    solution: String,
-    submitAnswer: Function,
-  });
-  function submitAnswer() {
-    if (answer === solution) {
-      alert('Correct!');
-    } else {
-      alert('Incorrect!');
-    }
-  }
-  
-  
+
+// Define the props your component accepts
+const props = defineProps({
+  problem: String,
+  solution: String
+});
+
+const userAnswer = ref('');
+
 </script>
-<template> 
+
+<template>
     <div>
-        <h2>{{ question }}</h2>
-        <input type="text" v-model="answer" placeholder="Enter your answer" />
-        <button @click="submitAnswer">Submit</button>
+        <h2>{{ props.problem }}</h2>
+        <input type="text" v-model="userAnswer" placeholder="Enter your answer" />
+        <button @click="$emit('correctAnswer', solution === userAnswer)">Submit</button>
     </div>
 </template>
 
-<style scoped>
-/* Add your component styles here */
-</style>

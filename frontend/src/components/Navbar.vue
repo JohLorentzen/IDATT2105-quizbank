@@ -1,14 +1,27 @@
 <script setup>
   import { RouterView, RouterLink } from 'vue-router'
+  import { useUserStore } from '@/stores/user.js'
+
+  const userStore = useUserStore();
+
+  const handleLogout = () => {
+    userStore.logout();
+  }
 </script>
 <template>
     <div class="navbar">
         <nav>
           <RouterLink to="/">Home</RouterLink>
+          <RouterLink to="/quiz">Quiz</RouterLink>
           <RouterLink to="/about">About</RouterLink>
       </nav>
       <nav class="login">
-          <RouterLink to="/login">Login</RouterLink>
+          <template v-if="userStore.token">
+            <RouterLink to="/" @click="handleLogout">Logout</RouterLink>
+          </template>
+          <template v-else>
+            <RouterLink to="/login">Login</RouterLink>
+          </template>
       </nav>
     </div>
 </template>

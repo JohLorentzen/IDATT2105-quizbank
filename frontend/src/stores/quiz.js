@@ -8,5 +8,7 @@ export const useQuizStore = defineStore('quiz', () => {
     return quiz.value
   }
 
-  return { quiz, getQuestions }
+  const totalQuestions = computed(() => quiz.value.length)
+
+  return { quiz, getQuestions, totalQuestions}
 })
