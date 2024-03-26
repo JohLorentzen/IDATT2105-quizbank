@@ -9,9 +9,7 @@ import Quiz from '@/components/Quiz.vue';
 const currentQuiz = ref(null);
 const router = useRouter();
 const quizes = ref([]);
-const questions = ref([]);
 const userStore = useUserStore();
-const playingQuiz = ref(false);
 
 onMounted(() => {
     axios.get('http://localhost:8080/rest/quiz', {
@@ -33,35 +31,26 @@ onMounted(() => {
     });
 });
 
-const playQuiz = (quizId) => {
-    const selectedQuiz = quizes.value.find(quiz => quiz.quizId === quizId);
-    if (selectedQuiz) {
-        questions.value = selectedQuiz.questions;
-        currentQuiz.value = selectedQuiz;
-        playingQuiz.value = true;
-    }
-};
 </script>
 
 <template>
-    <div>
-        <h1>Quiz View</h1>
-        <div v-if="!playingQuiz" class="quiz-grid">
-            <div v-for="quiz in quizes" :key="quiz.quisId">
-                <button @click="playQuiz(quiz.quizId)">
-                    <div>
-                        <h2>{{ quiz.quizName }}</h2>
-                        <p>{{ quiz.category }}</p>
-                        <p v-if="quiz.questions">{{ quiz.questions.length }} questions</p>
-                        <p v-else>No questions</p>
-                    </div>
-                </button>
-            </div>
-        </div>
-        <div v-if="playingQuiz">
-            <Quiz :questions="questions.value" />
-        </div>
+  <div>
+    <h1>Quiz View</h1>
+    <div v-if="!currentQuiz" class="quiz-grid">
+      <div v-for="quiz in quizes" :key="quiz.quizId">
+        <button @click="currentQuiz = quiz">
+          <div>
+            <h2>{{ quiz.quizName }}</h2>
+            <p>{{ quiz.category }}</p>
+            <p v-if="quiz.questions">{{ quiz.questions.length }} questions</p>
+            <p v-else>No questions</p>
+          </div>
+        </button>
+      </div>
     </div>
+    <Quiz v-if="currentQuiz" :selectedQuiz="currentQuiz" @closeQuiz="currentQuiz = null" />
+  </div>
+
 </template>
 
 <style scoped>
