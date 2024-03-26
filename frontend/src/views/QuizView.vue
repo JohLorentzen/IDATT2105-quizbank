@@ -1,52 +1,59 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import { useUserStore } from '@/stores/user.js'; // Adjust the path as necessary
+import { useUserStore } from '@/stores/user.js'; 
+import { useQuizStore } from '../stores/quiz.js';
 import { useRouter } from 'vue-router';
-import Quiz from '@/components/Quiz.vue';
+import Question from '@/components/Question.vue';
 
-
-const currentQuiz = ref(null);
-const router = useRouter();
+const quizStore = useQuizStore();
 const quizes = ref([]);
-const questions = ref([]);
+const router = useRouter();
 const userStore = useUserStore();
 const playingQuiz = ref(false);
+
+const setQuestions = (questions) => {
+    quizStore.questions = questions;
+};
 
 onMounted(() => {
     axios.get('http://localhost:8080/rest/quiz', {
         headers: {
-            Authorization: `Bearer ${userStore.getToken}` // Assuming getToken is the method to retrieve the token
+            Authorization: `Bearer ${userStore.getToken}` 
         }
     })
     .then(response => {
         quizes.value = response.data;
     })
     .catch(error => {
-        if (error.response.status === 401) {
-            router.push('/login');
-        } else if (error.response.status === 404) {
-            router.push('/login');
-        } else {
-            console.error('Error fetching quizes:', error);
+        if (error.response) {
+            if (error.response.status === 401 || error.response.status === 404) {
+                router.push('/login');
+            } else {
+                console.error('Error fetching quizes:', error);
+            }
         }
     });
 });
 
 const playQuiz = (quizId) => {
-    const selectedQuiz = quizes.value.find(quiz => quiz.quizId === quizId);
-    if (selectedQuiz) {
-        questions.value = selectedQuiz.questions;
-        currentQuiz.value = selectedQuiz;
-        playingQuiz.value = true;
-    }
+    quizes.value.forEach(quiz => {
+        if (quiz.quizId === quizId) {
+            quizStore.setQuestions(quiz.questions);
+            playingQuiz.value = true;
+        }
+    });
 };
+
 </script>
 
 <template>
     <div>
         <h1>Quiz View</h1>
-        <div v-if="!playingQuiz" class="quiz-grid">
+        <div v-if="playingQuiz">
+            <Question :quizName="quizName" />
+        </div>
+        <div v-else class="quiz-grid">
             <div v-for="quiz in quizes" :key="quiz.quisId">
                 <button @click="playQuiz(quiz.quizId)">
                     <div>
@@ -57,9 +64,6 @@ const playQuiz = (quizId) => {
                     </div>
                 </button>
             </div>
-        </div>
-        <div v-if="playingQuiz">
-            <Quiz :questions="questions.value" />
         </div>
     </div>
 </template>
