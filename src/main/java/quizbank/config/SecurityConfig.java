@@ -11,6 +11,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import quizbank.filter.JwtRequestFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
 
 @Configuration
 @EnableWebSecurity
@@ -46,5 +50,20 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
+
+    @Bean
+    public CorsFilter corsFilter() {
+      CorsConfiguration config = new CorsConfiguration();
+      config.setAllowCredentials(true);
+      config.addAllowedOrigin("http://localhost:5173"); // Allow your Vue app origin
+      config.addAllowedHeader("*");
+      config.addAllowedMethod("*");
+
+      UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+      source.registerCorsConfiguration("/**", config); // Apply CORS configuration for all paths
+
+      return new CorsFilter(source);
+    }
+
 
 }
