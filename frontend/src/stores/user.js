@@ -12,7 +12,7 @@ export const useUserStore = defineStore('user', {
         getUsername() {
             return this.username;
         },
-    },
+    },  
     actions: {
         setToken(token) {
             this.token = token;
