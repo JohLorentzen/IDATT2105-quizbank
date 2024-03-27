@@ -1,20 +1,18 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import { useUserStore } from '@/stores/user.js';
 import { useRouter } from 'vue-router';
 import Quiz from '@/components/Quiz.vue';
 
 const currentQuiz = ref(null);
 const quizes = ref([]);
-const userStore = useUserStore();
 const router = useRouter();
 
 const fetchQuizes = async () => {
   try {
     const response = await axios.get('http://localhost:8080/rest/quiz', {
       headers: {
-        Authorization: `Bearer ${userStore.getToken}`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
     quizes.value = response.data;
@@ -51,8 +49,6 @@ onMounted(fetchQuizes);
   </div>
 </template>
 
-
-<style scoped>
 <style scoped>
 .quiz-grid {
   display: grid;

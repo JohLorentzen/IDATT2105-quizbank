@@ -14,7 +14,7 @@ export const useQuizStore = defineStore('quiz', {
     getLength() {
       return () => {
         return this.length;
-      }
+      };
     },
     getQuestion() {
       return () => {

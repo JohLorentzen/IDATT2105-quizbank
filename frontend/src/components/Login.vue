@@ -16,8 +16,8 @@ const login = async (event) => {
       username: username.value,
       password: password.value
     });
-    if (response.status === 200) {
-      userStore.setToken(response.data);
+    if (response.status === 200) {      
+      localStorage.setItem('token', response.data);
       userStore.setUsername(username.value);
       router.push('/quiz');
     } else {
