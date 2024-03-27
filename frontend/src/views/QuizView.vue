@@ -25,8 +25,6 @@ const fetchQuizes = async () => {
   }
 };
 
-
-
 onMounted(fetchQuizes);
 </script>
 

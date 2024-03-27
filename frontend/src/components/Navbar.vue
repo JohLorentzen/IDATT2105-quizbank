@@ -5,6 +5,7 @@
   const userStore = useUserStore();
 
   const handleLogout = () => {
+    localStorage.removeItem('token');
     userStore.logout();
   }
 </script>
@@ -16,12 +17,12 @@
           <RouterLink to="/about">About</RouterLink>
       </nav>
       <nav class="login">
-          <template v-if="userStore.token">
-            <RouterLink to="/" @click="handleLogout">Logout</RouterLink>
-          </template>
-          <template v-else>
+          
+          <RouterLink to="/" @click="handleLogout">Logout</RouterLink>
+        
+          
             <RouterLink to="/login">Login</RouterLink>
-          </template>
+          
       </nav>
     </div>
 </template>

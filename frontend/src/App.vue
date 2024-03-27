@@ -2,12 +2,7 @@
 import { RouterView } from 'vue-router'
 import Navbar from './components/Navbar.vue';
 import Footer from './components/Footer.vue';
-import { ref } from 'vue';
-import { useUserStore } from './stores/user';
 
-const userStore = useUserStore();
-const token = ref(userStore.getToken);
-userStore.setToken(token.value);
 </script>
 
 <template>
