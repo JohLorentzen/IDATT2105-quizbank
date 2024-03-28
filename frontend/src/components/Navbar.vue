@@ -13,15 +13,13 @@
     <div class="navbar">
         <nav>
           <RouterLink to="/">Home</RouterLink>
-          <RouterLink to="/quiz">Quiz</RouterLink>
+          <RouterLink to="/quiz">Play quiz</RouterLink>
           <RouterLink to="/about">About</RouterLink>
           <RouterLink to="/createEdit">Your quizes</RouterLink>
       </nav>
       <nav class="login">
 
             <RouterLink to="/" @click="handleLogout">Logout</RouterLink>
-
-
             <RouterLink to="/login">Login</RouterLink>
           
       </nav>

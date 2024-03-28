@@ -1,4 +1,5 @@
 <script setup>
+    import { ref, defineEmits } from 'vue';
 
     const quizName = ref('');
     const quizDescription = ref('');
@@ -37,3 +38,10 @@
     </form>
   </div>
 </template>
+<style scoped>
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+</style>
