@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import Quiz from '@/components/Quiz.vue';
+import QuizFilter from '@/components/QuizFilter.vue';
 
 const currentQuiz = ref(null);
 const quizes = ref([]);
@@ -32,6 +33,7 @@ onMounted(fetchQuizes);
 <template>
   <div class="quiz-container">
     <h1>Quiz View</h1>
+    <QuizFilter v-if="quizes.length > 0" :quizes="quizes"/>
     <div v-if="!currentQuiz" class="quiz-grid">
       <div v-for="quiz in quizes" :key="quiz.quizId">
         <button @click="currentQuiz = quiz">
