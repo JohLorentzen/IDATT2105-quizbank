@@ -7,6 +7,7 @@ import QuizFilter from '@/components/QuizFilter.vue';
 
 const currentQuiz = ref(null);
 const quizes = ref([]);
+const filteredQuizes = ref([])
 const router = useRouter();
 
 const fetchQuizes = async () => {
@@ -17,6 +18,7 @@ const fetchQuizes = async () => {
       },
     });
     quizes.value = response.data;
+    filteredQuizes.value = response.data;
   } catch (error) {
     if (error.response && [401, 404].includes(error.response.status)) {
       router.push('/login');
@@ -26,6 +28,22 @@ const fetchQuizes = async () => {
   }
 };
 
+function filterChosenQuizes(categories) {
+  if (categories.length === 0) {
+    filteredQuizes.value = quizes.value;
+    return;
+  }
+
+  filteredQuizes.value = [];
+  for (const quiz of quizes.value) {
+    for (const category of categories) {
+      if (quiz.category === category) {
+        filteredQuizes.value.push(quiz);
+      }
+    }
+  }
+}
+
 onMounted(fetchQuizes);
 </script>
 
@@ -33,9 +51,9 @@ onMounted(fetchQuizes);
 <template>
   <div class="quiz-container">
     <h1>Quiz View</h1>
-    <QuizFilter v-if="quizes.length > 0" :quizes="quizes"/>
+    <QuizFilter v-if="quizes.length > 0 && !currentQuiz" :quizes="quizes" @chosen-categories="filterChosenQuizes"/>
     <div v-if="!currentQuiz" class="quiz-grid">
-      <div v-for="quiz in quizes" :key="quiz.quizId">
+      <div v-for="quiz in filteredQuizes" :key="quiz.quizId">
         <button @click="currentQuiz = quiz">
           <div>
             <h2>{{ quiz.quizName }}</h2>

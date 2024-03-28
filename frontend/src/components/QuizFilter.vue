@@ -2,6 +2,7 @@
 import {computed, ref, watch} from "vue";
 import { vOnClickOutside } from '@vueuse/components'
 
+const emit = defineEmits(['chosenCategories'])
 const props = defineProps({
   quizes: Array
 })
@@ -35,6 +36,10 @@ watch( // have to use watcher because quizes depends on async call
 // TODO: edit search to look for all cases
 watch(searchTerm, (newValue) => {
   getMatchingCategories(newValue);
+})
+
+watch(chosenCategories.value, () => {
+  emit("chosenCategories", chosenCategories.value);
 })
 
 function getMatchingCategories(searchTerm) {
