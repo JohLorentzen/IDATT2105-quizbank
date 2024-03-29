@@ -1,17 +1,31 @@
 <script setup>
-import {computed, ref, watch} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import { vOnClickOutside } from '@vueuse/components'
+import axios from 'axios';
 
 const emit = defineEmits(['chosenCategories'])
-const props = defineProps({
-  quizes: Array
-})
 
 const showCategorySuggestions = ref(false);
 const searchTerm = ref("");
 const categories = ref([]);
 const matchingCategories = ref([]);
 const chosenCategories = ref([]);
+
+
+const fetchCategories = () => {
+    axios.get('http://localhost:8080/rest/quiz/categories', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    }).then(response => {
+      categories.value = response.data;
+    }, error => {
+
+      console.log("This is axios error " + error);
+    })
+};
+
+onMounted(fetchCategories);
 
 const matchingFilterMessage = computed(() => {
   const numberOfMatches = matchingCategories.value.length;
@@ -26,11 +40,6 @@ const matchingFilterMessage = computed(() => {
   return message;
 })
 
-watch( // have to use watcher because quizes depends on async call
-    () => props.quizes,
-    () => {
-  getCategories();
-}, {immediate: true})
 
 // TODO: research usage of watch vs composed
 // TODO: edit search to look for all cases
@@ -48,13 +57,6 @@ function getMatchingCategories(searchTerm) {
     if (category.toLowerCase().includes(searchTerm.toLowerCase()) && !chosenCategories.value.includes(category)) {
       matchingCategories.value.push(category);
     }
-  }
-}
-
-function getCategories() {
-  for (const quiz of props.quizes) {
-    if (categories.value.includes(quiz.category)) continue
-    categories.value.push(quiz.category)
   }
 }
 
@@ -123,7 +125,7 @@ div, ul, li, input, button, p {
 }
 
 .search-container, .chosen-category-container {
-  max-width: 500px;
+  width: 400px;
 }
 
 .search-container {

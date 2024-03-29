@@ -10,22 +10,21 @@ const quizes = ref([]);
 const filteredQuizes = ref([])
 const router = useRouter();
 
-const fetchQuizes = async () => {
-  try {
-    const response = await axios.get('http://localhost:8080/rest/quiz', {
+const fetchQuizes = () => {
+    axios.get('http://localhost:8080/rest/quiz', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
+    }).then(response => {
+      quizes.value = response.data;
+      filteredQuizes.value = response.data;
+    }, error => {
+      if (error.response && [401, 404].includes(error.response.status)) {
+        router.push('/login')
+      } else {
+        console.log("Error fetching quizzes: " + error);
+      }
     });
-    quizes.value = response.data;
-    filteredQuizes.value = response.data;
-  } catch (error) {
-    if (error.response && [401, 404].includes(error.response.status)) {
-      router.push('/login');
-    } else {
-      console.error('Error fetching quizzes:', error);
-    }
-  }
 };
 
 function filterChosenQuizes(categories) {
@@ -51,7 +50,7 @@ onMounted(fetchQuizes);
 <template>
   <div class="quiz-container">
     <h1>Quiz View</h1>
-    <QuizFilter v-if="quizes.length > 0 && !currentQuiz" :quizes="quizes" @chosen-categories="filterChosenQuizes"/>
+    <QuizFilter v-if="quizes.length > 0 && !currentQuiz" @chosen-categories="filterChosenQuizes"/>
     <div v-if="!currentQuiz" class="quiz-grid">
       <div v-for="quiz in filteredQuizes" :key="quiz.quizId">
         <button @click="currentQuiz = quiz">
