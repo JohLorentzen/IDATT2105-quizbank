@@ -1,18 +1,19 @@
 <script setup>
-    import { ref, onMounted } from 'vue';
+    import { ref } from 'vue';
     const props = defineProps(['quizes']);
     const emit = defineEmits(['selectQuiz']);
     const currentQuiz = ref(null);
 
-    const selectQuiz = (quiz) => {
+    function playQuiz(quiz) {
         currentQuiz.value = quiz;
+        console.log(currentQuiz.value);
         emit('selectQuiz', currentQuiz.value);
     };
 </script>
 <template>
     <div v-if="!currentQuiz" class="quiz-grid">
       <div v-for="quiz in quizes" :key="quiz.quizId">
-        <button @click="selectQuiz">
+        <button @click="playQuiz(quiz)">
           <div>
             <h2>{{ quiz.quizName }}</h2>
             <p>{{ quiz.category }}</p>

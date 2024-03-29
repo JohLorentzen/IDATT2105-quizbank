@@ -28,8 +28,6 @@ const fetchQuizes = async () => {
 
 onMounted(fetchQuizes);
 </script>
-
-
 <template>
   <div class="quiz-container">
     <h1>Quiz View</h1>
