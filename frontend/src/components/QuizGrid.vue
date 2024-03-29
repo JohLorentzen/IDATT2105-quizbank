@@ -9,6 +9,7 @@
         console.log(currentQuiz.value);
         emit('selectQuiz', currentQuiz.value);
     };
+
 </script>
 <template>
     <div v-if="!currentQuiz" class="quiz-grid">
