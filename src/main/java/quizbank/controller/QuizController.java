@@ -12,11 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import quizbank.dto.QuizDTO;
+import quizbank.enums.Category;
 import quizbank.model.Quiz;
 import quizbank.service.QuizService;
 import quizbank.service.UserService;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/rest")
@@ -62,5 +64,11 @@ public class QuizController {
         List<QuizDTO> list = quizzesCreatedByUserId.stream().map(quiz -> quizService.toDto(quiz)).toList();
         return new ResponseEntity<>(list, HttpStatus.OK);
 
+    }
+
+    @GetMapping("/quiz/categories")
+    public ResponseEntity<List<String>> getAllCategories() {
+        List<String> categories = Stream.of(Category.values()).map(Category::name).toList();
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 }

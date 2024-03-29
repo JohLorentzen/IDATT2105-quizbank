@@ -21,7 +21,6 @@ const newUser = async (event) => {
             userStore.setUsername(username.value);
             router.push('/quiz'); 
         }
-        console.log(userStore.getToken); 
     } catch (error) {
         // Handle error (e.g., display an error message)
         console.error('Registration failed:', error);
