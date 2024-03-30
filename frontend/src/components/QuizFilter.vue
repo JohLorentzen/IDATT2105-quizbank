@@ -48,7 +48,8 @@ watch(searchTerm, (newValue) => {
 })
 
 watch(chosenCategories.value, () => {
-  emit("chosenCategories", chosenCategories.value);
+  // slice in case there are too many mathing results..
+  emit("chosenCategories", chosenCategories.value.slice(0, 8));
 })
 
 function getMatchingCategories(searchTerm) {

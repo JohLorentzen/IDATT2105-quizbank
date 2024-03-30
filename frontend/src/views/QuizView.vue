@@ -51,7 +51,7 @@ onMounted(fetchQuizes);
 <template>
   <div class="quiz-container">
     <h1>Quiz View</h1>
-    <QuizGrid v-if="!currentQuiz" :quizes="quizes" @selectQuiz="currentQuiz = $event" />
+    <QuizGrid v-if="!currentQuiz" :quizes="filteredQuizes" @selectQuiz="currentQuiz = $event" />
     <QuizFilter v-if="quizes.length > 0 && !currentQuiz" @chosen-categories="filterChosenQuizes"/>
     <Quiz v-if="currentQuiz" :selectedQuiz="currentQuiz" @closeQuiz="closeQuiz" />
   </div>
