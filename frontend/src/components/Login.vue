@@ -13,7 +13,7 @@ const password = ref('');
 const emit = defineEmits(['showNewUser', 'showForgotPassword'])
 
 const login = async () => {
-  const url = `${endpoints.HOST_URL}${endpoints.LOGIN}`
+  const url = `${endpoints.BASE_URL}${endpoints.LOGIN}`
   const userData = {
     username: username.value,
     password: password.value

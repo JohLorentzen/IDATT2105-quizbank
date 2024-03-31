@@ -3,47 +3,46 @@ import axios from 'axios';
 import { useUserStore } from '@/stores/user.js';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import endpoints from "@/endpoints.json";
 
 const userStore = useUserStore();
 const router = useRouter();
 const username = ref('');
 const password = ref('');
-const confirmPassword = ref('');
-const passwordMatch = ref(false);
 
 
 const emit = defineEmits(['toLogin']);
 
 function newUser() {
-    try {
-        const response = axios.post('http://localhost:8080/user/register', {
-            username: username.value,
-            password: password.value
-        });
-        if (response.status === 200) {
-            localStorage.setItem('token', response.data);
-            userStore.setUsername(username.value);
-            router.push('/quiz'); 
-        }
-    } catch (error) {
-        // Handle error (e.g., display an error message)
-        console.error('Registration failed:', error);
-    }
-}
-
-function createNewUser() {
-  if (password !== confirmPassword) {
-    passwordMatch.value = false;
-    return
+  const url = `${endpoints.BASE_URL}${endpoints.CREATE_USER}`
+  const userData = {
+    username: username.value,
+    password: password.value
   }
-  passwordMatch.value = true;
-  newUser();
+  const acceptedStatusCodes = {
+    validateStatus: function(status) {
+      return status >= 200 && status < 300 || 409;
+    }
+  }
+
+  axios.post(url, userData, acceptedStatusCodes).then(response => {
+    if (response.status === 200) {
+      localStorage.setItem('token', response.data);
+      userStore.setUsername(username.value);
+      router.push('/quiz');
+    } else if (response.status === 409) {
+      // TODO: add feedback to UI
+      console.log("Failed to create a user because username already exists")
+    }
+  }).catch(error => {
+    console.error('Registration failed:', error);
+  });
 }
 
 </script>
 
 <template>
-  <form @submit.prevent="createNewUser">
+  <form @submit.prevent="newUser">
     <h1>Create Account</h1>
     <div class="input-container">
       <label for="username">Username</label>
@@ -52,10 +51,6 @@ function createNewUser() {
     <div class="input-container">
       <label for="password">Password</label>
       <input type="password" id="password" v-model="password" placeholder="Type your password" />
-    </div>
-    <div class="input-container">
-      <label for="confirm-password">Confirm password</label>
-      <input type="password" id="confirm-password" v-model="confirmPassword" placeholder="Confirm password" />
     </div>
     <button class="login-btn" type="submit">CREATE ACCOUNT</button>
     <div class="create-user-container">
