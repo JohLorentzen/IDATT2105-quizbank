@@ -9,25 +9,33 @@ const showLogin = ref(true);
 const showForgotPassword = ref(false);
 const showNewUser = ref(false);
 
-const newUser = () => {
-    showLogin.value = false;
-    showForgotPassword.value = false;
-    showNewUser.value = true;
-};
+function resetAllToFalse() {
+  showLogin.value = false;
+  showForgotPassword.value = false;
+  showNewUser.value = false;
+}
 
-const forgotPassword = () => {
-    showLogin.value = false;
-    showForgotPassword.value = true;
-    showNewUser.value = false;
-};
+function toLogin() {
+  resetAllToFalse();
+  showLogin.value = true;
+}
 
+function toUserCreation() {
+  resetAllToFalse();
+  showNewUser.value = true;
+}
+
+function toForgotPassword() {
+  resetAllToFalse();
+  showForgotPassword.value = true;
+}
 </script>
 
 <template>
   <main>
-    <Login v-if="showLogin" @show-new-user="newUser" @show-forgot-password="forgotPassword"/>
-    <ForgotPassword v-if="showForgotPassword" />
-    <NewUser v-if="showNewUser"/>
+    <Login v-if="showLogin" @show-new-user="toUserCreation" @show-forgot-password="toForgotPassword"/>
+    <ForgotPassword v-if="showForgotPassword"  />
+    <NewUser v-if="showNewUser" @to-login="toLogin"/>
   </main>
 </template>
 

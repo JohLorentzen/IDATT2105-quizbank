@@ -52,7 +52,7 @@ const login = async () => {
       <input type="password" id="password" v-model="password" placeholder="Type your password" />
       <a @click="emit('showForgotPassword')">Forgot password?</a>
     </div>
-    <button class="login-btn" type="submit">Login</button>
+    <button class="login-btn" type="submit">LOGIN</button>
     <div class="create-user-container">
       <p>New here? <a @click="emit('showNewUser')">Create an account</a></p>
     </div>
@@ -77,7 +77,6 @@ form {
 a {
   padding: 0;
   margin: 0;
-  text-decoration: underline;
 }
 
 a:hover {
@@ -111,6 +110,7 @@ a:hover {
 
 .input-container input:focus {
   outline: none;
+  border-bottom: 2px solid rosybrown;
 }
 
 .input-container a {
@@ -126,6 +126,7 @@ a:hover {
   padding: 1.2em;
   width: 100%;
   font-weight: bold;
+  font-size: 0.85rem;
   border: none;
   border-radius: 2em;
   cursor: pointer;
@@ -142,4 +143,14 @@ a:hover {
   text-align: center;
 }
 
+.create-user-container a {
+  border-bottom: 1px solid #777777;
+  padding: 0 0 0.09em;
+}
+
+.create-user-container a:hover {
+  text-decoration: none;
+  color: #181818;
+  font-weight: bolder;
+}
 </style>
