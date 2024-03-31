@@ -22,19 +22,15 @@ const forgotPassword = () => {
 };
 
 </script>
-<template>   
-    <h1>Welcome in</h1>
-    <div v-if="showLogin" >
-        <Login />
-    </div>
-    <div v-if="showForgotPassword">
-        <ForgotPassword />
-    </div>
-    <div v-if="showNewUser">
-        <NewUser />
-    </div>   
+
+<template>
+  <main>
+    <Login v-if="showLogin"/>
+    <ForgotPassword v-if="showForgotPassword"/>
+    <NewUser v-if="showNewUser"/>
     <div>
-        <button @click="newUser">New user?</button>
-        <button @click="forgotPassword">Forgot your password?</button>
+      <button @click="newUser">New user?</button>
+      <button @click="forgotPassword">Forgot your password?</button>
     </div>
+  </main>
 </template>
