@@ -25,12 +25,15 @@ const forgotPassword = () => {
 
 <template>
   <main>
-    <Login v-if="showLogin"/>
-    <ForgotPassword v-if="showForgotPassword"/>
+    <Login v-if="showLogin" @show-new-user="newUser" @show-forgot-password="forgotPassword"/>
+    <ForgotPassword v-if="showForgotPassword" />
     <NewUser v-if="showNewUser"/>
-    <div>
-      <button @click="newUser">New user?</button>
-      <button @click="forgotPassword">Forgot your password?</button>
-    </div>
   </main>
 </template>
+
+<style scoped>
+main {
+  margin-top: 100px;
+  padding: 0;
+}
+</style>
