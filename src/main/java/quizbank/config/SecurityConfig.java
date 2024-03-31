@@ -28,7 +28,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/user/login", "/user/register", "/error", "/webjars/**").permitAll()
+                        .requestMatchers("/user/login", "/user/register", "/error", "/webjars/**", "v3/**", "swagger-ui/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -42,7 +42,6 @@ public class SecurityConfig {
                 );
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 
