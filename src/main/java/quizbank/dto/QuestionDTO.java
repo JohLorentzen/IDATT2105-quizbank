@@ -13,6 +13,7 @@ public class QuestionDTO {
     private List<String> choices; // Include this for multiple-choice questions
 
     private Set<String> tags;
+    private byte[] image;
 
     public QuestionDTO() {
     }
@@ -63,5 +64,13 @@ public class QuestionDTO {
 
     public void setTags(Set<String> tags) {
         this.tags = tags;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }

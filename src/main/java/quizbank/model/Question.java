@@ -28,6 +28,8 @@ public class Question {
     @CollectionTable(name = "question_tags", joinColumns = @JoinColumn(name = "question_id"))
     @Column(name = "tag")
     private Set<String> tags = new HashSet<>();
+    @Lob
+    private byte[] image;
 
     public Question() {
     }
@@ -102,5 +104,13 @@ public class Question {
 
     public void setTags(Set<String> tags) {
         this.tags = tags;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }

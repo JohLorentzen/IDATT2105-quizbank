@@ -1,6 +1,5 @@
 package quizbank.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import quizbank.dto.QuestionDTO;
 import quizbank.model.Question;
@@ -8,8 +7,6 @@ import quizbank.model.Quiz;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static java.util.Arrays.stream;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
@@ -30,6 +27,7 @@ public class QuestionServiceImpl implements QuestionService {
             question.setType(dto.getType());
             question.setChoices(dto.getChoices());
             question.setTags(dto.getTags());
+            question.setImage(dto.getImage());
             return question;
         }).collect(Collectors.toList());
     }
@@ -44,6 +42,7 @@ public class QuestionServiceImpl implements QuestionService {
         questionDTO.setType(question.getType());
         questionDTO.setChoices((question.getChoices()));
         questionDTO.setTags(question.getTags());
+        questionDTO.setImage(question.getImage());
         return questionDTO;
     }
 
