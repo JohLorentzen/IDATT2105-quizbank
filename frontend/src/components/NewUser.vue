@@ -1,7 +1,7 @@
 <script setup>
 import axios from 'axios';
 import { useUserStore } from '@/stores/user.js';
-import { ref } from 'vue';
+import {computed, ref, watch} from 'vue';
 import { useRouter } from 'vue-router';
 import endpoints from "@/endpoints.json";
 
@@ -9,9 +9,21 @@ const userStore = useUserStore();
 const router = useRouter();
 const username = ref('');
 const password = ref('');
+const usernameExists = ref(false);
 
 
 const emit = defineEmits(['toLogin']);
+
+watch(username, () => {
+  usernameExists.value = false;
+})
+
+const usernameTaken = computed(() => {
+  if (usernameExists.value) {
+    return {"red-underline": true};
+  }
+})
+
 
 function newUser() {
   const url = `${endpoints.BASE_URL}${endpoints.CREATE_USER}`
@@ -32,6 +44,7 @@ function newUser() {
       router.push('/quiz');
     } else if (response.status === 409) {
       // TODO: add feedback to UI
+      usernameExists.value = true;
       console.log("Failed to create a user because username already exists")
     }
   }).catch(error => {
@@ -46,7 +59,8 @@ function newUser() {
     <h1>Create Account</h1>
     <div class="input-container">
       <label for="username">Username</label>
-      <input type="text" id="username" v-model="username" autocomplete="off" placeholder="Type your username"/>
+      <input :class="usernameTaken" type="text" id="username" v-model="username" autocomplete="off" placeholder="Type your username"/>
+      <p v-if="usernameExists" class="red">Username already exists</p>
     </div>
     <div class="input-container">
       <label for="password">Password</label>
@@ -54,7 +68,7 @@ function newUser() {
     </div>
     <button class="login-btn" type="submit">CREATE ACCOUNT</button>
     <div class="create-user-container">
-      <p>Already have an account? <a @click="emit('toLogin')">Go back</a></p>
+      <p>Already have an account? <a @click="emit('toLogin')">Go to login</a></p>
     </div>
   </form>
 </template>
@@ -113,9 +127,21 @@ a:hover {
   border-bottom: 2px solid rosybrown;
 }
 
-.input-container a {
+.red {
+  color: red;
+}
+
+.input-container .red-underline {
+  border-bottom: 2px solid red;
+}
+
+.input-container .red-underline:focus {
+  border-bottom: 2px solid red;
+}
+
+.input-container p {
   margin: 0.4em 0 0;
-  align-self: end;
+  align-self: start;
   font-size: 0.7rem;
 }
 
