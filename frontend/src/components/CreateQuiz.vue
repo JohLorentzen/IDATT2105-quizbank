@@ -6,11 +6,10 @@
 
     const quiz = ref({
       quizId: null,
-      quizName: '',
-      // TODO: createdByUserId should be set to the current user's ID
+      quizName: "",
       createdByUserId: 1,
-      difficultyLevel: '',
-      category: '',
+      difficultyLevel: "",
+      category: "",
       questions: []
     });
     const question = ref({
@@ -22,7 +21,8 @@
     });
     const emit = defineEmits(['submitQuiz']);
     const submit = () => {
-        emit('submitQuiz', quiz.value);
+      console.log("Quiz data before submit:", quiz.value);
+      emit('submitQuiz', quiz.value);
     }
     const quizView = ref(true);
 
@@ -64,7 +64,7 @@
       <label for="questionSolution">Question Solution</label>
       <input type="text" id="questionSolution" v-model="question.solution" />
       <label for="questionType">Question Type</label>
-      <select>
+      <select v-model="question.type">
         <option value="MULTIPLE_CHOICE">Multiple Choice</option>
         <option value="FILL_IN_THE_BLANKS">Fill in the blank</option>
       </select>

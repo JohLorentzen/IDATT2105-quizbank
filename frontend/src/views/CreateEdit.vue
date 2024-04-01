@@ -6,13 +6,10 @@ import axios from 'axios';
 import { onMounted, ref } from 'vue'; 
 import { useRouter } from 'vue-router';
 
-
-const path = ref('create');
-const currentQuiz = ref(null);
-const quizes = ref([]);
 const router = useRouter();
+const quizes = ref([]);
 const createQuiz = ref(false);
-const newQuiz = ref(null);
+const currentQuiz = ref(null); 
 
 const fetchQuizes = async () => {
   try {
@@ -36,39 +33,35 @@ const createNewQuiz = () => {;
     path.value = 'create';
 }
 
-const postNewQuiz = async () => {
+const postQuiz = async (quizData) => {
     try {
-        const response = await axios.post('http://localhost:8080/rest/quiz', newQuiz.value, {
+        await axios.post('http://localhost:8080/rest/quiz', quizData, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
         });
-        newQuiz.value = response.data;
         createQuiz.value = false;
         fetchQuizes();
     } catch (error) {
-        if (error.response && [401, 404].includes(error.response.status)) {
-        } else {
-            console.error('Error fetching quizzes:', error);
-        }
+        console.error('Error posting quiz:', error);
     }
-}
-const handleQuizSubmit = () => {
-  newQuiz.value = currentQuiz.value;
-  postNewQuiz();
-}
+};
+
+const handleQuizSubmit = (quizData) => {
+    postQuiz(quizData);
+};
+
 onMounted(fetchQuizes);
 </script>
 <template>
-    <div v-if="createQuiz"> 
-      <CreateQuiz @submitQuiz="handleQuizSubmit"/>
-    </div>
-    <div v-else>        
-        <button @click="createNewQuiz"> Create quiz</button>
-        <QuizGrid :quizes="quizes" @selectQuiz="currentQuiz = $event"/>
-    </div>
-    <div v-if="currentQuiz">
-        <EditQuiz :quiz="currentQuiz" @submit="handleQuizSubmit"/>
-    </div>
-    
+  <div v-if="createQuiz"> 
+    <CreateQuiz @submitQuiz="handleQuizSubmit"/>
+  </div>
+  <div v-else>        
+      <button @click="createQuiz = true"> Create quiz</button>
+      <QuizGrid :quizes="quizes" @selectQuiz="currentQuiz = $event"/>
+  </div>
+  <div v-if="currentQuiz">
+      <EditQuiz :quiz="currentQuiz" @submit="handleQuizSubmit"/>
+  </div>
 </template>
