@@ -9,7 +9,8 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const quizes = ref([]);
 const createQuiz = ref(false);
-const currentQuiz = ref(null); 
+const currentQuiz = ref(null);
+const deleteMode = ref(false);
 
 const fetchQuizes = async () => {
   try {
@@ -27,11 +28,6 @@ const fetchQuizes = async () => {
     }
   }
 };
-
-const createNewQuiz = () => {;
-    createQuiz.value = true;
-    path.value = 'create';
-}
 
 const postQuiz = async (quizData) => {
     try {
@@ -51,6 +47,34 @@ const handleQuizSubmit = (quizData) => {
     postQuiz(quizData);
 };
 
+const toggleDeleteMode = () => {
+  deleteMode.value = !deleteMode.value;
+};
+const selectQuiz = (quiz) => {
+  if (deleteMode.value) {
+    const isConfirmed = confirm(`Are you sure you want to delete the quiz "${quiz.quizName}"?`);
+    if (isConfirmed){
+      deleteQuiz(quiz.quizId);
+    }
+    deleteMode.value = false; 
+  } else {
+    currentQuiz.value = quiz;
+  }
+};
+
+const deleteQuiz = async (quizId) => {
+    try {
+        await axios.delete(`http://localhost:8080/rest/quiz/${quizId}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+        fetchQuizes();
+    } catch (error) {
+        console.error('Error deleting quiz:', error);
+    }
+};
+
 onMounted(fetchQuizes);
 </script>
 <template>
@@ -59,7 +83,8 @@ onMounted(fetchQuizes);
   </div>
   <div v-else>        
       <button @click="createQuiz = true"> Create quiz</button>
-      <QuizGrid :quizes="quizes" @selectQuiz="currentQuiz = $event"/>
+      <button @click="toggleDeleteMode">Delete quiz</button>
+      <QuizGrid :quizes="quizes" @selectQuiz="selectQuiz"/>
   </div>
   <div v-if="currentQuiz">
       <EditQuiz :quiz="currentQuiz" @submit="handleQuizSubmit"/>
