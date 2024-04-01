@@ -80,7 +80,8 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         userService.registerNewUser(userService.toEntity(user));
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        String jwt = jwtUtil.generateToken(user.getUsername());
+        return new ResponseEntity<>(jwt, HttpStatus.CREATED);
     }
 
     @Operation(
