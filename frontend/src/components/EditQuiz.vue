@@ -6,9 +6,9 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['submit']);
-
+const quiz = ref(props.quiz);
 const submit = () => {
-  emit('submit', quiz);
+  emit('submit', quiz.value);
 };
 
 </script>
