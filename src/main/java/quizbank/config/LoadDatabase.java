@@ -13,6 +13,7 @@ import quizbank.repository.QuizRepository;
 import quizbank.repository.UserRepository;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 @Configuration
@@ -36,6 +37,9 @@ public class LoadDatabase {
                     new Question(quiz1, "Where is Sondre?", "Hemsedal", QuestionType.FILL_IN_THE_BLANKS),
                     new Question(quiz1, "What is Jens doing?", "Coding", QuestionType.FILL_IN_THE_BLANKS)
             );
+            questions.get(0).setTags(new HashSet<>(Arrays.asList("johannes", "developer")));
+            questions.get(1).setTags(new HashSet<>(Arrays.asList("sondre", "developer")));
+            questions.get(2).setTags(new HashSet<>(Arrays.asList("jens", "developer")));
             quiz1.setQuestions(questions);
 
             Quiz quiz2 = new Quiz();

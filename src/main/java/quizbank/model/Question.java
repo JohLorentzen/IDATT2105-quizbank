@@ -1,16 +1,11 @@
 package quizbank.model;
 
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import quizbank.enums.QuestionType;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Question {
@@ -29,6 +24,10 @@ public class Question {
     @ElementCollection
     private List<String> choices; //For multiple-choice and fill-in-the-blanks questions
 
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "question_tags", joinColumns = @JoinColumn(name = "question_id"))
+    @Column(name = "tag")
+    private Set<String> tags = new HashSet<>();
 
     public Question() {
     }
@@ -95,5 +94,13 @@ public class Question {
 
     public void setChoices(List<String> choices) {
         this.choices = choices;
+    }
+
+    public Set<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<String> tags) {
+        this.tags = tags;
     }
 }

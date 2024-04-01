@@ -29,6 +29,7 @@ public class QuestionServiceImpl implements QuestionService {
             question.setQuiz(quiz);
             question.setType(dto.getType());
             question.setChoices(dto.getChoices());
+            question.setTags(dto.getTags());
             return question;
         }).collect(Collectors.toList());
     }
@@ -42,6 +43,7 @@ public class QuestionServiceImpl implements QuestionService {
         questionDTO.setSolution(question.getSolution());
         questionDTO.setType(question.getType());
         questionDTO.setChoices((question.getChoices()));
+        questionDTO.setTags(question.getTags());
         return questionDTO;
     }
 
