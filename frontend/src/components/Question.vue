@@ -13,11 +13,21 @@ const submit = () => {
   emit('submitAnswer', answer.value);
   answer.value = '';
 };
+
+const getImageSrc = (base64Image) => {
+  return base64Image ? `data:image/jpeg;base64,${base64Image}` : '';
+};
 </script>
 
 <template>
   <div class="question-container">
     <p class="problem-statement">{{ question.problem }}</p>
+    
+    <!-- Image Display -->
+    <div v-if="question.image" class="image-container">
+      <img :src="getImageSrc(question.image)" alt="Question Image" />
+    </div>
+
     <div v-if="question.type === 'FILL_IN_THE_BLANKS'" class="answer-input-container">
       <input v-model="answer" type="text" placeholder="Your answer" @keyup.enter="submit" class="text-answer-input">
     </div>
@@ -30,12 +40,24 @@ const submit = () => {
     <button @click="submit" class="submit-button">Submit</button>
   </div>
 </template>
-
-
 <style scoped>
 
 .question-container {
   margin-bottom: 20px;
+  color: #004494;
+}
+
+/* Style for the image container */
+.image-container {
+  text-align: center; /* Center the image */
+  margin-top: 10px; /* Space above the image */
+}
+
+/* Style for the image */
+.image-container img {
+  max-width: 100%; /* Image should not exceed the width of the container */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 10px; /* Optional: adds rounded corners to the image */
 }
 
 .choices-container {
@@ -43,6 +65,7 @@ const submit = () => {
 }
 
 .choice-label {
+  color: #004494 ;
   display: block;
   margin-bottom: 5px;
   cursor: pointer;
@@ -76,3 +99,4 @@ input[type="text"] {
 }
 
 </style>
+
