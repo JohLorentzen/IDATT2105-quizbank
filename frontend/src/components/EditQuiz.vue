@@ -1,16 +1,52 @@
 <script setup>
-import { ref } from 'vue';
+import { ref } from "vue";
 
 const props = defineProps({
-  quiz: Object
+  quiz: Object,
 });
 
-const emit = defineEmits(['submit']);
+const currentQuestionIndex = ref(0);
+const emit = defineEmits(["submit"]);
 const quiz = ref(props.quiz);
+
 const submit = () => {
-  emit('submit', quiz.value);
+  emit("submit", quiz.value);
 };
 
+const addAlternative = () => {
+  if (newAlternative.value.trim()) {
+    quiz.questions[currentQuestionIndex.value].choices.push(newAlternative.value);
+    newAlternative.value = '';
+  }
+};
+
+const removeAlternative = (index) => {
+  quiz.questions[currentQuestionIndex.value].choices.splice(index, 1);
+};
+
+const handleFileChange = (event, question) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = () => {
+    question.image = reader.result.split(",")[1];
+  };
+};
+const removeImage = (question) => {
+  question.image = null;
+};
+
+const goToNextQuestion = () => {
+
+    currentQuestionIndex.value++;
+};
+
+const goToPreviousQuestion = () => {
+
+    currentQuestionIndex.value--;
+};
 </script>
 <template>
   <div>
@@ -25,23 +61,139 @@ const submit = () => {
       <option value="MEDIUM">Medium</option>
       <option value="HARD">Hard</option>
     </select>
+    <div v-if="quiz.questions.length > 0">
+      <div v-if="quiz.questions[currentQuestionIndex]">
+        <h3>{{ quiz.questions[currentQuestionIndex].problem }}</h3>
+        <input
+          type="text"
+          v-model="quiz.questions[currentQuestionIndex].problem"
+          placeholder="New question"
+        />
+        <p>{{ quiz.questions[currentQuestionIndex].solution }}</p>
+        <input
+          type="text"
+          v-model="quiz.questions[currentQuestionIndex].solution"
+          placeholder="New solution"
+        />
+        <p>{{ quiz.questions[currentQuestionIndex].type }}</p>
+        <select v-model="quiz.questions[currentQuestionIndex].type">
+          <option value="FILL_IN_THE_BLANKS">Fill in the blanks</option>
+          <option value="MULTIPLE_CHOICE">Multiple choice</option>
+        </select>
+        <!-- Multiple choice alternatives -->
+        <div v-if="quiz.questions[currentQuestionIndex].type === 'MULTIPLE_CHOICE'">
+          <ul>
+            <li v-for="(choice, index) in quiz.questions[currentQuestionIndex].choices" :key="index">
+              {{ choice }}
+              <button @click="removeAlternative(index)">Remove</button>
+            </li>
+          </ul>
+          <input type="text" v-model="newAlternative" placeholder="New alternative">
+          <button @click="addAlternative">Add Alternative</button>
+        </div>
+        <!-- Image handling -->
+        <div v-if="quiz.questions[currentQuestionIndex].image">
+          <img
+            :src="`data:image/jpeg;base64,${quiz.questions[currentQuestionIndex].image}`"
+            alt="Question Image"
+          />
+          <button @click="removeImage(quiz.questions[currentQuestionIndex])">
+            Remove Image
+          </button>
+        </div>
+        <div v-else>
+          <input
+            type="file"
+            @change="
+              (event) =>
+                handleFileChange(event, quiz.questions[currentQuestionIndex])
+            "
+          />
+        </div>
 
-    <div v-for="question in quiz.questions" :key="question.questionId">
-      <h3>{{ question.problem }}</h3>
-      <input type="text" v-model="question.problem" placeholder="New question" />
-      <p>{{ question.solution }}</p>
-      <input type="text" v-model="question.solution" placeholder="New solution" />
-      <p>{{ question.type }}</p>
-      <select v-model="question.type" >
-        <option value="FILL_IN_THE_BLANKS">Fill in the blanks</option>
-        <option value="MULTIPLE_CHOICE">Multiple choice</option>
-      </select>
-      <ul>
-        <li v-for="choice in question.choices" :key="choice">{{ choice }}</li>
-      </ul>
+        <button @click="goToPreviousQuestion">Previous</button>
+        <button @click="goToNextQuestion">Next</button>
+      </div>
     </div>
 
     <button @click="submit">Submit</button>
-    
   </div>
 </template>
+<style scoped>
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+input, select, button {
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #cacaca;
+}
+
+button {
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.custum-file-upload {
+  height: 200px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #cacaca;
+  background-color: rgba(255, 255, 255, 1);
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0px 48px 35px -48px rgba(0,0,0,0.1);
+}
+
+.custum-file-upload .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custum-file-upload .icon svg {
+  height: 80px;
+  fill: rgba(75, 85, 99, 1);
+}
+
+.custum-file-upload .text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custum-file-upload .text span {
+  font-weight: 400;
+  color: rgba(75, 85, 99, 1);
+}
+
+.custum-file-upload input[type="file"] {
+  display: none;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin: 0.5rem 0;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+</style>
