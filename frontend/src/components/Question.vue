@@ -9,8 +9,8 @@ const emit = defineEmits(['submitAnswer']);
 
 const answer = ref('');
 
-const submit = () => {
-  emit('submitAnswer', answer.value);
+const submit = (submittedAnswer = answer.value) => {
+  emit('submitAnswer', submittedAnswer);
   answer.value = '';
 };
 
@@ -30,14 +30,19 @@ const getImageSrc = (base64Image) => {
 
     <div v-if="question.type === 'FILL_IN_THE_BLANKS'" class="answer-input-container">
       <input v-model="answer" type="text" placeholder="Your answer" @keyup.enter="submit" class="text-answer-input">
+      <button @click="submit" class="submit-button">Submit</button>
+    </div>
+    <div v-else-if="question.type === 'TRUE_FALSE'">
+      <button @click="submit('TRUE')" class="true-button">True</button>
+      <button @click="submit('FALSE')" class="false-button">False</button>
     </div>
     <div v-else-if="question.type === 'MULTIPLE_CHOICE'" class="choices-container">
       <div v-for="choice in question.choices" :key="choice" class="choice-option">
         <input type="radio" :value="choice" v-model="answer" :id="choice" class="radio-input">
         <label :for="choice" class="choice-label">{{ choice }}</label>
       </div>
+      <button @click="submit" class="submit-button">Submit</button>
     </div>
-    <button @click="submit" class="submit-button">Submit</button>
   </div>
 </template>
 <style scoped>

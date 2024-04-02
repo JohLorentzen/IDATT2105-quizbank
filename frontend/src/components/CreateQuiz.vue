@@ -73,6 +73,14 @@ const buttonLabel = computed(() =>
 const changeView = () => {
   quizView.value = !quizView.value;
 };
+
+watch(() => question.value.type, (newType) => {
+  if (newType === 'TRUE_FALSE') {
+    
+    question.value.solution = 'TRUE'; // or 'FALSE', depending on your preference
+  }
+});
+
 const saveQuestion = (event) => {
   event.preventDefault();
   if (!isQuestionValid.value) {
@@ -138,6 +146,7 @@ const addAlternative = (alternative) => {
       <select v-model="question.type">
         <option value="MULTIPLE_CHOICE">Multiple Choice</option>
         <option value="FILL_IN_THE_BLANKS">Fill in the blank</option>
+        <option value="TRUE_FALSE">True or False</option>
       </select>
       <div v-if="question.type === 'MULTIPLE_CHOICE'">
         <label for="alternativeInput">Add alternatives</label>
@@ -152,6 +161,12 @@ const addAlternative = (alternative) => {
             {{ answer }}
           </li>
         </ul>
+      </div>
+      <div v-else-if="question.type === 'TRUE_FALSE'">
+        <label for="trueOption">True</label>
+        <input type="radio" id="trueOption" value="TRUE" v-model="question.solution">
+        <label for="falseOption">False</label>
+        <input type="radio" id="falseOption" value="FALSE" v-model="question.solution">
       </div>
       <button @click="saveQuestion" :disabled="!isQuestionValid">Save question</button>
     </form>
