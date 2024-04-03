@@ -51,6 +51,7 @@ public class UserController {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             final UserDTO userDetails = userService.findUserByUsername(user.getUsername());
             if (userDetails == null) {
+                System.out.println("Hello biiii");
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
             final String jwt = jwtUtil.generateToken(userDetails.getUsername());
@@ -106,8 +107,8 @@ public class UserController {
         @ApiResponse(responseCode = "403", description = "Authentication failed"),
         @ApiResponse(responseCode = "409", description = "Username from payload is already taken"),
     })
-    @PutMapping("/profile")
-    public ResponseEntity<HttpStatus> updateUserProfile(@RequestBody UserDTO user, Authentication authentication) {
+    @PutMapping(path = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpStatus> updateUserProfile(Authentication authentication, @RequestBody UserDTO user) {
        if (authentication == null) {
            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
        }

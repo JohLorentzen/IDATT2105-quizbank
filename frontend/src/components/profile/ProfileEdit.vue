@@ -2,6 +2,8 @@
 import ProfileNavBar from "@/components/profile/ProfileNavBar.vue";
 import {useUserStore} from "@/stores/user.js";
 import {computed, ref} from "vue";
+import endpoints from '@/endpoints.json'
+import axios from 'axios';
 
 const userStore = useUserStore();
 const username = ref(userStore.username);
@@ -19,8 +21,38 @@ const invalidFields = computed(() => {
 });
 
 function saveChanges() {
-  userStore.username = username.value;
   console.log("Saved changes...");
+
+  const url = `${endpoints.BASE_URL}${endpoints.UPDATE_USER_PROFILE}`
+  const newUserInfo = {
+    "username": username.value,
+    "password": password.value,
+  }
+  const config = {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+    validateStatus: function (status) {
+      return status >= 200 && status < 300 || status === 409;
+    }
+  };
+
+  axios.put(url, newUserInfo, config).then(response => {
+    console.log("Got a response..")
+    if (response.status === 204) {
+      userStore.setUsername(username.value);
+      // show feedback that user was updated successfully
+      console.log("User updated successfully")
+    } else if (response.status === 403) {
+      // show feedback that authentication failed
+      console.log("Authentication failed")
+    } else if (response.status === 409) {
+      // show feedback that username exists and cannot be overwritten
+      console.log("Cannot update to that username because it already exists..")
+    }
+  }).catch(error => {
+    console.error('Registration failed:', error);
+  });
 }
 </script>
 

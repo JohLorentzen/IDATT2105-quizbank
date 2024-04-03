@@ -69,7 +69,7 @@ public class UserService implements UserDetailsService {
         User currentUser = currentUserWrapped.get();
 
         if (!newUserInfo.getPassword().isEmpty()) {
-            currentUser.setPassword(newUserInfo.getPassword());
+            currentUser.setPassword(passwordEncoder.encode(newUserInfo.getPassword()));
         }
 
         if (userSearch.isEmpty()) { // username available
