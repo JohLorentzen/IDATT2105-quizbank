@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { useUserStore } from "@/stores/user";
 
 const userStore = useUserStore();
@@ -7,7 +7,7 @@ const userStore = useUserStore();
 const quiz = ref({                                          
   quizId: null,
   quizName: "",
-  createdByUserId: 1,
+  createdByUserId: null,
   difficultyLevel: "",
   category: "",
   questions: [],
@@ -124,7 +124,15 @@ const addAlternative = (alternative) => {
         <option value="HARD">Hard</option>
       </select>
       <label for="quizCategory">Quiz Category</label>
-      <input type="text" id="quizCategory" v-model="quiz.category" />
+      <select id="quizCategory" v-model="quiz.category">
+        <option value="GEOGRAPHY">Geography</option>
+        <option value="SCIENCE">Science</option>
+        <option value="HISTORY">History</option>
+        <option value="ENTERTAINMENT">Entertainment</option>
+        <option value="SPORTS">Sports</option>
+        <option value="GENERAL_KNOWLEDGE">General Knowledge</option>
+        <option value="TECHNOLOGY">Technology</option>
+      </select>
     </form>
   </div>
   <div v-else>
