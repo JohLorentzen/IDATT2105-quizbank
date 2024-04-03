@@ -23,7 +23,10 @@ const submitAnswer = (submittedAnswer) => {
   } else if (currentQuestion.type === 'MULTIPLE_CHOICE') {
     isCorrect = submittedAnswer === currentQuestion.solution;
   }
-
+  else if (currentQuestion.type === 'TRUE_FALSE') {
+    isCorrect = submittedAnswer === currentQuestion.solution;
+  }
+  
   if (isCorrect) {
     correctAnswersCount.value++;
   }
