@@ -6,6 +6,7 @@ import Quiz from '@/components/Quiz.vue';
 
 import QuizGrid from '@/components/QuizGrid.vue';
 import QuizFilter from '@/components/QuizFilter.vue';
+import endpoints from "@/endpoints.json";
 
 
 const currentQuiz = ref(null);
@@ -13,15 +14,17 @@ const quizes = ref([]);
 const filteredQuizes = ref([])
 const router = useRouter();
 
-const fetchQuizes = () => {
-    axios.get('http://localhost:8080/rest/quiz', {
+function fetchQuizes() {
+  const url = `${endpoints.BASE_URL}${endpoints.GET_ALL_QUIZZES}`
+
+    axios.get(url, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     }).then(response => {
       quizes.value = response.data;
       filteredQuizes.value = response.data;
-    }, error => {
+    }).catch(error => {
       if (error.response && [401, 404].includes(error.response.status)) {
         router.push('/login')
       } else {

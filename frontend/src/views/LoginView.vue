@@ -1,40 +1,33 @@
 <script setup> 
 import Login from '../components/Login.vue';
 import ForgotPassword from '../components/ForgotPassword.vue';
-import NewUser from '../components/NewUser.vue';
 
 import { ref } from 'vue';
 
 const showLogin = ref(true);
 const showForgotPassword = ref(false);
-const showNewUser = ref(false);
 
-const newUser = () => {
-    showLogin.value = false;
-    showForgotPassword.value = false;
-    showNewUser.value = true;
-};
+function toLogin() {
+  showForgotPassword.value = false;
+  showLogin.value = true;
+}
 
-const forgotPassword = () => {
-    showLogin.value = false;
-    showForgotPassword.value = true;
-    showNewUser.value = false;
-};
-
+function toForgotPassword() {
+  showLogin.value = true;
+  showForgotPassword.value = true;
+}
 </script>
-<template>   
-    <h1>Welcome in</h1>
-    <div v-if="showLogin" >
-        <Login />
-    </div>
-    <div v-if="showForgotPassword">
-        <ForgotPassword />
-    </div>
-    <div v-if="showNewUser">
-        <NewUser />
-    </div>   
-    <div>
-        <button @click="newUser">New user?</button>
-        <button @click="forgotPassword">Forgot your password?</button>
-    </div>
+
+<template>
+  <main>
+    <Login v-if="showLogin" @show-forgot-password="toForgotPassword"/>
+    <ForgotPassword v-if="showForgotPassword"  />
+  </main>
 </template>
+
+<style scoped>
+main {
+  margin-top: 100px;
+  padding: 0;
+}
+</style>
