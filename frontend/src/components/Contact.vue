@@ -1,28 +1,32 @@
 <script setup>
-    import { ref } from 'vue'
-    const title = ref('Contact us')
+import { ref, computed } from 'vue'
 
-    const email = ref('')
-    const message = ref('')
+const title = ref('Contact us')
+const email = ref('')
+const message = ref('')
 
-    const submit = () => {
-        console.log(email.value, message.value)
-    }
+const isValidEmail = (email) => {
+    const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    return regex.test(email);
+}
 
-    const disableSubmit = () => {
-        if (email.value.trim === '' || !message.value.trim === '') {
-            return true
-        }
-    }
+const disableSubmit = computed(() => {
+    return !isValidEmail(email.value) || message.value.trim() === '';
+});
+
+const submit = () => {
+    console.log(email.value, message.value);
+}
 </script>
+
 <template>
-    <h1>{{ title.value }}</h1>
+    <h1>{{ title }}</h1>
     <form class="form">
         <div class="title">Contact us</div>
-        <input type="text" placeholder="Your email" class="input">
-        <textarea placeholder="Your message"></textarea>
-     
-        <button :disableSubmit="disableSubmit">Submit</button>
+        <input type="text" v-model="email" placeholder="Your email" class="input">
+        <textarea v-model="message" placeholder="Your message"></textarea>
+        
+        <button :disabled="disableSubmit">Submit</button>
     </form>
 </template>
 <style scoped>

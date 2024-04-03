@@ -13,7 +13,7 @@
 </script>
 <template>
     <div v-if="!currentQuiz" class="quiz-grid">
-      <div v-for="quiz in quizes" :key="quiz.quizId">
+      <div v-for="quiz in quizes.slice(0, 10)" :key="quiz.quizId">
         <button @click="playQuiz(quiz)">
           <div>
             <h2>{{ quiz.quizName }}</h2>
