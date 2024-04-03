@@ -12,14 +12,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import quizbank.dto.UserDTO;
-import quizbank.model.User;
 import quizbank.service.UserService;
 import org.springframework.security.core.Authentication;
 import quizbank.util.JwtUtil;
@@ -102,4 +96,21 @@ public class UserController {
         return ResponseEntity.ok(userDTO);
     }
 
+
+    @Operation(
+        summary = "Updates a users username and/or password",
+        description = "Tries to update the users info to match the info from the payload"
+    )
+    @ApiResponses( value = {
+        @ApiResponse(responseCode = "204", description = "User is updated"),
+        @ApiResponse(responseCode = "403", description = "Authentication failed"),
+        @ApiResponse(responseCode = "409", description = "Username from payload is already taken"),
+    })
+    @PutMapping("/profile")
+    public ResponseEntity<HttpStatus> updateUserProfile(@RequestBody UserDTO user, Authentication authentication) {
+       if (authentication == null) {
+           return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+       }
+       return new ResponseEntity<>(userService.updateUser(user, authentication.getName()));
+    }
 }
