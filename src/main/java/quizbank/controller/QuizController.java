@@ -12,7 +12,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import quizbank.dto.QuizDTO;
 import quizbank.enums.Category;
+import quizbank.enums.Role;
+import quizbank.model.AuditLogEntry;
 import quizbank.model.Quiz;
+import quizbank.service.AuditLogService;
 import quizbank.service.QuizService;
 import quizbank.service.UserService;
 
@@ -32,6 +35,8 @@ public class QuizController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private AuditLogService auditLogService;
 
     @Operation(
             summary = "Get all quizzes",
@@ -49,7 +54,7 @@ public class QuizController {
         description = "Creates or updates a quizDTO object from the provided payload"
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Updated quiz successfully"),
+            @ApiResponse(responseCode = "202", description = "Updated quiz successfully"),
             @ApiResponse(responseCode = "201", description = "Created a new quiz successfully")
     })
     @PostMapping("/quiz")
@@ -59,9 +64,11 @@ public class QuizController {
             quiz.setCreatedByUserId(userService.findUserByUsername(authentication.getName()).getId());
         }
         QuizDTO savedQuiz = quizService.createOrUpdateQuiz(quiz);
-        if (savedQuiz.getQuizId() != null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if (quiz.getQuizId() != null) {
+            auditLogService.logAction(savedQuiz.getQuizId(), "Quiz updated", authentication.getName());
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
         } else {
+            auditLogService.logAction(savedQuiz.getQuizId(), "Quiz created", authentication.getName());
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
     }
@@ -72,8 +79,9 @@ public class QuizController {
     )
     @ApiResponse(responseCode = "204", description = "Deleted the quiz successfully")
     @DeleteMapping("/quiz/{quizId}")
-    public ResponseEntity<?> deleteQuiz(@PathVariable Long quizId) {
+    public ResponseEntity<?> deleteQuiz(@PathVariable Long quizId, Authentication authentication) {
         quizService.deleteQuiz(quizId);
+        auditLogService.logAction(quizId, "Quiz deleted", authentication.getName());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -97,7 +105,6 @@ public class QuizController {
         List<Quiz> quizzesCreatedByUserId = quizService.getQuizzesCreatedByUserId(userId);
         List<QuizDTO> list = quizzesCreatedByUserId.stream().map(quiz -> quizService.toDto(quiz)).toList();
         return new ResponseEntity<>(list, HttpStatus.OK);
-
     }
 
     @Operation(
@@ -109,5 +116,61 @@ public class QuizController {
     public ResponseEntity<List<String>> getAllCategories() {
         List<String> categories = Stream.of(Category.values()).map(Category::name).toList();
         return new ResponseEntity<>(categories, HttpStatus.OK);
+    }
+
+    @Operation(
+        summary = "Get audit log for a quiz",
+        description = "Provides a list of all audit log entries for a quiz with the given quiz id"
+    )
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved audit log for quiz")
+    @GetMapping("/quiz/{quizId}/audit-log")
+    public ResponseEntity<List<AuditLogEntry>> getAuditLogForQuiz(@PathVariable Long quizId) {
+        List<AuditLogEntry> auditLogs = auditLogService.findByQuizId(quizId);
+        return ResponseEntity.ok(auditLogs);
+    }
+
+    @Operation(
+        summary = "Get all quizzes created by, or shared with, a user",
+        description = "Provides a list of all quizDTO objects that are shared with the user with authenticated user"
+    )
+    @GetMapping("/quiz/my-quizzes")
+    public ResponseEntity<List<QuizDTO>> getMyQuizzes(Authentication authentication) {
+        Long userId = userService.findUserByUsername(authentication.getName()).getId();
+        List<QuizDTO> quizzes = quizService.getEditableQuizzesForUser(userId);
+        return ResponseEntity.ok(quizzes);
+    }
+
+    @Operation(
+        summary = "Share a quiz with a user",
+        description = "Shares a quiz with a user by providing the quiz id, user id and role"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Quiz shared successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad request")
+    })
+    @PostMapping("/quiz/{quizId}/share")
+    public ResponseEntity<?> shareQuiz(@PathVariable Long quizId,
+                                       @RequestParam Long userId,
+                                       @RequestParam String role,
+                                       Authentication authentication) {
+        try {
+            if (userService.findById(userId).isEmpty() || quizService.getQuizById(quizId) == null) {
+                return ResponseEntity.badRequest().body("User or quiz not found");
+            }
+
+            if (isInvalidSharing(quizId, role, authentication)) {
+                return ResponseEntity.badRequest().body("Only the owner of the quiz can share with write permission");
+            }
+
+            quizService.shareQuiz(quizId, userId, role.toUpperCase(), authentication.getName());
+            return ResponseEntity.ok().body("Quiz shared successfully with user ID: " + userId);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    private boolean isInvalidSharing(Long quizId, String role, Authentication authentication) {
+        return role.equalsIgnoreCase(Role.EDITOR.name()) && !quizService.getQuizById(quizId).getCreatedByUserId()
+                .equals(userService.findUserByUsername(authentication.getName()).getId());
     }
 }
