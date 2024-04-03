@@ -6,6 +6,8 @@ import quizbank.model.Quiz;
 import java.util.List;
 
 public interface QuizService {
+    void shareQuiz(Long quizId, Long userId, String role, String sharedBy);
+
     QuizDTO toDto(Quiz quiz);
 
     Quiz toEntity(QuizDTO quizDTO);
@@ -19,4 +21,7 @@ public interface QuizService {
     void deleteQuiz(Long quizId);
 
     QuizDTO getQuizById(Long quizId);
+
+    List<QuizDTO> getEditableQuizzesForUser(Long userId);
+
 }
