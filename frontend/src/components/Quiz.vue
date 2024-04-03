@@ -15,9 +15,10 @@ const props = defineProps({
 const incorrectAnswersCount = computed(() => answers.value.length - correctAnswersCount.value);
 
 const submitAnswer = (submittedAnswer) => {
+  console.log(submittedAnswer);
   const currentQuestion = props.selectedQuiz.questions[currentQuestionIndex.value];
   let isCorrect = false;
-
+  console.log(currentQuestion);
   if (currentQuestion.type === 'FILL_IN_THE_BLANKS') {
     isCorrect = submittedAnswer.trim().toLowerCase() === currentQuestion.solution.trim().toLowerCase();
   } else if (currentQuestion.type === 'MULTIPLE_CHOICE') {
