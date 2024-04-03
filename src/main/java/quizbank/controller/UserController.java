@@ -51,7 +51,6 @@ public class UserController {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             final UserDTO userDetails = userService.findUserByUsername(user.getUsername());
             if (userDetails == null) {
-                System.out.println("Hello biiii");
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
             final String jwt = jwtUtil.generateToken(userDetails.getUsername());
