@@ -12,8 +12,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import quizbank.enums.Category;
 import quizbank.enums.DifficultyLevel;
+import quizbank.enums.Role;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Quiz {
@@ -35,8 +38,18 @@ public class Quiz {
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
     private List<Question> questions;
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
+    private Set<QuizUserRoles> userRoles = new HashSet<>();
 
     public Quiz() {
+    }
+
+    public void addUserWithRole(User user, Role role) {
+        QuizUserRoles quizUserRoles = new QuizUserRoles();
+        quizUserRoles.setQuiz(this);
+        quizUserRoles.setUser(user);
+        quizUserRoles.setRole(role);
+        this.userRoles.add(quizUserRoles);
     }
 
 
@@ -87,4 +100,9 @@ public class Quiz {
     public void setDifficultyLevel(DifficultyLevel difficultyLevel) {
         this.difficultyLevel = difficultyLevel;
     }
+
+    public Set<QuizUserRoles> getUserRoles() {
+        return userRoles;
+    }
+
 }
