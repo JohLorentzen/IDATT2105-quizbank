@@ -1,7 +1,7 @@
 <script setup>
 import axios from 'axios';
 import { useUserStore } from '@/stores/user.js';
-import { ref } from 'vue';
+import {computed, ref, watch} from 'vue';
 import { useRouter } from 'vue-router';
 import endpoints from '@/endpoints.json'
 
@@ -9,10 +9,70 @@ const userStore = useUserStore();
 const router = useRouter();
 const username = ref('');
 const password = ref('');
+const createNewUser = ref(false);
+const usernameExists = ref(false);
 
 const emit = defineEmits(['showNewUser', 'showForgotPassword'])
 
-const login = async () => {
+const currentEvent = computed(() => {
+  if (createNewUser.value) {
+    return "Create User";
+  }
+  return "Login";
+})
+
+const usernameTaken = computed(() => {
+  if (usernameExists.value) {
+    return {"red-underline": true};
+  }
+})
+
+watch(username, () => {
+  usernameExists.value = false;
+})
+
+
+function toggleCreateNewUser() {
+  createNewUser.value = !createNewUser.value;
+}
+
+function handleLoginOrCreateUser() {
+  if (createNewUser.value) {
+    newUser();
+  } else {
+    login();
+  }
+}
+
+function newUser() {
+  const url = `${endpoints.BASE_URL}${endpoints.CREATE_USER}`
+  const userData = {
+    username: username.value,
+    password: password.value
+  }
+  const acceptedStatusCodes = {
+    validateStatus: function(status) {
+      return status >= 200 && status < 300 || 409;
+    }
+  }
+
+  axios.post(url, userData, acceptedStatusCodes).then(response => {
+    if (response.status === 201) {
+      localStorage.setItem('token', response.data);
+      userStore.setUsername(username.value);
+      router.push('/quiz');
+    } else if (response.status === 409) {
+      // TODO: add feedback to UI
+      usernameExists.value = true;
+      console.log("Failed to create a user because username already exists")
+    }
+  }).catch(error => {
+    console.error('Registration failed:', error);
+  });
+}
+
+
+function login() {
   const url = `${endpoints.BASE_URL}${endpoints.LOGIN}`
   const userData = {
     username: username.value,
@@ -41,20 +101,22 @@ const login = async () => {
 </script>
 
 <template>
-  <form @submit.prevent="login">
-    <h1>Login</h1>
+  <form @submit.prevent="handleLoginOrCreateUser">
+    <h1>{{ currentEvent }}</h1>
     <div class="input-container">
       <label for="username">Username</label>
-      <input type="text" id="username" v-model="username" autocomplete="off" placeholder="Type your username"/>
+      <input type="text" id="username" v-model="username" autocomplete="off" placeholder="Type your username" :class="usernameTaken"/>
+      <p v-if="usernameExists" class="red">Username already exists</p>
     </div>
     <div class="input-container">
       <label for="password">Password</label>
       <input type="password" id="password" v-model="password" placeholder="Type your password" />
-      <a @click="emit('showForgotPassword')">Forgot password?</a>
+      <a v-if="!createNewUser" @click="emit('showForgotPassword')">Forgot password?</a>
     </div>
-    <button class="login-btn" type="submit">LOGIN</button>
+    <button class="login-btn" type="submit">{{ currentEvent }}</button>
     <div class="create-user-container">
-      <p>New here? <a @click="emit('showNewUser')">Create an account</a></p>
+      <p v-if="!createNewUser">New here? <a @click="toggleCreateNewUser">Create an account</a></p>
+      <p v-else>Already have an account? <a @click="toggleCreateNewUser">Go to login</a></p>
     </div>
   </form>
 </template>
@@ -113,9 +175,27 @@ a:hover {
   border-bottom: 2px solid rosybrown;
 }
 
+.red {
+  color: red;
+}
+
+.input-container .red-underline {
+  border-bottom: 2px solid red;
+}
+
+.input-container .red-underline:focus {
+  border-bottom: 2px solid red;
+}
+
 .input-container a {
   margin: 0.4em 0 0;
   align-self: end;
+  font-size: 0.7rem;
+}
+
+.input-container p {
+  margin: 0.4em 0 0;
+  align-self: start;
   font-size: 0.7rem;
 }
 

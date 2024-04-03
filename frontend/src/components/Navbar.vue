@@ -1,13 +1,25 @@
 <script setup>
-  import { RouterView, RouterLink } from 'vue-router'
+import {RouterView, RouterLink, useRouter} from 'vue-router'
   import { useUserStore } from '@/stores/user.js'
+  import {computed} from "vue";
 
   const userStore = useUserStore();
+  const router = useRouter();
+
+  const loggedInStatus = computed(() => {
+    if (userStore.username) {
+      return "Logout";
+    }
+    return "Login";
+  })
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    userStore.logout();
+    if (userStore.username) {
+      localStorage.removeItem('token');
+      userStore.logout();
+    }
   }
+
 </script>
 <template>
     <div class="navbar">
@@ -18,10 +30,7 @@
           <RouterLink to="/createEdit">Your quizes</RouterLink>
       </nav>
       <nav class="login">
-
-            <RouterLink to="/" @click="handleLogout">Logout</RouterLink>
-            <RouterLink to="/login">Login</RouterLink>
-          
+            <RouterLink to="/login" @click="handleLogout">{{ loggedInStatus }}</RouterLink>
       </nav>
     </div>
 </template>
