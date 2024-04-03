@@ -14,7 +14,7 @@ const updateStatus = ref('')
 const invalidFields = computed(() => {
   if (username.value.trim() === '') {
     return true;
-  } else if (username.value === userStore.username) {
+  } else if (username.value === userStore.username && password.value.length === 0) {
     return true;
   } else if (password.value.length > 0 && password.value.trim() === '') {
     return true;
