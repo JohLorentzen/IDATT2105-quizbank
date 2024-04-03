@@ -21,6 +21,7 @@ const emit = defineEmits(['showStats', 'showEditProfile'])
   padding: 0;
   list-style: none;
   display: flex;
+  justify-content: center;
 }
 
 a {

@@ -8,6 +8,8 @@ import axios from 'axios';
 const userStore = useUserStore();
 const username = ref(userStore.username);
 const password = ref('');
+const buttonText = ref('Save');
+const updateStatus = ref('')
 
 const invalidFields = computed(() => {
   if (username.value.trim() === '') {
@@ -20,8 +22,30 @@ const invalidFields = computed(() => {
   return false;
 });
 
+const messageColor = computed(() => {
+  return {
+    'successful': updateStatus.value === 'UPDATE_SUCCESSFUL',
+    'unsuccessful': updateStatus.value !== 'UPDATE_SUCCESSFUL'
+  }
+})
+
+const messageToUser = computed(() => {
+  switch (updateStatus.value) {
+    case 'UPDATE_SUCCESSFUL':
+      return 'Account was successfully updated.'
+    case 'AUTHENTICATION_FAILED':
+      return 'Authentication failed.. Please try again.'
+    case 'USERNAME_TAKEN':
+      return 'Username is already taken.. Please try again.'
+    case 'ERROR':
+      return 'Error.. Please try again.'
+    default:
+      return 'Something unexpected happened. Please try again.'
+  }
+})
+
 function saveChanges() {
-  console.log("Saved changes...");
+  buttonText.value = 'Updating..'
 
   const url = `${endpoints.BASE_URL}${endpoints.UPDATE_USER_PROFILE}`
   const newUserInfo = {
@@ -41,25 +65,31 @@ function saveChanges() {
     console.log("Got a response..")
     if (response.status === 204) {
       userStore.setUsername(username.value);
+      updateStatus.value = 'UPDATE_SUCCESSFUL';
       // show feedback that user was updated successfully
-      console.log("User updated successfully")
     } else if (response.status === 403) {
       // show feedback that authentication failed
-      console.log("Authentication failed")
+      updateStatus.value = 'AUTHENTICATION_FAILED';
     } else if (response.status === 409) {
       // show feedback that username exists and cannot be overwritten
-      console.log("Cannot update to that username because it already exists..")
+      updateStatus.value = 'USERNAME_TAKEN';
     }
   }).catch(error => {
-    console.error('Registration failed:', error);
+    updateStatus.value = 'ERROR'
+    console.log(error);
   });
+
+  buttonText.value = 'Save'
 }
 </script>
 
 <template>
   <ProfileNavBar />
-  <h1>Edit Profile</h1>
   <form @submit.prevent="saveChanges">
+    <div class="feedback-container" :class="messageColor" v-if="updateStatus !== ''">
+      <p>{{ messageToUser }}</p>
+    </div>
+    <h1>Edit Profile</h1>
     <div class="input-container">
       <label for="username">Username</label>
       <input type="text" id="username" v-model="username" autocomplete="off" />
@@ -68,14 +98,27 @@ function saveChanges() {
       <label for="password">New password (leave blank to keep old password)</label>
       <input type="password" id="password" v-model="password" />
     </div>
-    <button :disabled="invalidFields" class="submit-btn" type="submit">Save</button>
+    <button :disabled="invalidFields" class="submit-btn" type="submit">{{buttonText}}</button>
   </form>
 </template>
 
 <style scoped>
-h1, form, div, label, input, button {
+h1, form, div, label, input, button, p {
   margin: 0;
   padding: 0;
+}
+
+.feedback-container {
+  padding: 0.8em 1.2em;
+  border-radius: 3px;
+}
+
+.successful {
+  background: #c1ff9b;
+}
+
+.unsuccessful {
+  background: #ffa69e;
 }
 
 .input-container {
