@@ -25,7 +25,6 @@ public class QuizAttemptService {
 
     public void recordQuizAttempt(QuizAttemptDTO attemptDto) {
         QuizAttempt attempt = mapToEntity(attemptDto);
-        attempt.setAttemptTime(LocalDateTime.now());
         quizAttemptRepository.save(attempt);
     }
 
