@@ -11,6 +11,7 @@ const username = ref('');
 const password = ref('');
 const createNewUser = ref(false);
 const usernameExists = ref(false);
+const userNotFound = ref(false);
 
 const emit = defineEmits(['showNewUser', 'showForgotPassword'])
 
@@ -21,18 +22,31 @@ const currentEvent = computed(() => {
   return "Login";
 })
 
-const usernameTaken = computed(() => {
-  if (usernameExists.value) {
+const errorStylingUsername = computed(() => {
+  if (usernameExists.value || userNotFound.value) {
+    return {"red-underline": true};
+  }
+})
+
+const errorStylingPassword = computed(() => {
+  if (userNotFound.value) {
     return {"red-underline": true};
   }
 })
 
 watch(username, () => {
+  userNotFound.value = false;
   usernameExists.value = false;
+})
+
+watch(password, () => {
+  userNotFound.value = false;
 })
 
 
 function toggleCreateNewUser() {
+  userNotFound.value = false;
+  usernameExists.value = false;
   createNewUser.value = !createNewUser.value;
 }
 
@@ -62,9 +76,7 @@ function newUser() {
       userStore.setUsername(username.value);
       router.push('/quiz');
     } else if (response.status === 409) {
-      // TODO: add feedback to UI
       usernameExists.value = true;
-      console.log("Failed to create a user because username already exists")
     }
   }).catch(error => {
     console.error('Registration failed:', error);
@@ -86,34 +98,38 @@ function login() {
 
   axios.post(url, userData, acceptedStatusCodes).then(response => {
     if (response.status === 200) {
-      // display successful login
+      userNotFound.value = false;
       localStorage.setItem('token', response.data);
       userStore.setUsername(username.value);
       router.push('/quiz');
     } else if (response.status === 401) {
-      // display unsuccessful login
-      console.log("User not found...")
+      userNotFound.value = true;
     }
   }).catch(error => {
     console.log("Error: " + error.response.status);
   })
 };
+
+// TODO: remove red underscores once user is typing
 </script>
 
 <template>
   <form @submit.prevent="handleLoginOrCreateUser">
     <h1>{{ currentEvent }}</h1>
+    <div v-if="userNotFound" class="error-container">
+      <p>Sorry, we can't find an account with that username. Please verify that the username and password is correct and try again.</p>
+    </div>
     <div class="input-container">
       <label for="username">Username</label>
-      <input type="text" id="username" v-model="username" autocomplete="off" placeholder="Type your username" :class="usernameTaken"/>
+      <input type="text" id="username" v-model="username" autocomplete="off" placeholder="Type your username" :class="errorStylingUsername"/>
       <p v-if="usernameExists" class="red">Username already exists</p>
     </div>
     <div class="input-container">
       <label for="password">Password</label>
-      <input type="password" id="password" v-model="password" placeholder="Type your password" />
+      <input type="password" id="password" v-model="password" placeholder="Type your password" :class="errorStylingPassword"/>
       <a v-if="!createNewUser" @click="emit('showForgotPassword')">Forgot password?</a>
     </div>
-    <button class="login-btn" type="submit">{{ currentEvent }}</button>
+    <button :disabled="userNotFound || usernameExists" class="login-btn" type="submit">{{ currentEvent }}</button>
     <div class="create-user-container">
       <p v-if="!createNewUser">New here? <a @click="toggleCreateNewUser">Create an account</a></p>
       <p v-else>Already have an account? <a @click="toggleCreateNewUser">Go to login</a></p>
@@ -147,6 +163,20 @@ a:hover {
   cursor: pointer;
   color: #181818;
 }
+
+.error-container {
+  margin: 0;
+  padding: 0.8em;
+  background: #ffa69e;
+  border-radius: 3px;
+}
+
+.error-container p {
+  margin: 0;
+  padding: 0;
+  font-size: 0.7rem;
+}
+
 
 .input-container {
   display: flex;
