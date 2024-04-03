@@ -103,15 +103,22 @@ public class UserController {
         description = "Tries to update the users info to match the info from the payload"
     )
     @ApiResponses( value = {
-        @ApiResponse(responseCode = "204", description = "User is updated"),
+        @ApiResponse(responseCode = "201", description = "User is updated"),
         @ApiResponse(responseCode = "403", description = "Authentication failed"),
         @ApiResponse(responseCode = "409", description = "Username from payload is already taken"),
     })
     @PutMapping(path = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HttpStatus> updateUserProfile(Authentication authentication, @RequestBody UserDTO user) {
+    public ResponseEntity<?> updateUserProfile(Authentication authentication, @RequestBody UserDTO user) {
        if (authentication == null) {
            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
        }
-       return new ResponseEntity<>(userService.updateUser(user, authentication.getName()));
+
+       HttpStatus status = userService.updateUser(user, authentication.getName());
+       if (status != HttpStatus.CREATED) {
+          return new ResponseEntity<>(status);
+       }
+
+       String jwt = jwtUtil.generateToken(user.getUsername());
+       return new ResponseEntity<>(jwt, status);
     }
 }

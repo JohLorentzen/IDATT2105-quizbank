@@ -79,6 +79,6 @@ public class UserService implements UserDetailsService {
         }
 
         userRepository.save(currentUser);
-        return HttpStatus.NO_CONTENT;
+        return HttpStatus.CREATED;
     }
 }

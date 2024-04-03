@@ -63,8 +63,9 @@ function saveChanges() {
 
   axios.put(url, newUserInfo, config).then(response => {
     console.log("Got a response..")
-    if (response.status === 204) {
+    if (response.status === 201) {
       userStore.setUsername(username.value);
+      localStorage.setItem('token', response.data);
       updateStatus.value = 'UPDATE_SUCCESSFUL';
       // show feedback that user was updated successfully
     } else if (response.status === 403) {

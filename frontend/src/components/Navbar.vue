@@ -31,8 +31,7 @@ import {RouterView, RouterLink, useRouter} from 'vue-router'
       </nav>
       <nav class="login">
         <RouterLink to="/login" @click="handleLogout">{{ loggedInStatus }}</RouterLink>
-        <!-- TODO: add v-if that hides when user is not logged in -->
-        <RouterLink to="/profile/stats">My Profile</RouterLink>
+        <RouterLink v-if="userStore.username" to="/profile/stats">My Profile</RouterLink>
       </nav>
     </div>
 </template>
