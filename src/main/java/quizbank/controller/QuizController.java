@@ -8,14 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 import quizbank.dto.QuizDTO;
 import quizbank.enums.Category;
 import quizbank.model.Quiz;
@@ -26,8 +20,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Tag(
-    name = "Quiz Controller",
-    description = "Retrieve, create, update and delete quizzes. Get available quiz categories."
+        name = "Quiz Controller",
+        description = "Retrieve, create, update and delete quizzes. Get available quiz categories."
 )
 @RestController
 @RequestMapping("/rest")
@@ -40,8 +34,8 @@ public class QuizController {
     private UserService userService;
 
     @Operation(
-        summary = "Get all quizzes",
-        description = "Provides a list of all quizDTO objects"
+            summary = "Get all quizzes",
+            description = "Provides a list of all quizDTO objects"
     )
     @ApiResponse(responseCode = "200", description = "Successfully retrieved all quizzes")
     @GetMapping(path = "/quiz", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -54,13 +48,16 @@ public class QuizController {
         summary = "Creates or updates a quiz",
         description = "Creates or updates a quizDTO object from the provided payload"
     )
-    @ApiResponses( value = {
-        @ApiResponse(responseCode = "204", description = "Updated quiz successfully"),
-        @ApiResponse(responseCode = "201", description = "Created a new quiz successfully")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Updated quiz successfully"),
+            @ApiResponse(responseCode = "201", description = "Created a new quiz successfully")
     })
     @PostMapping("/quiz")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> createOrUpdateQuiz(@RequestBody QuizDTO quiz) {
+    public ResponseEntity<?> createOrUpdateQuiz(Authentication authentication, @RequestBody QuizDTO quiz) {
+        if (quiz.getCreatedByUserId() == null) {
+            quiz.setCreatedByUserId(userService.findUserByUsername(authentication.getName()).getId());
+        }
         QuizDTO savedQuiz = quizService.createOrUpdateQuiz(quiz);
         if (savedQuiz.getQuizId() != null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

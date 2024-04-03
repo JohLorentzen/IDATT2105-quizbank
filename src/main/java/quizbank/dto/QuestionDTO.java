@@ -3,6 +3,7 @@ package quizbank.dto;
 import quizbank.enums.QuestionType;
 
 import java.util.List;
+import java.util.Set;
 
 public class QuestionDTO {
     private Long questionId;
@@ -10,6 +11,12 @@ public class QuestionDTO {
     private String solution;
     private QuestionType type;
     private List<String> choices; // Include this for multiple-choice questions
+
+    private Set<String> tags;
+    private byte[] image;
+
+    public QuestionDTO() {
+    }
 
     public Long getQuestionId() {
         return questionId;
@@ -49,5 +56,21 @@ public class QuestionDTO {
 
     public void setChoices(List<String> choices) {
         this.choices = choices;
+    }
+
+    public Set<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<String> tags) {
+        this.tags = tags;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }
