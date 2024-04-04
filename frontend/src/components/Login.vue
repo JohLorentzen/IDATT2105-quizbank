@@ -271,4 +271,10 @@ a:hover {
   color: #181818;
   font-weight: bolder;
 }
+
+@media (min-width: 720px) {
+  .login-btn {
+    font-size: 1rem;
+  }
+}
 </style>
