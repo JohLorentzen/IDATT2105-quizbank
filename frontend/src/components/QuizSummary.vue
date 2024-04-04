@@ -1,8 +1,8 @@
 <script setup>
 
 const props = defineProps({
-  questions: [],
-  answers: [],
+  questions: Array,
+  answers: Array,
 });
 
 const toQuizes = () => {

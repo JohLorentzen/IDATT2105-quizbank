@@ -55,7 +55,9 @@ const restartQuiz = () => {
 };
 
 function postGrade() {
+
   const url = `${endpoints.BASE_URL}${endpoints.POST_ATTEMPT}`;
+
   const quizAttempt = {
     quizId: props.selectedQuiz.quizId,
     totalQuestions: props.selectedQuiz.questions.length,
@@ -63,7 +65,11 @@ function postGrade() {
   };
   console.log(quizAttempt);
   showResults.value = true;
-  axios.post( url, quizAttempt)
+  axios.post( url, {
+    quizId: props.selectedQuiz.quizId,
+    totalQuestions: props.selectedQuiz.questions.length,
+    correctAnswers: correctAnswersCount.value,
+  })
     .then((response) => {
       console.log(response);
     })
