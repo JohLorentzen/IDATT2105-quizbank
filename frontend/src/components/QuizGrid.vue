@@ -1,8 +1,15 @@
 <script setup>
-import { ref } from 'vue';
-const props = defineProps(['quizes']);
+import {computed, ref} from 'vue';
+const props = defineProps(['quizzes']);
 const emit = defineEmits(['selectQuiz']);
 const currentQuiz = ref(null);
+
+const availableQuizzesTitle = computed(() => {
+  if (props.quizzes.length > 0) {
+    return "Available quizzes"
+  }
+  return "No available quizzes"
+});
 
 function playQuiz(quiz) {
     currentQuiz.value = quiz;
@@ -12,17 +19,30 @@ function playQuiz(quiz) {
 
 </script>
 <template>
+  <h1>{{ availableQuizzesTitle }}</h1>
     <div v-if="!currentQuiz" class="quiz-grid">
-      <div class="quiz-card" v-for="quiz in quizes" :key="quiz.quizId" @click="playQuiz(quiz)">
+      <div class="quiz-card" v-for="quiz in quizzes" :key="quiz.quizId" @click="playQuiz(quiz)">
         <h2>{{ quiz.quizName }}</h2>
         <p class="category">{{ quiz.category }}</p>
         <p class="questions">{{ quiz.questions ? `${quiz.questions.length} questions` : 'No questions' }}</p>
       </div>
     </div>
 </template>
-<style>
+
+
+<style scoped>
+h1 {
+  color: var(--text-color-grey);
+  margin-top: 1em;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  font-weight: bolder;
+  grid-column: 2 / -2;
+  padding-left: 1em;
+}
+
 .quiz-grid {
-  margin-top: 2em;
+  margin-top: 1em;
   grid-column: 2 / -2;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -40,21 +60,22 @@ function playQuiz(quiz) {
   border: 1px solid var(--border-very-light-blue);
 }
 
-.quiz-grid button:hover,
-.quiz-grid button:focus {
-  background-color: #e9e9e9;
+.quiz-card:hover,
+.quiz-card:focus {
+  cursor: pointer;
+  background-color: var(--bg-very-light-blue-hover);
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
   transform: translateY(-2px);
 }
 
 .quiz-grid h2 {
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: bold;
 }
 
 .category {
   margin-top: 0.8em;
-  font-size: 0.46rem;
+  font-size: 0.54rem;
   padding: 0.5em 1em;
   border-radius: 1em;
   font-weight: bold;
@@ -64,7 +85,43 @@ function playQuiz(quiz) {
 
 p.questions {
   margin-top: auto;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: var(--text-color-grey);
+}
+
+@media (min-width: 720px) {
+  h1 {
+    font-size: 1.1rem;
+  }
+
+  .quiz-grid {
+    grid-auto-rows: 150px;
+  }
+
+  .quiz-grid h2 {
+    font-size: 1.4rem;
+  }
+
+  .category {
+    font-size: 0.7rem;
+  }
+
+  p.questions {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .quiz-grid h2 {
+    font-size: 1.6rem;
+  }
+
+  .category {
+    font-size: 0.8rem;
+  }
+
+  p.questions {
+    font-size: 1.125rem;
+  }
 }
 </style>
