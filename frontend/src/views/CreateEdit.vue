@@ -78,6 +78,7 @@ const deleteQuiz = async (quizId) => {
 onMounted(fetchQuizes);
 </script>
 <template>
+  <h1>Quizes</h1>
   <div v-if="createQuiz"> 
     <CreateQuiz @submitQuiz="handleQuizSubmit"/>
   </div>
