@@ -31,7 +31,8 @@ import {RouterView, RouterLink, useRouter} from 'vue-router'
           <RouterLink to="/quizAttempts">Your progress</RouterLink>
       </nav>
       <nav class="login">
-            <RouterLink to="/login" @click="handleLogout">{{ loggedInStatus }}</RouterLink>
+        <RouterLink to="/login" @click="handleLogout">{{ loggedInStatus }}</RouterLink>
+        <RouterLink v-if="userStore.username" to="/profile/stats">My Profile</RouterLink>
       </nav>
     </div>
 </template>

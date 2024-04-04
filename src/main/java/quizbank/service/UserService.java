@@ -1,6 +1,7 @@
 package quizbank.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,10 +26,11 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
+        Optional<User> wrappedUser = userRepository.findByUsername(username);
+        if (wrappedUser.isEmpty()) {
             return null;
         }
+        User user = wrappedUser.get();
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), new ArrayList<>());
     }
 
@@ -46,10 +48,11 @@ public class UserService implements UserDetailsService {
     }
 
     public UserDTO findUserByUsername(String currentUsername) {
-        User user = userRepository.findByUsername(currentUsername);
-        if (user == null) {
+        Optional<User> wrappedUser = userRepository.findByUsername(currentUsername);
+        if (wrappedUser.isEmpty()) {
             return null;
         }
+        User user = wrappedUser.get();
         UserDTO userDTO = new UserDTO();
         userDTO.setUsername(user.getUsername());
         userDTO.setId(user.getId());
@@ -58,5 +61,24 @@ public class UserService implements UserDetailsService {
 
     public Optional<User> findById(Long createdByUserId) {
         return userRepository.findById(createdByUserId);
+    }
+
+    public HttpStatus updateUser(UserDTO newUserInfo, String oldUsername) {
+        Optional<User> userSearch = userRepository.findByUsername(newUserInfo.getUsername());
+        Optional<User> currentUserWrapped = userRepository.findByUsername(oldUsername);
+        User currentUser = currentUserWrapped.get();
+
+        if (!newUserInfo.getPassword().isEmpty()) {
+            currentUser.setPassword(passwordEncoder.encode(newUserInfo.getPassword()));
+        }
+
+        if (userSearch.isEmpty()) { // username available
+            currentUser.setUsername(newUserInfo.getUsername());
+        } else {
+            return HttpStatus.CONFLICT;
+        }
+
+        userRepository.save(currentUser);
+        return HttpStatus.CREATED;
     }
 }

@@ -1,13 +1,14 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { useUserStore } from "@/stores/user";
+import axios from "axios";
 
 const userStore = useUserStore();
 
 const quiz = ref({                                          
   quizId: null,
   quizName: "",
-  createdByUserId: 1,
+  createdByUserId: null,
   difficultyLevel: "",
   category: "",
   questions: [],
@@ -21,6 +22,19 @@ const question = ref({
   image: null,
 
 });
+const categories = ref([]);
+const fetchCategories = () => {
+    axios.get('http://localhost:8080/rest/quiz/categories', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    }).then(response => {
+      categories.value = response.data;
+    }, error => {
+
+      console.log("This is axios error " + error);
+    })
+};
 const MAX_IMAGE_SIZE = 5000000; // e.g., 5MB
 const VALID_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
 
@@ -109,6 +123,7 @@ const addAlternative = (alternative) => {
   question.value.choices.push(alternative);
   alternativeInput.value = ""; // Refresh the input field
 };
+onMounted(fetchCategories);
 </script>
 <template>
   <button @click="changeView">{{ buttonLabel }}</button>
@@ -124,7 +139,9 @@ const addAlternative = (alternative) => {
         <option value="HARD">Hard</option>
       </select>
       <label for="quizCategory">Quiz Category</label>
-      <input type="text" id="quizCategory" v-model="quiz.category" />
+      <select id="quizCategory" v-model="quiz.category">
+        <option v-for="category in categories" :value="category">{{ category }}</option>
+      </select>
     </form>
   </div>
   <div v-else>

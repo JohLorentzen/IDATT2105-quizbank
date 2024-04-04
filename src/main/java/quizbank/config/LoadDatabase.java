@@ -25,13 +25,12 @@ public class LoadDatabase {
     @Bean
     CommandLineRunner initDatabase(QuizRepository quizRepository, UserRepository userRepository, QuizAttemptRepository quizAttemptRepository) {
         return args -> {
-            User user = userRepository.findByUsername("testuser");
-            if (user == null) {
-                user = new User();
-                user.setUsername("testuser");
-                user.setPassword("testpassword");
-                userRepository.save(user);
-            }
+            User user = userRepository.findByUsername("testuser").orElseGet(() -> {
+                User newUser = new User();
+                newUser.setUsername("testuser");
+                newUser.setPassword("password");
+                return userRepository.save(newUser);
+            });
 
             Quiz quiz1 = new Quiz();
             quiz1.setName("Quizbank project");

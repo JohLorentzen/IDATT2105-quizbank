@@ -15,7 +15,9 @@
     "@vueuse/components": "^10.9.0",
     "@vueuse/core": "^10.9.0",
     "pinia": "^2.1.7",
+    "primeicons": "^7.0.0",
     "vue": "^3.4.21",
+    "vue-awesome": "^4.5.0",
     "vue-router": "^4.3.0",
     "vue3-charts": "^1.1.33"
   },
