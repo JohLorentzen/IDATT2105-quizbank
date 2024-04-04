@@ -28,8 +28,12 @@ import {RouterView, RouterLink, useRouter} from 'vue-router'
           <RouterLink to="/quiz">Play quiz</RouterLink>
           <RouterLink to="/about">About</RouterLink>
           <RouterLink to="/createEdit">Your quizes</RouterLink>
-          <RouterLink class="login" to="/login" @click="handleLogout">{{ loggedInStatus }}</RouterLink>
-        </nav>
+          <RouterLink to="/quizAttempts">Your progress</RouterLink>
+      </nav>
+      <nav class="login">
+        <RouterLink to="/login" @click="handleLogout">{{ loggedInStatus }}</RouterLink>
+        <RouterLink v-if="userStore.username" to="/profile/stats">My Profile</RouterLink>
+      </nav>
     </header>
 </template>
 <style scoped>

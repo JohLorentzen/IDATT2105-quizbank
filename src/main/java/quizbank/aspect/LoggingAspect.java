@@ -26,7 +26,7 @@ public class LoggingAspect {
     String httpMethod = request.getMethod();
     String uri = request.getRequestURI();
 
-    logger.info("API request: " + httpMethod + " " + uri + " with arguments: " + Arrays.toString(joinPoint.getArgs()));
+    logger.info("API request: " + httpMethod + " " + uri);
     long start = System.currentTimeMillis();
 
     Object result = joinPoint.proceed();

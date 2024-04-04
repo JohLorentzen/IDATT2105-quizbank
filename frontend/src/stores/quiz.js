@@ -6,6 +6,7 @@ export const useQuizStore = defineStore('quiz', {
     length: 0,
     currentQuestion: 0,
     correctAnswers: 0,
+    userAnswers: [],
   }),
   getters: {
     getQuestions() {
@@ -23,8 +24,15 @@ export const useQuizStore = defineStore('quiz', {
         return question;
       };
     },
+    getUserAnswers() {
+      return this.userAnswers;
+    },
   },
   actions: {
+    
+    resetUserAnswers() {
+      this.userAnswers = [];
+    }, 
     setQuestions(questions) {
       this.questions = questions;
       console.log(questions.length);

@@ -2,5 +2,8 @@
     "BASE_URL": "http://localhost:8080",
     "LOGIN": "/user/login",
     "CREATE_USER": "/user/register",
-    "GET_ALL_QUIZZES": "/rest/quiz"
+    "GET_ALL_QUIZZES": "/rest/quiz",
+    "POST_ATTEMPT": "/rest/quiz-attempts",
+    "UPDATE_USER_PROFILE": "/user/profile",
+    "GET_QUIZ_ATTEMPTS": "/rest/quiz-attempts"
 }

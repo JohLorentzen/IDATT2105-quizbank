@@ -31,6 +31,26 @@ const router = createRouter({
       path: '/createEdit',
       name: 'createEdit',
       component: () => import('../views/CreateEdit.vue')
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('../views/ProfileView.vue')
+    },
+    {
+      path: '/profile/stats',
+      name: 'profileStats',
+      component: () => import('../components/profile/ProfileStats.vue'),
+    },
+    {
+      path: '/profile/edit',
+      name: 'editProfile',
+      component: () => import('../components/profile/ProfileEdit.vue'),
+    },
+    {
+      path: '/quizAttempts',
+      name: 'quizAttempts',
+      component: () => import('../views/QuizAttempts.vue')
     }
   ],
   linkActiveClass: 'active',
