@@ -8,12 +8,16 @@
   --bg-dark-blue: #06283d;
   --bg-medium-blue: #1363df;
   --bg-light-blue: #47b5ff;
+
+  --border-very-light-blue: #C6DDE6;
+  --bg-very-light-blue-shadow: #d5ecf5;
   --bg-very-light-blue: #dff6ff;
 
   --bg-button-hover: #1d6de9;
   --bg-button-active: #0959d5;
 
-
+  --text-color-light-grey: #676767;
+  --text-color-grey: #474747;
   --text-color: #171717;
   --text-color-white: #f8f9fa;
 }
