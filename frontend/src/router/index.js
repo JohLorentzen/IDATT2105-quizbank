@@ -46,6 +46,11 @@ const router = createRouter({
       path: '/profile/edit',
       name: 'editProfile',
       component: () => import('../components/profile/ProfileEdit.vue'),
+    },
+    {
+      path: '/quizAttempts',
+      name: 'quizAttempts',
+      component: () => import('../views/QuizAttempts.vue')
     }
   ],
   linkActiveClass: 'active'

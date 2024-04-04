@@ -50,6 +50,9 @@ public class QuizAttemptService {
         QuizAttemptDTO dto = new QuizAttemptDTO();
         dto.setId(quizAttempt.getId());
         dto.setQuizId(quizAttempt.getQuiz().getId());
+        dto.setQuizName(quizAttempt.getQuiz().getName());
+        dto.setQuizDifficulty(quizAttempt.getQuiz().getDifficultyLevel());
+        dto.setQuizCategory(quizAttempt.getQuiz().getCategory());
         dto.setUserId(quizAttempt.getUser().getId());
         dto.setAttemptTime(quizAttempt.getAttemptTime());
         dto.setTotalQuestions(quizAttempt.getTotalQuestions());

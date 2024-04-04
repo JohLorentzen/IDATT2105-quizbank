@@ -66,25 +66,34 @@ public class LoadDatabase {
 
             List<QuizAttempt> quizAttempts = getQuizAttempts(user, quiz1);
             quizAttemptRepository.saveAll(quizAttempts);
+            List<QuizAttempt> quizAttempts2 = getQuizAttempts(user, quiz2);
+            quizAttemptRepository.saveAll(quizAttempts2);
         };
     }
 
-    private static List<QuizAttempt> getQuizAttempts(User user, Quiz quiz1) {
+    private static List<QuizAttempt> getQuizAttempts(User user, Quiz quiz) {
         List<QuizAttempt> quizAttempts = new ArrayList<>();
         QuizAttempt quizAttempt = new QuizAttempt();
-        quizAttempt.setQuiz(quiz1);
+        quizAttempt.setQuiz(quiz);
         quizAttempt.setUser(user);
         quizAttempt.setCorrectAnswers(2);
         quizAttempt.setTotalQuestions(3);
-        quizAttempt.setAttemptTime(LocalDateTime.now());
+        quizAttempt.setAttemptTime(LocalDateTime.now().minusHours(quiz.getId()));
         quizAttempts.add(quizAttempt);
         QuizAttempt quizAttempt2 = new QuizAttempt();
-        quizAttempt2.setQuiz(quiz1);
+        quizAttempt2.setQuiz(quiz);
         quizAttempt2.setUser(user);
         quizAttempt2.setCorrectAnswers(1);
         quizAttempt2.setTotalQuestions(3);
-        quizAttempt2.setAttemptTime(LocalDateTime.now().plusHours(1));
+        quizAttempt2.setAttemptTime(LocalDateTime.now().minusHours(1 + quiz.getId()));
         quizAttempts.add(quizAttempt2);
+        QuizAttempt quizAttempt3 = new QuizAttempt();
+        quizAttempt3.setQuiz(quiz);
+        quizAttempt3.setUser(user);
+        quizAttempt3.setCorrectAnswers(3);
+        quizAttempt3.setTotalQuestions(3);
+        quizAttempt3.setAttemptTime(LocalDateTime.now().minusHours(5 + quiz.getId()));
+        quizAttempts.add(quizAttempt3);
         return quizAttempts;
     }
 }

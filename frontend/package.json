@@ -18,7 +18,8 @@
     "primeicons": "^7.0.0",
     "vue": "^3.4.21",
     "vue-awesome": "^4.5.0",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "vue3-charts": "^1.1.33"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",
