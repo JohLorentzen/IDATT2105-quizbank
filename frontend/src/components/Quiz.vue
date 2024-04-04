@@ -1,11 +1,16 @@
 <script setup>
 import { ref, computed } from 'vue';
+import { useQuizStore } from '@/stores/quiz';
 import Question from "@/components/Question.vue";
+import QuizSummary from "@/components/QuizSummary.vue";
+import axios from 'axios';
+import endpoints from '@/endpoints.json';
 
 const currentQuestionIndex = ref(0);
 const answers = ref([]);
 const quizCompleted = ref(false);
 const correctAnswersCount = ref(0);
+const showResults = ref(false);
 const props = defineProps({
   selectedQuiz: Object
     }
@@ -32,7 +37,7 @@ const submitAnswer = (submittedAnswer) => {
     correctAnswersCount.value++;
   }
 
-  answers.value.push({ submittedAnswer, isCorrect });
+  answers.value.push({ submittedAnswer, isCorrect  });
 
   if (currentQuestionIndex.value < props.selectedQuiz.questions.length - 1) {
     currentQuestionIndex.value++;
@@ -45,8 +50,29 @@ const restartQuiz = () => {
   currentQuestionIndex.value = 0;
   answers.value = [];
   quizCompleted.value = false;
+  showResults.value = false;
   correctAnswersCount.value = 0;
 };
+
+function postGrade() {
+  const url = `${endpoints.BASE_URL}${endpoints.POST_ATTEMPT}`;
+  const quizAttempt = {
+    quizId: props.selectedQuiz.quizId,
+    totalQuestions: props.selectedQuiz.questions.length,
+    correctAnswers: correctAnswersCount.value,
+  };
+  console.log(quizAttempt);
+  showResults.value = true;
+  axios.post( url, quizAttempt)
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+
 </script>
 
 <template>
@@ -61,16 +87,14 @@ const restartQuiz = () => {
           class="question-container"
       />
     </div>
-    <div v-else class="quiz-results">
-      <h3>Quiz Results</h3>
-      <p>You answered {{ correctAnswersCount }} questions correctly!</p>
-      <p>You got {{ incorrectAnswersCount }} questions incorrect.</p>
-      <button @click="restartQuiz" class="try-again-button">Try Again</button>
+    <QuizSummary v-else-if="showResults" :questions="selectedQuiz.questions" :answers="answers" />
+    <div v-else>
+      <button @click="restartQuiz" class="restart-quiz-button">Try again</button>
+      <button @click="postGrade" class="check-results-button">Check Results</button>
     </div>
+    
   </div>
 </template>
-
-
 
 <style scoped>
 .quiz-container {
