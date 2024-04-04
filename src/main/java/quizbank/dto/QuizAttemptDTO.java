@@ -1,14 +1,20 @@
 package quizbank.dto;
 
+import quizbank.enums.Category;
+import quizbank.enums.DifficultyLevel;
+
 import java.time.LocalDateTime;
 
 public class QuizAttemptDTO {
     private Long id;
     private Long quizId;
+    private String quizName;
     private Long userId;
     private LocalDateTime attemptTime;
     private int totalQuestions;
     private int correctAnswers;
+    private DifficultyLevel quizDifficulty;
+    private Category quizCategory;
 
     public QuizAttemptDTO() {
     }
@@ -67,5 +73,29 @@ public class QuizAttemptDTO {
             return ((double) correctAnswers / totalQuestions) * 100;
         }
         return 0;
+    }
+
+    public void setQuizName(String quizName) {
+        this.quizName = quizName;
+    }
+
+    public String getQuizName() {
+        return quizName;
+    }
+
+    public void setQuizDifficulty(DifficultyLevel quizDifficulty) {
+        this.quizDifficulty = quizDifficulty;
+    }
+
+    public DifficultyLevel getQuizDifficulty() {
+        return quizDifficulty;
+    }
+
+    public void setQuizCategory(Category quizCategory) {
+        this.quizCategory = quizCategory;
+    }
+
+    public Category getQuizCategory() {
+        return quizCategory;
     }
 }
