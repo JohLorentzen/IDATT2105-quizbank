@@ -11,6 +11,7 @@ import quizbank.repository.UserRepository;
 import quizbank.dto.UserDTO;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 
 @Service
@@ -55,7 +56,7 @@ public class UserService implements UserDetailsService {
         return userDTO;
     }
 
-    public User findUserById(Long createdByUserId) {
-        return userRepository.findById(createdByUserId).orElse(null);
+    public Optional<User> findById(Long createdByUserId) {
+        return userRepository.findById(createdByUserId);
     }
 }
