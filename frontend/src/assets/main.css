@@ -27,8 +27,7 @@ img {
 
 #app {
     display: grid;
-    grid-template-rows: 1fr 20px;
-    gap: 1em 0;
+    grid-template-rows: 1fr 60px;
 }
 
 

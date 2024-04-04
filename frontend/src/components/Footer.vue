@@ -2,7 +2,14 @@
 
 </script>
 <template>
-  <div class="footer">
+  <footer>
     <p>&copy; 2024 Jens Johannes Sondre</p>
-  </div>
+  </footer>
 </template>
+
+<style scoped>
+footer {
+  text-align: center;
+  font-size: 0.8rem;
+}
+</style>

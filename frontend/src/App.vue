@@ -24,6 +24,7 @@ import Footer from './components/Footer.vue';
 
 .footer {
   grid-column: 1 / -1;
+  align-self: center;
 }
 
 @media (min-width: 720px) {
