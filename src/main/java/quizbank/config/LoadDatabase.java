@@ -5,13 +5,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import quizbank.model.Question;
 import quizbank.model.Quiz;
+import quizbank.model.QuizAttempt;
 import quizbank.model.User;
 import quizbank.enums.DifficultyLevel;
 import quizbank.enums.Category;
 import quizbank.enums.QuestionType;
+import quizbank.repository.QuizAttemptRepository;
 import quizbank.repository.QuizRepository;
 import quizbank.repository.UserRepository;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -19,12 +23,15 @@ import java.util.List;
 @Configuration
 public class LoadDatabase {
     @Bean
-    CommandLineRunner initDatabase(QuizRepository quizRepository, UserRepository userRepository) {
+    CommandLineRunner initDatabase(QuizRepository quizRepository, UserRepository userRepository, QuizAttemptRepository quizAttemptRepository) {
         return args -> {
-            User user = new User();
-            user.setUsername("admin");
-            user.setPassword("admin");
-            userRepository.save(user);
+            User user = userRepository.findByUsername("testuser");
+            if (user == null) {
+                user = new User();
+                user.setUsername("testuser");
+                user.setPassword("testpassword");
+                userRepository.save(user);
+            }
 
             Quiz quiz1 = new Quiz();
             quiz1.setName("Quizbank project");
@@ -57,6 +64,28 @@ public class LoadDatabase {
             quiz2.setQuestions(questions2);
 
             quizRepository.saveAll(Arrays.asList(quiz1, quiz2));
+
+            List<QuizAttempt> quizAttempts = getQuizAttempts(user, quiz1);
+            quizAttemptRepository.saveAll(quizAttempts);
         };
+    }
+
+    private static List<QuizAttempt> getQuizAttempts(User user, Quiz quiz1) {
+        List<QuizAttempt> quizAttempts = new ArrayList<>();
+        QuizAttempt quizAttempt = new QuizAttempt();
+        quizAttempt.setQuiz(quiz1);
+        quizAttempt.setUser(user);
+        quizAttempt.setCorrectAnswers(2);
+        quizAttempt.setTotalQuestions(3);
+        quizAttempt.setAttemptTime(LocalDateTime.now());
+        quizAttempts.add(quizAttempt);
+        QuizAttempt quizAttempt2 = new QuizAttempt();
+        quizAttempt2.setQuiz(quiz1);
+        quizAttempt2.setUser(user);
+        quizAttempt2.setCorrectAnswers(1);
+        quizAttempt2.setTotalQuestions(3);
+        quizAttempt2.setAttemptTime(LocalDateTime.now().plusHours(1));
+        quizAttempts.add(quizAttempt2);
+        return quizAttempts;
     }
 }

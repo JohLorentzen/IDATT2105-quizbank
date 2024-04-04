@@ -40,6 +40,9 @@ public class Quiz {
     private List<Question> questions;
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
     private Set<QuizUserRoles> userRoles = new HashSet<>();
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
+    private List<QuizAttempt> attempts;
+
 
     public Quiz() {
     }
