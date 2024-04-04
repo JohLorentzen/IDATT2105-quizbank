@@ -27,15 +27,11 @@ img {
 
 #app {
     display: grid;
-    grid-template-columns: repeat(12, 1fr);
     grid-template-rows: 1fr 20px;
     gap: 1em 0;
 }
 
 
 @media (min-width: 1480px) {
-    #app {
-        grid-template-columns: 1fr 1280px 1fr;
-    }
 }
 

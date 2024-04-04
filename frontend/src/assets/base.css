@@ -9,7 +9,11 @@
   --bg-light-blue: #47b5ff;
   --bg-very-light-blue: #dff6ff;
 
+  --bg-button-hover: #1d6de9;
+  --bg-button-active: #0959d5;
+
   --text-color: #171717;
+  --text-color-white: #f8f9fa;
 }
 
 /* semantic color variables for this project */
@@ -18,6 +22,10 @@
   --color-background-soft: var(--bg-white-soft);
   --color-background-mute: var(--bg-white-mute);
   --color-background-soft-blue: var(--bg-very-light-blue);
+
+  --button-bg-strong-blue: var(--bg-medium-blue);
+  --button-bg-hover-blue: var(--bg-button-hover);
+  --button-bg-active-blue: var(--bg-button-active)
 }
 
 body {
