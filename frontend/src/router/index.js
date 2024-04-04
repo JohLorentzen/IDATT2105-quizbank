@@ -32,7 +32,8 @@ const router = createRouter({
       name: 'createEdit',
       component: () => import('../views/CreateEdit.vue')
     }
-  ]
+  ],
+  linkActiveClass: 'active',
 })
 
 export default router

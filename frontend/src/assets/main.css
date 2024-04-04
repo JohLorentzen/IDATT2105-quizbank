@@ -32,3 +32,10 @@ img {
     gap: 1em 0;
 }
 
+
+@media (min-width: 1480px) {
+    #app {
+        grid-template-columns: 1fr 1280px 1fr;
+    }
+}
+

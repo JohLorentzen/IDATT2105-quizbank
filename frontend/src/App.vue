@@ -24,4 +24,16 @@ import Footer from './components/Footer.vue';
 .footer {
   grid-column: 2 / -2;
 }
+
+@media (min-width: 720px) {
+  .main-view {
+    margin-top: 60px;
+  }
+}
+
+@media (min-width: 1480px) {
+  .main-view {
+    margin-top: 80px;
+  }
+}
 </style>

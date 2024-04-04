@@ -36,10 +36,12 @@ import {RouterView, RouterLink, useRouter} from 'vue-router'
 .navbar {
   position: fixed;
   width: 100%;
+  height: 40px;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   align-items: center;
-  background: var(--bg-white-soft);
+  background: var(--bg-white);
+  box-shadow: 0 2px 4px rgba(0, 0, 255, .05);
 }
 
 nav {
@@ -55,17 +57,48 @@ nav {
 a {
   color: var(--text-color);
   text-decoration: none;
-  padding: 0.5em 0;
   font-size: 0.8rem;
+  line-height: 1.4rem;
 }
 
 a:hover,
 a:active,
 a.active {
   background: none;
-  padding-bottom: 0.4em;
   border-bottom: 0.1em solid var(--bg-light-blue);
   cursor: pointer;
+}
+
+@media (min-width: 720px) {
+  .navbar {
+    height: 60px;
+  }
+
+  a {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 1480px) {
+  .navbar {
+    height: 80px;
+    grid-template-columns: 1fr 1280px 1fr;
+  }
+
+  nav {
+    grid-column: 3 / -3;
+  }
+
+  a {
+    font-size: 1.125rem;
+    line-height: 1.5em;
+  }
+
+  a:hover,
+  a:active,
+  a.active {
+    border-bottom: 0.12em solid var(--bg-light-blue);
+  }
 }
 </style>
 
