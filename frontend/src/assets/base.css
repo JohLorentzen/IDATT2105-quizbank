@@ -3,6 +3,7 @@
   --bg-white: #ffffff;
   --bg-white-soft: #f8f8f8;
   --bg-white-mute: #f2f2f2;
+  --bg-light-gray: #f6f7fb;
 
   --bg-dark-blue: #06283d;
   --bg-medium-blue: #1363df;
@@ -11,6 +12,7 @@
 
   --bg-button-hover: #1d6de9;
   --bg-button-active: #0959d5;
+
 
   --text-color: #171717;
   --text-color-white: #f8f9fa;
@@ -25,7 +27,8 @@
 
   --button-bg-strong-blue: var(--bg-medium-blue);
   --button-bg-hover-blue: var(--bg-button-hover);
-  --button-bg-active-blue: var(--bg-button-active)
+  --button-bg-active-blue: var(--bg-button-active);
+  --input-field-border: var(--bg-light-blue);
 }
 
 body {

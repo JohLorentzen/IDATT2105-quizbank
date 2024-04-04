@@ -27,7 +27,6 @@ function toForgotPassword() {
 
 <style scoped>
 main {
-  margin-top: 100px;
-  padding: 0;
+  background: var(--bg-light-gray);
 }
 </style>

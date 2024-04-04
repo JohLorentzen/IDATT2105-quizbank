@@ -13,17 +13,14 @@ import Footer from './components/Footer.vue';
 
 <style scoped>
 .navbar {
-  grid-column: 1 / -1;
   z-index: 10;
 }
 
 .main-view {
   margin-top: 40px;
-  grid-column: 1 / -1;
 }
 
 .footer {
-  grid-column: 1 / -1;
   align-self: center;
 }
 
