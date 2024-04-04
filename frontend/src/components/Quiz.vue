@@ -20,7 +20,6 @@ const props = defineProps({
 const incorrectAnswersCount = computed(() => answers.value.length - correctAnswersCount.value);
 
 const submitAnswer = (submittedAnswer) => {
-  console.log(submittedAnswer);
   const currentQuestion = props.selectedQuiz.questions[currentQuestionIndex.value];
   let isCorrect = false;
   console.log(currentQuestion);
@@ -63,16 +62,17 @@ function postGrade() {
     totalQuestions: props.selectedQuiz.questions.length,
     correctAnswers: correctAnswersCount.value,
   };
-  console.log(quizAttempt);
+
   showResults.value = true;
-  axios.post( url, {
+  axios.post(url, {
     quizId: props.selectedQuiz.quizId,
     totalQuestions: props.selectedQuiz.questions.length,
     correctAnswers: correctAnswersCount.value,
+  }, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
   })
-    .then((response) => {
-      console.log(response);
-    })
     .catch((error) => {
       console.log(error);
     });
