@@ -3,7 +3,9 @@ import ProfileNavBar from "@/components/profile/ProfileNavBar.vue";
 </script>
 
 <template>
-  <ProfileNavBar />
+  <main>
+    <ProfileNavBar />
+  </main>
 </template>
 
 <style scoped>

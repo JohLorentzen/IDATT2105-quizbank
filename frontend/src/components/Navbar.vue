@@ -45,7 +45,7 @@ onUnmounted(() => {
           <RouterLink to="/createEdit">Your quizes</RouterLink>
           <RouterLink to="/quizAttempts">Your progress</RouterLink>
           <RouterLink class="login" to="/login" @click="handleLogout">{{ userStore.loggedInStatus }}</RouterLink>
-          <RouterLink v-if="userStore.username" to="/profile/stats">My Profile</RouterLink>
+          <RouterLink v-if="userStore.username" to="/profile">My Profile</RouterLink>
         </nav>
     </header>
 </template>
