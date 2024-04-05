@@ -14,6 +14,7 @@ const currentQuiz = ref(null);
 const deleteMode = ref(false);
 
 const fetchQuizes = async () => {
+  
   const url = `${endpoints.BASE_URL}${endpoints.GET_ALL_QUIZZES}`;
   try {
     const response = await axios.get( url, {
@@ -49,6 +50,7 @@ const postQuiz = async (quizData) => {
 
 const handleQuizSubmit = (quizData) => {
     postQuiz(quizData);
+    router.push('/createEdit');
 };
 
 const toggleDeleteMode = () => {
