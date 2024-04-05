@@ -42,13 +42,37 @@ const removeImage = (question) => {
 };
 
 const goToNextQuestion = () => {
-
-    currentQuestionIndex.value++;
+    if(currentQuestionIndex.value < quiz.value.questions.length - 1) {
+        currentQuestionIndex.value++;
+    }
 };
 
 const goToPreviousQuestion = () => {
-
+  if (currentQuestionIndex.value > 0) {
     currentQuestionIndex.value--;
+  }
+};
+
+const addQuestion = () => {
+  const newQuestion = {
+    problem: '', 
+    solution: '', 
+    type: 'FILL_IN_THE_BLANKS', 
+    choices: [], 
+    tags: [], 
+    image: null 
+  };
+  quiz.value.questions.push(newQuestion);
+  currentQuestionIndex.value = quiz.value.questions.length - 1; 
+};
+
+const removeQuestion = () => {
+
+    quiz.value.questions.splice(currentQuestionIndex.value, 1);
+    console.log(quiz.value.questions);
+    if (currentQuestionIndex.value >= quiz.value.questions.length) {
+      currentQuestionIndex.value = quiz.value.questions.length - 1; 
+    }
 };
 
 const exportQuizToCSV = () => {
@@ -144,9 +168,10 @@ const formatChoices = (question) => {
             "
           />
         </div>
-
+        <button @click="removeQuestion">Remove Question</button>
         <button @click="goToPreviousQuestion">Previous</button>
         <button @click="goToNextQuestion">Next</button>
+        <button @click="addQuestion">Add New Question</button>
       </div>
     </div>
 
