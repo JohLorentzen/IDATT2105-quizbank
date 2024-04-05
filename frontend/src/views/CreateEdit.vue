@@ -7,7 +7,7 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const quizes = ref([]);
+const quizzes = ref([]);
 const createQuiz = ref(false);
 const currentQuiz = ref(null);
 const deleteMode = ref(false);
@@ -19,7 +19,7 @@ const fetchQuizes = async () => {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
-    quizes.value = response.data;
+    quizzes.value = response.data;
   } catch (error) {
     if (error.response && [401, 404].includes(error.response.status)) {
       router.push('/login');
@@ -85,7 +85,7 @@ onMounted(fetchQuizes);
   <div v-else>        
       <button @click="createQuiz = true"> Create quiz</button>
       <button @click="toggleDeleteMode">Delete quiz</button>
-      <QuizGrid :quizes="quizes" @selectQuiz="selectQuiz"/>
+      <QuizGrid :quizzes="quizzes" @selectQuiz="selectQuiz"/>
   </div>
   <div v-if="currentQuiz">
       <EditQuiz :quiz="currentQuiz" @submit="handleQuizSubmit"/>

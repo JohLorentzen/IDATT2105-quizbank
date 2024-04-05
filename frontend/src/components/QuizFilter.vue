@@ -120,17 +120,12 @@ function showSuggestions() {
 </template>
 
 <style scoped>
-div, ul, li, input, button, p {
-  margin: 0;
-  padding: 0;
-}
-
 .search-container, .chosen-category-container {
-  width: 400px;
+  grid-column: 2 / -2;
+  background-color: white;
 }
 
 .search-container {
-  background: #ffffff;
   font-size: 16px;
 }
 
@@ -139,14 +134,14 @@ div, ul, li, input, button, p {
   display: flex;
   align-items: center;
   border: 1px solid #cccccc;
-  border-radius: 5px;
+  border-radius: 0.1em;
 }
 
 .row input {
   flex-grow: 2;
   font-size: 1rem;
   font-family: sans-serif;
-  padding: 0.8rem 1.6rem;
+  padding: 0.8em 1em;
   border: none;
 }
 
@@ -185,22 +180,43 @@ div, ul, li, input, button, p {
 
 .chosen-category-container {
   font-size: 12px;
-  padding: 1em;
+  padding: 1em 0;
+  background-color: var(--bg-very-light-blue-shadow);
 }
 
 .chosen-category-container p {
-  color: #777777;
+  color: var(--text-color);
+}
+
+.chosen-category-container ul {
+  margin-top: 1em;
 }
 
 .chosen-category-container li {
   padding: 0.5em 1em;
-  background: #eeeeee;
-  border-radius: 0.2em;
+  border-radius: 2em;
+  border: 1px solid var(--text-color-light-grey);
   width: fit-content;
 }
 
 .chosen-category-container li:hover {
-  background: #dddddd;
+  background: var(--text-color-light-grey);
+  color: var(--text-color-white);
   cursor: pointer;
+}
+
+
+@media (min-width: 720px) {
+  .search-container {
+    font-size: 18px;
+  }
+
+  .search-results li {
+    font-size: 1rem;
+  }
+
+  .chosen-category-container {
+    font-size: 15px
+  }
 }
 </style>

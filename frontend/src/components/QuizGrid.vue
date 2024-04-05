@@ -1,68 +1,127 @@
 <script setup>
-    import { ref } from 'vue';
-    const props = defineProps(['quizes']);
-    const emit = defineEmits(['selectQuiz']);
-    const currentQuiz = ref(null);
+import {computed, ref} from 'vue';
+const props = defineProps(['quizzes']);
+const emit = defineEmits(['selectQuiz']);
+const currentQuiz = ref(null);
 
-    function playQuiz(quiz) {
-        currentQuiz.value = quiz;
-        console.log(currentQuiz.value);
-        emit('selectQuiz', currentQuiz.value);
-    };
+const availableQuizzesTitle = computed(() => {
+  if (props.quizzes.length > 0) {
+    return "Available quizzes"
+  }
+  return "No available quizzes"
+});
+
+function playQuiz(quiz) {
+    currentQuiz.value = quiz;
+    console.log(currentQuiz.value);
+    emit('selectQuiz', currentQuiz.value);
+}
 
 </script>
 <template>
+  <h1>{{ availableQuizzesTitle }}</h1>
     <div v-if="!currentQuiz" class="quiz-grid">
-      <div v-for="quiz in quizes.slice(0, 10)" :key="quiz.quizId">
-        <button @click="playQuiz(quiz)">
-          <div>
-            <h2>{{ quiz.quizName }}</h2>
-            <p>{{ quiz.category }}</p>
-            <p>{{ quiz.questions ? `${quiz.questions.length} questions` : 'No questions' }}</p>
-          </div>
-        </button>
+      <div class="quiz-card" v-for="quiz in quizzes" :key="quiz.quizId" @click="playQuiz(quiz)">
+        <h2>{{ quiz.quizName }}</h2>
+        <p class="category">{{ quiz.category }}</p>
+        <p class="questions">{{ quiz.questions ? `${quiz.questions.length} questions` : 'No questions' }}</p>
       </div>
     </div>
 </template>
-<style>
-    .quiz-grid {
+
+
+<style scoped>
+h1 {
+  color: var(--text-color-grey);
+  margin-top: 1em;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  font-weight: bolder;
+  grid-column: 2 / -2;
+  padding-left: 1em;
+}
+
+.quiz-grid {
+  margin-top: 1em;
+  grid-column: 2 / -2;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 20px;
-  padding: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-auto-rows: 120px;
+  gap: 2em;
 }
 
-.quiz-grid div {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+.quiz-card {
+  background: var(--bg-very-light-blue);
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  border-radius: 0.8em;
+  border: 1px solid var(--border-very-light-blue);
 }
 
-.quiz-grid button {
-  width: 100%;
-  text-align: left;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 15px;
+.quiz-card:hover,
+.quiz-card:focus {
   cursor: pointer;
-  outline: none;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  transition: background-color 0.3s ease;
-}
-
-.quiz-grid button:hover,
-.quiz-grid button:focus {
-  background-color: #e9e9e9;
+  background-color: var(--bg-very-light-blue-hover);
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
   transform: translateY(-2px);
 }
 
 .quiz-grid h2 {
-  margin-top: 0;
-  color: #333;
+  font-size: 1.1rem;
+  font-weight: bold;
 }
 
-.quiz-grid p {
-  margin: 5px 0;
-  color: #666;
+.category {
+  margin-top: 0.8em;
+  font-size: 0.54rem;
+  padding: 0.5em 1em;
+  border-radius: 1em;
+  font-weight: bold;
+  color: white;
+  background-color: var(--bg-light-blue);
+}
+
+p.questions {
+  margin-top: auto;
+  font-size: 0.85rem;
+  color: var(--text-color-grey);
+}
+
+@media (min-width: 720px) {
+  h1 {
+    font-size: 1.1rem;
+  }
+
+  .quiz-grid {
+    grid-auto-rows: 150px;
+  }
+
+  .quiz-grid h2 {
+    font-size: 1.4rem;
+  }
+
+  .category {
+    font-size: 0.7rem;
+  }
+
+  p.questions {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .quiz-grid h2 {
+    font-size: 1.6rem;
+  }
+
+  .category {
+    font-size: 0.8rem;
+  }
+
+  p.questions {
+    font-size: 1.125rem;
+  }
 }
 </style>

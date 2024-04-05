@@ -52,14 +52,24 @@ function filterChosenQuizes(categories) {
 onMounted(fetchQuizes);
 </script>
 <template>
-  <div class="quiz-container">
-    <h1>Quiz View</h1>
-    <QuizGrid v-if="!currentQuiz" :quizes="filteredQuizes" @selectQuiz="currentQuiz = $event" />
+  <main>
     <QuizFilter v-if="quizes.length > 0 && !currentQuiz" @chosen-categories="filterChosenQuizes"/>
+    <QuizGrid v-if="!currentQuiz" :quizzes="filteredQuizes" @selectQuiz="currentQuiz = $event" />
     <Quiz v-if="currentQuiz" :selectedQuiz="currentQuiz" @closeQuiz="closeQuiz" />
-  </div>
+  </main>
 </template>
 
 <style scoped>
+main {
+  background: var(--bg-very-light-blue-shadow);
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  padding: 2em 0;
+}
 
+@media (min-width: 1480px) {
+  main {
+    grid-template-columns: 1fr 1280px 1fr;
+  }
+}
 </style>

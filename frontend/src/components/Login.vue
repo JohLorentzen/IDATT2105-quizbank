@@ -141,12 +141,12 @@ function login() {
 
 h1 {
   margin: 0 0 1em;
-  padding: 0;
   font-weight: bold;
   text-align: center;
 }
 
 form {
+  margin: 4em auto;
   padding: 2em 2em 0;
   border-radius: 1em;
   width: 350px;
@@ -183,6 +183,7 @@ a:hover {
   flex-direction: column;
   margin: 1.5em auto;
   width: 100%;
+  gap: 0.3em;
 }
 
 .input-container label, input {
@@ -190,6 +191,8 @@ a:hover {
 }
 
 .input-container label {
+  color: #777777;
+  margin-left: 0.4em;
   font-size: 0.75rem;
 }
 
@@ -202,7 +205,7 @@ a:hover {
 
 .input-container input:focus {
   outline: none;
-  border-bottom: 2px solid rosybrown;
+  border-bottom: 2px solid var(--input-field-border);
 }
 
 .red {
@@ -230,7 +233,8 @@ a:hover {
 }
 
 .login-btn {
-  background: #eeeeee;
+  background: var(--button-bg-strong-blue);
+  color: var(--text-color-white);
   display: block;
   margin: 2em auto 0;
   padding: 1.2em;
@@ -243,7 +247,11 @@ a:hover {
 }
 
 .login-btn:hover {
-  background: #dddddd;
+  background: var(--button-bg-hover-blue);
+}
+
+.login-btn:active {
+  background: var(--button-bg-active-blue);
 }
 
 .create-user-container {
@@ -262,5 +270,11 @@ a:hover {
   text-decoration: none;
   color: #181818;
   font-weight: bolder;
+}
+
+@media (min-width: 720px) {
+  .login-btn {
+    font-size: 1rem;
+  }
 }
 </style>

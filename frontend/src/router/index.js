@@ -53,7 +53,7 @@ const router = createRouter({
       component: () => import('../views/QuizAttempts.vue')
     }
   ],
-  linkActiveClass: 'active'
+  linkActiveClass: 'active',
 })
 
 export default router

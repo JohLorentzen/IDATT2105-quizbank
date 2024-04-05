@@ -21,9 +21,7 @@ const props = defineProps({
   align-items: center;
   justify-content: center;
   height: 400px; 
-  background-size: cover;
-  background-position: center;
-  
+
 }
 
 .hero-text {
