@@ -100,7 +100,9 @@ function login() {
     if (response.status === 200) {
       userNotFound.value = false;
       localStorage.setItem('token', response.data);
+      localStorage.setItem('username', username.value);
       userStore.setUsername(username.value);
+      userStore.setLoggedInStatus('Logout')
       router.push('/quiz');
     } else if (response.status === 401) {
       userNotFound.value = true;
