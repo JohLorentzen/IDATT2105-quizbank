@@ -3,6 +3,7 @@
     "LOGIN": "/user/login",
     "CREATE_USER": "/user/register",
     "GET_ALL_QUIZZES": "/rest/quiz",
+    "MY_QUIZZES": "/rest/quiz/my-quizzes",
     "POST_ATTEMPT": "/rest/quiz-attempts",
     "UPDATE_USER_PROFILE": "/user/profile",
     "GET_QUIZ_ATTEMPTS": "/rest/quiz-attempts"

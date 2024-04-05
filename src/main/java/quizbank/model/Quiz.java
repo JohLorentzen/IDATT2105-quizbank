@@ -36,7 +36,7 @@ public class Quiz {
     @JoinColumn(name = "created_by_user_id")
     private User createdBy;
 
-    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questions;
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
     private Set<QuizUserRoles> userRoles = new HashSet<>();
