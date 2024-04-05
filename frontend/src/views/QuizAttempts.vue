@@ -1,13 +1,19 @@
 <script setup>
-import {ref, onMounted} from 'vue';
+import {ref, onMounted, onBeforeMount} from 'vue';
 import axios from 'axios';
 import endpoints from "@/endpoints.json";
 import LineChart from "@/components/LineChart.vue";
+import {isUserLoggedIn} from "@/user-status.js";
 
 const quizAttempts = ref([]);
 const chartDataReal = ref([]);
+const abortFetch = ref(true);
 
 const fetchQuizAttempts = () => {
+  if (abortFetch) {
+    return
+  }
+
   const url = `${endpoints.BASE_URL}${endpoints.GET_QUIZ_ATTEMPTS}/1`;
   //TODO: Change the hardcoded user id to the logged in user id
   axios.get(url, {
@@ -43,7 +49,9 @@ const formatDate = (date) => {
   return new Date(date).toLocaleString();
 };
 
-
+onBeforeMount(() => {
+  abortFetch.value = isUserLoggedIn();
+})
 onMounted(fetchQuizAttempts);
 </script>
 
