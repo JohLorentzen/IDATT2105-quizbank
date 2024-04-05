@@ -1,25 +1,40 @@
 <script setup>
 import {RouterView, RouterLink, useRouter} from 'vue-router'
-  import { useUserStore } from '@/stores/user.js'
-  import {computed} from "vue";
+import { useUserStore } from '@/stores/user.js'
+import { onMounted, onUnmounted } from "vue";
 
-  const userStore = useUserStore();
-  const router = useRouter();
+const userStore = useUserStore();
+const router = useRouter();
 
-  const loggedInStatus = computed(() => {
-    if (userStore.username) {
-      return "Logout";
-    }
-    return "Login";
-  })
-
-  const handleLogout = () => {
-    if (userStore.username) {
-      localStorage.removeItem('token');
-      userStore.logout();
-    }
+const handleLogout = () => {
+  if (localStorage.getItem('token')) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    userStore.logout();
   }
+}
 
+onMounted(() => {
+  const token = localStorage.getItem('token');
+  const username = localStorage.getItem('username');
+  if (token) {
+    userStore.setUsername(username);
+    userStore.setLoggedInStatus('Logout');
+  } else {
+    userStore.setLoggedInStatus('Login');
+  }
+});
+
+onUnmounted(() => {
+  window.removeEventListener('storage', () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      userStore.setLoggedInStatus('Logout');
+    } else {
+      userStore.setLoggedInStatus('Login');
+    }
+  });
+});
 </script>
 <template>
     <header class="navbar">
@@ -29,7 +44,7 @@ import {RouterView, RouterLink, useRouter} from 'vue-router'
           <RouterLink to="/about">About</RouterLink>
           <RouterLink to="/createEdit">Your quizes</RouterLink>
           <RouterLink to="/quizAttempts">Your progress</RouterLink>
-          <RouterLink class="login" to="/login" @click="handleLogout">{{ loggedInStatus }}</RouterLink>
+          <RouterLink class="login" to="/login" @click="handleLogout">{{ userStore.loggedInStatus }}</RouterLink>
           <RouterLink v-if="userStore.username" to="/profile/stats">My Profile</RouterLink>
         </nav>
     </header>
