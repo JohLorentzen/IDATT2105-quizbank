@@ -5,6 +5,7 @@ import quizbank.model.Question;
 import quizbank.model.Quiz;
 
 import java.util.List;
+import java.util.Set;
 
 public interface QuestionService {
 
@@ -15,4 +16,6 @@ public interface QuestionService {
     QuestionDTO toDto(Question question);
 
     Question toEntity(QuestionDTO questionDTO, int quizId);
+
+    Set<String> getAllTags();
 }

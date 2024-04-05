@@ -90,6 +90,12 @@ public class QuizServiceImpl implements QuizService {
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Set<String> getAllTags() {
+        return questionService.getAllTags();
+    }
+
     @Override
     public QuizDTO toDto(Quiz quiz) {
         QuizDTO dto = new QuizDTO();
