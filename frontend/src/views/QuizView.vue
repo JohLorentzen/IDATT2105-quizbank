@@ -1,4 +1,5 @@
 <script setup>
+import { isUserLoggedIn } from "@/user-status.js";
 import {onMounted, ref} from 'vue';
 import axios from 'axios';
 import {useRouter} from 'vue-router';
@@ -15,6 +16,8 @@ const filteredQuizes = ref([])
 const router = useRouter();
 
 function fetchQuizes() {
+  isUserLoggedIn();
+
   const url = `${endpoints.BASE_URL}${endpoints.GET_ALL_QUIZZES}`
 
   axios.get(url, {
