@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import Papa from "papaparse";
 
 const props = defineProps({
   quiz: Object,
@@ -46,6 +47,36 @@ const goToNextQuestion = () => {
 const goToPreviousQuestion = () => {
 
     currentQuestionIndex.value--;
+};
+// Export quiz functionality here: 
+const exportQuizToCSV = () => {
+  const quizData = quiz.value.questions.map(q => ({
+    'Problem': q.problem,
+    'Solution': q.solution,
+    'Choices': formatChoices(q)
+  }));
+
+  const csv = Papa.unparse({
+    fields: ['Problem', 'Solution', 'Choices'], // Define column headers
+    data: quizData
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  link.setAttribute('href', url);
+  link.setAttribute('download', `${quiz.value.quizName.replace(/\s+/g, '_')}.csv`); // Replace spaces in filename
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+const formatChoices = (question) => {
+  if (question.type === 'TRUE_FALSE') {
+    return 'True, False';
+  }
+  return question.choices.join(', ');
 };
 </script>
 <template>
@@ -117,6 +148,8 @@ const goToPreviousQuestion = () => {
     </div>
 
     <button @click="submit">Submit</button>
+    
+    <button @click="exportQuizToCSV"> Export quiz </button>
   </div>
 </template>
 <style scoped>

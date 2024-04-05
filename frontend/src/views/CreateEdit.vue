@@ -82,7 +82,7 @@ onMounted(fetchQuizes);
   <div v-if="createQuiz"> 
     <CreateQuiz @submitQuiz="handleQuizSubmit"/>
   </div>
-  <div v-else>        
+  <div v-else>
       <button @click="createQuiz = true"> Create quiz</button>
       <button @click="toggleDeleteMode">Delete quiz</button>
       <QuizGrid :quizzes="quizzes" @selectQuiz="selectQuiz"/>
@@ -91,3 +91,8 @@ onMounted(fetchQuizes);
       <EditQuiz :quiz="currentQuiz" @submit="handleQuizSubmit"/>
   </div>
 </template>
+<style>
+div {
+  margin: 20px;
+}
+</style>
