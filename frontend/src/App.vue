@@ -20,10 +20,6 @@ import Footer from './components/Footer.vue';
   margin-top: 40px;
 }
 
-.footer {
-  align-self: center;
-}
-
 @media (min-width: 720px) {
   .main-view {
     margin-top: 60px;

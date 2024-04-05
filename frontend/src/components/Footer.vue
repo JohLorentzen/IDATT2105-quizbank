@@ -21,11 +21,15 @@
 .footer {
   background-color: #333;
   color: white;
-  padding: 20px;
   font-size: 14px;
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  padding: 1.5em 0;
 }
 
-.footer-upper, .footer-lower {
+.footer-upper {
+  grid-column: 2 / -2;
   display: flex;
   justify-content: space-between;
 }
@@ -36,7 +40,9 @@
 }
 
 .footer-nav h3, .footer-newsletter h3 {
-  margin-bottom: 10px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5em;
 }
 
 .footer-nav a, .footer-newsletter button {
@@ -47,11 +53,19 @@
 
 .footer-newsletter input[type='email'] {
   padding: 5px;
-  margin-bottom: 5px;
 }
 
 .footer-newsletter button {
+  margin-top: 0.8em;
+  background-color: var(--text-color-light-grey);
+  border: none;
+  padding: 0.4em 0.8em;
+  border-radius: 0.2em;
   cursor: pointer;
+}
+
+.footer-newsletter button:hover {
+  background-color: var(--text-color-grey);
 }
 
 .social-links {
@@ -75,5 +89,11 @@
 .legal-links a {
   color: white;
   text-decoration: none;
+}
+
+@media (min-width: 1480px) {
+  .footer {
+    grid-template-columns: 1fr 1280px 1fr;
+  }
 }
 </style>
