@@ -102,6 +102,4 @@ onMounted(fetchQuizes);
 </template>
 
 <style scoped>
-.create-edit {
-}
 </style>
