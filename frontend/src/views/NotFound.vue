@@ -1,4 +1,5 @@
 <template>
+  <main>
     <div class="not-found-container">
       <h1>Oops!</h1>
       <h2>404 - Page Not Found</h2>
@@ -8,6 +9,7 @@
         <router-link to="/contact" class="report-link">Report a bug</router-link>
       </div>
     </div>
+  </main>
   </template>
   
   <style scoped>

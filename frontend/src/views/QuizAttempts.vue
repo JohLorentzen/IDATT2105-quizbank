@@ -48,28 +48,30 @@ onMounted(fetchQuizAttempts);
 </script>
 
 <template>
-  <div>
-    <h2>My Quiz Attempts</h2>
-    <line-chart :chartData="chartDataReal" style="height: 500px"/>
+  <main>
+    <div>
+      <h2>My Quiz Attempts</h2>
+      <line-chart :chartData="chartDataReal" style="height: 500px"/>
 
-    <table class="quiz-table">
-      <thead>
-      <tr class="quiz-table-header">
-        <th>Quiz Name</th>
-        <th>Date Attempted</th>
-        <th>Score</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="attempt in quizAttempts" :key="attempt.id" class="quiz-table-row">
-        <td>{{ attempt.quizName }}</td>
-        <td>{{ formatDate(attempt.attemptTime) }}</td>
-        <td>{{ attempt.score.toFixed(2) }}%</td>
-      </tr>
-      </tbody>
-    </table>
+      <table class="quiz-table">
+        <thead>
+        <tr class="quiz-table-header">
+          <th>Quiz Name</th>
+          <th>Date Attempted</th>
+          <th>Score</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="attempt in quizAttempts" :key="attempt.id" class="quiz-table-row">
+          <td>{{ attempt.quizName }}</td>
+          <td>{{ formatDate(attempt.attemptTime) }}</td>
+          <td>{{ attempt.score.toFixed(2) }}%</td>
+        </tr>
+        </tbody>
+      </table>
 
-  </div>
+    </div>
+  </main>
 </template>
 
 <style scoped>

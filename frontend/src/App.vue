@@ -6,28 +6,29 @@ import Footer from './components/Footer.vue';
 </script>
 
 <template>
-  <Navbar class="navbar" />
-  <RouterView class="main-view"/>
-  <Footer class="footer"/>
+  <Navbar />
+  <RouterView />
+  <Footer />
 </template>
 
-<style scoped>
+<style>
 .navbar {
   z-index: 10;
 }
 
-.main-view {
+main {
   margin-top: 40px;
+  min-height: 90vh;
 }
 
 @media (min-width: 720px) {
-  .main-view {
+  main {
     margin-top: 60px;
   }
 }
 
 @media (min-width: 1480px) {
-  .main-view {
+  main {
     margin-top: 80px;
   }
 }

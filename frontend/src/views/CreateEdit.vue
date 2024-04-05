@@ -85,20 +85,22 @@ const deleteQuiz = async (quizId) => {
 onMounted(fetchQuizes);
 </script>
 <template>
-  <div class="create-edit">
-    <h1>Quizes</h1>
-    <div v-if="createQuiz">
-      <CreateQuiz @submitQuiz="handleQuizSubmit"/>
+  <main>
+    <div class="create-edit">
+      <h1>Quizes</h1>
+      <div v-if="createQuiz">
+        <CreateQuiz @submitQuiz="handleQuizSubmit"/>
+      </div>
+      <div v-else>
+        <button @click="createQuiz = true"> Create quiz</button>
+        <button @click="toggleDeleteMode">Delete quiz</button>
+        <QuizGrid v-show="!showModal" :quizzes="quizzes" @selectQuiz="selectQuiz"/> <!-- Use v-show instead of v-if -->
+      </div>
+      <div v-if="currentQuiz">
+        <EditQuiz :quiz="currentQuiz" @submit="handleQuizSubmit"/>
+      </div>
     </div>
-    <div v-else>
-      <button @click="createQuiz = true"> Create quiz</button>
-      <button @click="toggleDeleteMode">Delete quiz</button>
-      <QuizGrid v-show="!showModal" :quizzes="quizzes" @selectQuiz="selectQuiz"/> <!-- Use v-show instead of v-if -->
-    </div>
-    <div v-if="currentQuiz">
-      <EditQuiz :quiz="currentQuiz" @submit="handleQuizSubmit"/>
-    </div>
-  </div>
+  </main>
 </template>
 
 <style scoped>
