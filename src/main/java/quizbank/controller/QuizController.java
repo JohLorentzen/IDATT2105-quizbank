@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import quizbank.dto.QuizDTO;
+import quizbank.dto.UserDTO;
 import quizbank.enums.Category;
 import quizbank.enums.Role;
 import quizbank.model.AuditLogEntry;
@@ -150,20 +151,23 @@ public class QuizController {
     })
     @PostMapping("/quiz/{quizId}/share")
     public ResponseEntity<?> shareQuiz(@PathVariable Long quizId,
-                                       @RequestParam Long userId,
+                                       @RequestParam String userName,
                                        @RequestParam String role,
                                        Authentication authentication) {
         try {
-            if (userService.findById(userId).isEmpty() || quizService.getQuizById(quizId) == null) {
-                return ResponseEntity.badRequest().body("User or quiz not found");
+            UserDTO user = userService.findUserByUsername(userName);
+            if (user == null) {
+                return ResponseEntity.badRequest().body("User not found");
+            } else if (quizService.getQuizById(quizId) == null) {
+                return ResponseEntity.badRequest().body("Quiz not found");
             }
 
             if (isInvalidSharing(quizId, role, authentication)) {
                 return ResponseEntity.badRequest().body("Only the owner of the quiz can share with write permission");
             }
 
-            quizService.shareQuiz(quizId, userId, role.toUpperCase(), authentication.getName());
-            return ResponseEntity.ok().body("Quiz shared successfully with user ID: " + userId);
+            quizService.shareQuiz(quizId, user.getId(), role.toUpperCase(), authentication.getName());
+            return ResponseEntity.ok().body("Quiz shared successfully with user: " + userName);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
