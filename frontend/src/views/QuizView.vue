@@ -16,7 +16,11 @@ const filteredQuizes = ref([])
 const router = useRouter();
 
 function fetchQuizes() {
-  isUserLoggedIn();
+  const abortFetch = isUserLoggedIn();
+
+  if (abortFetch) {
+    return;
+  }
 
   const url = `${endpoints.BASE_URL}${endpoints.GET_ALL_QUIZZES}`
 

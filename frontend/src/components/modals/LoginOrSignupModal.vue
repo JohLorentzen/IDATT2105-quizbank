@@ -1,14 +1,20 @@
 <script setup>
+import router from "@/router/index.js";
+import routes from "@/router/router-constants.json";
+function navigateTo(route) {
+  router.push(route)
+}
 </script>
 
 <template>
-  <div class="modal-bg">
-    <div class="modal-container">
+  <div class="modal-bg" @click="navigateTo(routes.HOME)">
+    <div class="modal-container" @click.stop="">
+      <FontAwesomeIcon icon="xmark" class="fa-2x cross-icon" @click="navigateTo(routes.HOME)" />
       <h1>Not so fast!</h1>
       <p>Login or create a user to get started!</p>
       <div class="button-container">
-        <button class="login-btn">Login</button>
-        <button class="sign-up-btn">Sign up</button>
+        <button class="login-btn" @click="navigateTo(routes.LOGIN)">Login</button>
+        <button class="sign-up-btn" @click="navigateTo(routes.LOGIN)">Sign up</button>
       </div>
     </div>
   </div>
@@ -31,18 +37,33 @@
 }
 
 .modal-container {
+  z-index: 1000;
   max-width: 400px;
   background: var(--text-color-white);
-  padding: 2.6em;
+  padding: 2.6em 3.6em;
   border-radius: 1em;
   text-align: center;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+  position: relative;
+}
+
+.cross-icon {
+  color: grey;
+  position: absolute;
+  top: 0.6em;
+  right: 0.6em;
+}
+
+.cross-icon:hover {
+  color: var(--text-color-grey);
+  cursor: pointer;
 }
 
 h1 {
   font-weight: bold;
   font-size: 3rem;
   letter-spacing: 0.03em;
+  margin-top: 0.2em;
 }
 
 p {
