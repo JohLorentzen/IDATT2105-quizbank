@@ -9,6 +9,7 @@ const props = defineProps({
 const currentQuestionIndex = ref(0);
 const emit = defineEmits(["submit"]);
 const quiz = ref(props.quiz);
+const newAlternative = ref("");
 
 const submit = () => {
   emit("submit", quiz.value);
@@ -16,13 +17,14 @@ const submit = () => {
 
 const addAlternative = () => {
   if (newAlternative.value.trim()) {
-    quiz.questions[currentQuestionIndex.value].choices.push(newAlternative.value);
+    quiz.value.questions[currentQuestionIndex.value].choices.push(newAlternative.value);
     newAlternative.value = '';
   }
 };
 
 const removeAlternative = (index) => {
-  quiz.questions[currentQuestionIndex.value].choices.splice(index, 1);
+  console.log(index);
+  quiz.value.questions[currentQuestionIndex.value].choices.splice(index, 1);
 };
 
 const handleFileChange = (event, question) => {
@@ -48,7 +50,7 @@ const goToPreviousQuestion = () => {
 
     currentQuestionIndex.value--;
 };
-// Export quiz functionality here: 
+
 const exportQuizToCSV = () => {
   const quizData = quiz.value.questions.map(q => ({
     'Problem': q.problem,
@@ -57,7 +59,7 @@ const exportQuizToCSV = () => {
   }));
 
   const csv = Papa.unparse({
-    fields: ['Problem', 'Solution', 'Choices'], // Define column headers
+    fields: ['Problem', 'Solution', 'Choices'], 
     data: quizData
   });
 
@@ -65,7 +67,7 @@ const exportQuizToCSV = () => {
   const link = document.createElement('a');
   const url = URL.createObjectURL(blob);
   link.setAttribute('href', url);
-  link.setAttribute('download', `${quiz.value.quizName.replace(/\s+/g, '_')}.csv`); // Replace spaces in filename
+  link.setAttribute('download', `${quiz.value.quizName.replace(/\s+/g, '_')}.csv`); 
   link.style.visibility = 'hidden';
   document.body.appendChild(link);
   link.click();
@@ -110,6 +112,7 @@ const formatChoices = (question) => {
         <select v-model="quiz.questions[currentQuestionIndex].type">
           <option value="FILL_IN_THE_BLANKS">Fill in the blanks</option>
           <option value="MULTIPLE_CHOICE">Multiple choice</option>
+          <option value="TRUE_FALSE">True or False</option>
         </select>
         <!-- Multiple choice alternatives -->
         <div v-if="quiz.questions[currentQuestionIndex].type === 'MULTIPLE_CHOICE'">
