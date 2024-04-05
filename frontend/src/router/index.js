@@ -51,6 +51,16 @@ const router = createRouter({
       path: '/quizAttempts',
       name: 'quizAttempts',
       component: () => import('../views/QuizAttempts.vue')
+    },
+    {
+      path: '/contact',
+      name: 'contact',
+      component: () => import('../views/Contact.vue')
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('../views/NotFound.vue')
     }
   ],
   linkActiveClass: 'active',
