@@ -4,6 +4,7 @@ import quizbank.dto.QuizDTO;
 import quizbank.model.Quiz;
 
 import java.util.List;
+import java.util.Set;
 
 public interface QuizService {
     void shareQuiz(Long quizId, Long userId, String role, String sharedBy);
@@ -24,4 +25,5 @@ public interface QuizService {
 
     List<QuizDTO> getEditableQuizzesForUser(Long userId);
 
+    Set<String> getAllTags();
 }

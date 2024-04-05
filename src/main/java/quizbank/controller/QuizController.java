@@ -21,6 +21,7 @@ import quizbank.service.QuizService;
 import quizbank.service.UserService;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 @Tag(
@@ -51,8 +52,8 @@ public class QuizController {
     }
 
     @Operation(
-        summary = "Creates or updates a quiz",
-        description = "Creates or updates a quizDTO object from the provided payload"
+            summary = "Creates or updates a quiz",
+            description = "Creates or updates a quizDTO object from the provided payload"
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "Updated quiz successfully"),
@@ -75,8 +76,8 @@ public class QuizController {
     }
 
     @Operation(
-        summary = "Deletes a quiz by its id",
-        description = "Deletes a quiz based on its id"
+            summary = "Deletes a quiz by its id",
+            description = "Deletes a quiz based on its id"
     )
     @ApiResponse(responseCode = "204", description = "Deleted the quiz successfully")
     @DeleteMapping("/quiz/{quizId}")
@@ -87,8 +88,8 @@ public class QuizController {
     }
 
     @Operation(
-        summary = "Get quiz by id",
-        description = "Provides the quizDTO object with the given quiz id"
+            summary = "Get quiz by id",
+            description = "Provides the quizDTO object with the given quiz id"
     )
     @ApiResponse(responseCode = "200", description = "Successfully retrieved quiz by given id")
     @GetMapping(path = "/quiz/{quizId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -97,8 +98,8 @@ public class QuizController {
     }
 
     @Operation(
-        summary = "Retrieve all quizzes created by a user",
-        description = "Provides a list of all quizDTO objects that belongs the user with that user id"
+            summary = "Retrieve all quizzes created by a user",
+            description = "Provides a list of all quizDTO objects that belongs the user with that user id"
     )
     @ApiResponse(responseCode = "200", description = "Successfully retrieved quizzes that belongs to user")
     @GetMapping(path = "/quiz/user/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -109,8 +110,8 @@ public class QuizController {
     }
 
     @Operation(
-        summary = "Retrieves all quiz categories",
-        description = "Provides a list of all quiz categories"
+            summary = "Retrieves all quiz categories",
+            description = "Provides a list of all quiz categories"
     )
     @ApiResponse(responseCode = "200", description = "Successfully retrieved all categories")
     @GetMapping("/quiz/categories")
@@ -119,9 +120,21 @@ public class QuizController {
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
+    //fetch tags
     @Operation(
-        summary = "Get audit log for a quiz",
-        description = "Provides a list of all audit log entries for a quiz with the given quiz id"
+            summary = "Retrieves all tags",
+            description = "Provides a list of all tags"
+    )
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved all tags")
+    @GetMapping("/quiz/tags")
+    public ResponseEntity<Set<String>> getAllTags() {
+        Set<String> tags = quizService.getAllTags();
+        return new ResponseEntity<>(tags, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Get audit log for a quiz",
+            description = "Provides a list of all audit log entries for a quiz with the given quiz id"
     )
     @ApiResponse(responseCode = "200", description = "Successfully retrieved audit log for quiz")
     @GetMapping("/quiz/{quizId}/audit-log")
@@ -131,8 +144,8 @@ public class QuizController {
     }
 
     @Operation(
-        summary = "Get all quizzes created by, or shared with, a user",
-        description = "Provides a list of all quizDTO objects that are shared with the user with authenticated user"
+            summary = "Get all quizzes created by, or shared with, a user",
+            description = "Provides a list of all quizDTO objects that are shared with the user with authenticated user"
     )
     @GetMapping("/quiz/my-quizzes")
     public ResponseEntity<List<QuizDTO>> getMyQuizzes(Authentication authentication) {
@@ -142,8 +155,8 @@ public class QuizController {
     }
 
     @Operation(
-        summary = "Share a quiz with a user",
-        description = "Shares a quiz with a user by providing the quiz id, user id and role"
+            summary = "Share a quiz with a user",
+            description = "Shares a quiz with a user by providing the quiz id, user id and role"
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Quiz shared successfully"),

@@ -1,15 +1,21 @@
 package quizbank.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import quizbank.dto.QuestionDTO;
 import quizbank.model.Question;
 import quizbank.model.Quiz;
+import quizbank.repository.QuestionRepository;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
+
+    @Autowired
+    private QuestionRepository questionRepository;
 
     @Override
     public List<QuestionDTO> toDto(List<Question> questions) {
@@ -49,5 +55,10 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public Question toEntity(QuestionDTO questionDTO, int quizId) {
         return new Question();
+    }
+
+    @Override
+    public Set<String> getAllTags() {
+        return questionRepository.findAll().stream().map(Question::getTags).flatMap(Set::stream).collect(Collectors.toSet());
     }
 }

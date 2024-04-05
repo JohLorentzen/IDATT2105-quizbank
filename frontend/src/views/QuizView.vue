@@ -1,7 +1,7 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import {onMounted, ref} from 'vue';
 import axios from 'axios';
-import { useRouter } from 'vue-router';
+import {useRouter} from 'vue-router';
 import Quiz from '@/components/Quiz.vue';
 
 import QuizGrid from '@/components/QuizGrid.vue';
@@ -17,34 +17,32 @@ const router = useRouter();
 function fetchQuizes() {
   const url = `${endpoints.BASE_URL}${endpoints.GET_ALL_QUIZZES}`
 
-    axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    }).then(response => {
-      quizes.value = response.data;
-      filteredQuizes.value = response.data;
-    }).catch(error => {
-      if (error.response && [401, 404].includes(error.response.status)) {
-        router.push('/login')
-      } else {
-        console.log("Error fetching quizzes: " + error);
-      }
-    });
+  axios.get(url, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+  }).then(response => {
+    quizes.value = response.data;
+    filteredQuizes.value = response.data;
+  }).catch(error => {
+    if (error.response && [401, 404].includes(error.response.status)) {
+      router.push('/login')
+    } else {
+      console.log("Error fetching quizzes: " + error);
+    }
+  });
 };
 
-function filterChosenQuizes(categories) {
-  if (categories.length === 0) {
+function filterChosenQuizes(filter) {
+  if (filter.length === 0) {
     filteredQuizes.value = quizes.value;
     return;
   }
 
   filteredQuizes.value = [];
   for (const quiz of quizes.value) {
-    for (const category of categories) {
-      if (quiz.category === category) {
-        filteredQuizes.value.push(quiz);
-      }
+    if (filter.some(f => quiz.category.includes(f) || quiz.questions.some(q => q.tags.some(t => t === f)))) {
+      filteredQuizes.value.push(quiz);
     }
   }
 }
@@ -53,9 +51,9 @@ onMounted(fetchQuizes);
 </script>
 <template>
   <main>
-    <QuizFilter v-if="quizes.length > 0 && !currentQuiz" @chosen-categories="filterChosenQuizes"/>
-    <QuizGrid v-if="!currentQuiz" :quizzes="filteredQuizes" @selectQuiz="currentQuiz = $event" />
-    <Quiz v-if="currentQuiz" :selectedQuiz="currentQuiz" @closeQuiz="closeQuiz" />
+    <QuizFilter v-if="quizes.length > 0 && !currentQuiz" @updateFilters="filterChosenQuizes"/>
+    <QuizGrid v-if="!currentQuiz" :quizzes="filteredQuizes" @selectQuiz="currentQuiz = $event"/>
+    <Quiz v-if="currentQuiz" :selectedQuiz="currentQuiz" @closeQuiz="closeQuiz"/>
   </main>
 </template>
 

@@ -1,126 +1,81 @@
 <script setup>
-import {computed, onMounted, ref, watch} from "vue";
-import { vOnClickOutside } from '@vueuse/components'
+import { onMounted, ref, watch, defineEmits } from "vue";
 import axios from 'axios';
 
-const emit = defineEmits(['chosenCategories'])
+const emit = defineEmits(['updateFilters'])
 
-const showCategorySuggestions = ref(false);
 const searchTerm = ref("");
-const categories = ref([]);
-const matchingCategories = ref([]);
-const chosenCategories = ref([]);
+const filters = ref({ categories: [], tags: [] });
+const matchingFilters = ref([]);
+const chosenFilters = ref([]);
 
-
-const fetchCategories = () => {
-    axios.get('http://localhost:8080/rest/quiz/categories', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    }).then(response => {
-      categories.value = response.data;
-    }, error => {
-
-      console.log("This is axios error " + error);
-    })
+const fetchFilters = async () => {
+  try {
+    const [catResponse, tagResponse] = await Promise.all([
+      axios.get('http://localhost:8080/rest/quiz/categories', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }}),
+      axios.get('http://localhost:8080/rest/quiz/tags', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }})
+    ]);
+    filters.value.categories = catResponse.data;
+    filters.value.tags = tagResponse.data;
+  } catch (error) {
+    console.log("Error fetching filters: " + error);
+  }
 };
 
-onMounted(fetchCategories);
+onMounted(fetchFilters);
 
-const matchingFilterMessage = computed(() => {
-  const numberOfMatches = matchingCategories.value.length;
-  let message;
-  if (numberOfMatches > 0) {
-    message = "Available filters";
-  } else if (chosenCategories.value.length === categories.value.length) {
-    message = "No more categories to choose from";
-  } else {
-    message = "No matching filters";
-  }
-  return message;
-})
+watch(searchTerm, newValue => {
+  matchingFilters.value = [...filters.value.categories, ...filters.value.tags]
+      .filter(filter => filter.toLowerCase().includes(newValue.toLowerCase()) && !chosenFilters.value.includes(filter));
+});
 
-
-// TODO: research usage of watch vs composed
-// TODO: edit search to look for all cases
-watch(searchTerm, (newValue) => {
-  getMatchingCategories(newValue);
-})
-
-watch(chosenCategories.value, () => {
-  // slice in case there are too many mathing results..
-  emit("chosenCategories", chosenCategories.value.slice(0, 8));
-})
-
-function getMatchingCategories(searchTerm) {
-  matchingCategories.value = [];
-  for (const category of categories.value) {
-    if (category.toLowerCase().includes(searchTerm.toLowerCase()) && !chosenCategories.value.includes(category)) {
-      matchingCategories.value.push(category);
-    }
-  }
-}
-
-function chooseCategory(category) {
-  chosenCategories.value.push(category);
+function chooseFilter(filter) {
+  chosenFilters.value.push(filter);
   searchTerm.value = "";
-  getMatchingCategories(searchTerm.value)
+  emit("updateFilters", chosenFilters.value);
 }
 
-function removeCategory(category) {
-  const removeAtIndex = chosenCategories.value.indexOf(category);
-  chosenCategories.value.splice(removeAtIndex, 1);
+function removeFilter(filter) {
+  const index = chosenFilters.value.indexOf(filter);
+  if (index > -1) {
+    chosenFilters.value.splice(index, 1);
+    emit("updateFilters", chosenFilters.value);
+  }
 }
-
-function hideSuggestions() {
-  showCategorySuggestions.value = false;
-}
-
-function showSuggestions() {
-  getMatchingCategories(searchTerm.value)
-  showCategorySuggestions.value = true;
-}
-
-// TODO: make component for category list items
 </script>
 
+
 <template>
-  <div class="search-container" v-on-click-outside="hideSuggestions">
+  <div class="search-container">
     <div class="row">
       <input
           type="text"
-          placeholder="Search for filter.."
+          placeholder="Search for categories or tags..."
           autocomplete="off"
           v-model="searchTerm"
-          @focus="showSuggestions"
-      >
+      />
     </div>
-    <div class="search-results" v-if="showCategorySuggestions" >
-      <p>{{ matchingFilterMessage }}</p>
-      <ul v-if="matchingCategories.length > 0">
-        <li
-            v-for="category in matchingCategories"
-            :key="category"
-            @click="chooseCategory(category)"
-        >{{category}}
+    <div class="search-results" v-if="searchTerm">
+      <ul>
+        <li v-for="filter in matchingFilters" :key="filter" @click="chooseFilter(filter)">
+          {{ filter }}
         </li>
       </ul>
     </div>
   </div>
-  <div class="chosen-category-container" v-if="chosenCategories.length > 0">
-    <p>Chosen categories</p>
+  <div class="chosen-filters-container" v-if="chosenFilters.length > 0">
+    <p>Chosen Filters</p>
     <ul>
-      <li
-          v-for="category in chosenCategories"
-          :key="category"
-          @click="removeCategory(category)"
-      >{{category}}</li>
+      <li v-for="filter in chosenFilters" :key="filter" @click="removeFilter(filter)">
+        {{ filter }}
+      </li>
     </ul>
   </div>
 </template>
 
+
 <style scoped>
-.search-container, .chosen-category-container {
+.search-container, .chosen-filters-container {
   grid-column: 2 / -2;
   background-color: white;
 }
@@ -149,10 +104,10 @@ function showSuggestions() {
   border: 1px solid #cccccc;
   padding: 1em;
   border-radius: 10px;
-  box-shadow: 0 1px 15px rgba(0,0,0,0.2);
+  box-shadow: 0 1px 15px rgba(0, 0, 0, 0.2);
 }
 
-.search-results ul, .chosen-category-container ul {
+.search-results ul, .chosen-filters-container ul {
   display: flex;
   width: 100%;
   gap: 1em;
@@ -178,28 +133,28 @@ function showSuggestions() {
   background: #dddddd;
 }
 
-.chosen-category-container {
+.chosen-filters-container {
   font-size: 12px;
   padding: 1em 0;
   background-color: var(--bg-very-light-blue-shadow);
 }
 
-.chosen-category-container p {
+.chosen-filters--container p {
   color: var(--text-color);
 }
 
-.chosen-category-container ul {
+.chosen-filters--container ul {
   margin-top: 1em;
 }
 
-.chosen-category-container li {
+.chosen-filters-container li {
   padding: 0.5em 1em;
   border-radius: 2em;
   border: 1px solid var(--text-color-light-grey);
   width: fit-content;
 }
 
-.chosen-category-container li:hover {
+.chosen-filters-container li:hover {
   background: var(--text-color-light-grey);
   color: var(--text-color-white);
   cursor: pointer;
@@ -215,7 +170,7 @@ function showSuggestions() {
     font-size: 1rem;
   }
 
-  .chosen-category-container {
+  .chosen-filters-container {
     font-size: 15px
   }
 }
