@@ -90,4 +90,10 @@
   color: white;
   text-decoration: none;
 }
+
+@media (min-width: 1480px) {
+  .footer {
+    grid-template-columns: 1fr 1280px 1fr;
+  }
+}
 </style>
