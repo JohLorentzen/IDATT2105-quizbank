@@ -1,38 +1,36 @@
 package quizbank.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import quizbank.dto.QuizDTO;
 import quizbank.enums.Category;
 import quizbank.enums.DifficultyLevel;
 import quizbank.enums.Role;
 import quizbank.model.Quiz;
-import org.springframework.stereotype.Service;
 import quizbank.model.User;
 import quizbank.repository.QuizRepository;
 import quizbank.repository.QuizUserRolesRepository;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class QuizServiceImpl implements QuizService {
-    private final QuestionService questionService;
-
-    private final UserService userService;
-    private final QuizRepository quizRepository;
-
-    private AuditLogService auditLogService;
-
-    private QuizUserRolesRepository quizUserRolesRepository;
 
     @Autowired
-    public QuizServiceImpl(QuestionService questionService, UserService userService, QuizRepository quizRepository, AuditLogService auditLogService, QuizUserRolesRepository quizUserRolesRepository) {
-        this.questionService = questionService;
-        this.userService = userService;
-        this.quizRepository = quizRepository;
-        this.auditLogService = auditLogService;
-        this.quizUserRolesRepository = quizUserRolesRepository;
-    }
+    private QuestionService questionService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private QuizRepository quizRepository;
+    @Autowired
+    private AuditLogService auditLogService;
+    @Autowired
+    private QuizUserRolesRepository quizUserRolesRepository;
+
 
     @Override
     public List<Quiz> getQuizzesCreatedByUserId(Long userId) {
