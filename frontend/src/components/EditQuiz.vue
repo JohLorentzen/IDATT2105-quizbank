@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import Papa from "papaparse";
 
 const props = defineProps({
   quiz: Object,
@@ -8,6 +9,7 @@ const props = defineProps({
 const currentQuestionIndex = ref(0);
 const emit = defineEmits(["submit"]);
 const quiz = ref(props.quiz);
+const newAlternative = ref("");
 
 const submit = () => {
   emit("submit", quiz.value);
@@ -15,13 +17,16 @@ const submit = () => {
 
 const addAlternative = () => {
   if (newAlternative.value.trim()) {
-    quiz.questions[currentQuestionIndex.value].choices.push(newAlternative.value);
-    newAlternative.value = '';
+    quiz.value.questions[currentQuestionIndex.value].choices.push(
+      newAlternative.value
+    );
+    newAlternative.value = "";
   }
 };
 
 const removeAlternative = (index) => {
-  quiz.questions[currentQuestionIndex.value].choices.splice(index, 1);
+  console.log(index);
+  quiz.value.questions[currentQuestionIndex.value].choices.splice(index, 1);
 };
 
 const handleFileChange = (event, question) => {
@@ -39,13 +44,69 @@ const removeImage = (question) => {
 };
 
 const goToNextQuestion = () => {
-
+  if (currentQuestionIndex.value < quiz.value.questions.length - 1) {
     currentQuestionIndex.value++;
+  }
 };
 
 const goToPreviousQuestion = () => {
-
+  if (currentQuestionIndex.value > 0) {
     currentQuestionIndex.value--;
+  }
+};
+
+const addQuestion = () => {
+  const newQuestion = {
+    problem: "",
+    solution: "",
+    type: "FILL_IN_THE_BLANKS",
+    choices: [],
+    tags: [],
+    image: null,
+  };
+  quiz.value.questions.push(newQuestion);
+  currentQuestionIndex.value = quiz.value.questions.length - 1;
+};
+
+const removeQuestion = () => {
+  quiz.value.questions.splice(currentQuestionIndex.value, 1);
+  console.log(quiz.value.questions);
+  if (currentQuestionIndex.value >= quiz.value.questions.length) {
+    currentQuestionIndex.value = quiz.value.questions.length - 1;
+  }
+};
+
+const exportQuizToCSV = () => {
+  const quizData = quiz.value.questions.map((q) => ({
+    Problem: q.problem,
+    Solution: q.solution,
+    Choices: formatChoices(q),
+  }));
+
+  const csv = Papa.unparse({
+    fields: ["Problem", "Solution", "Choices"],
+    data: quizData,
+  });
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  const url = URL.createObjectURL(blob);
+  link.setAttribute("href", url);
+  link.setAttribute(
+    "download",
+    `${quiz.value.quizName.replace(/\s+/g, "_")}.csv`
+  );
+  link.style.visibility = "hidden";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+const formatChoices = (question) => {
+  if (question.type === "TRUE_FALSE") {
+    return "True, False";
+  }
+  return question.choices.join(", ");
 };
 </script>
 <template>
@@ -79,16 +140,27 @@ const goToPreviousQuestion = () => {
         <select v-model="quiz.questions[currentQuestionIndex].type">
           <option value="FILL_IN_THE_BLANKS">Fill in the blanks</option>
           <option value="MULTIPLE_CHOICE">Multiple choice</option>
+          <option value="TRUE_FALSE">True or False</option>
         </select>
         <!-- Multiple choice alternatives -->
-        <div v-if="quiz.questions[currentQuestionIndex].type === 'MULTIPLE_CHOICE'">
+        <div
+          v-if="quiz.questions[currentQuestionIndex].type === 'MULTIPLE_CHOICE'"
+        >
           <ul>
-            <li v-for="(choice, index) in quiz.questions[currentQuestionIndex].choices" :key="index">
+            <li
+              v-for="(choice, index) in quiz.questions[currentQuestionIndex]
+                .choices"
+              :key="index"
+            >
               {{ choice }}
               <button @click="removeAlternative(index)">Remove</button>
             </li>
           </ul>
-          <input type="text" v-model="newAlternative" placeholder="New alternative">
+          <input
+            type="text"
+            v-model="newAlternative"
+            placeholder="New alternative"
+          />
           <button @click="addAlternative">Add Alternative</button>
         </div>
         <!-- Image handling -->
@@ -110,13 +182,16 @@ const goToPreviousQuestion = () => {
             "
           />
         </div>
-
+        <button @click="removeQuestion">Remove Question</button>
         <button @click="goToPreviousQuestion">Previous</button>
         <button @click="goToNextQuestion">Next</button>
+        <button @click="addQuestion">Add New Question</button>
       </div>
     </div>
 
     <button @click="submit">Submit</button>
+
+    <button @click="exportQuizToCSV">Export quiz</button>
   </div>
 </template>
 <style scoped>
@@ -126,7 +201,9 @@ form {
   gap: 1rem;
 }
 
-input, select, button {
+input,
+select,
+button {
   padding: 0.5rem;
   border-radius: 5px;
   border: 1px solid #cacaca;
@@ -153,7 +230,7 @@ button:hover {
   background-color: rgba(255, 255, 255, 1);
   padding: 1.5rem;
   border-radius: 10px;
-  box-shadow: 0px 48px 35px -48px rgba(0,0,0,0.1);
+  box-shadow: 0px 48px 35px -48px rgba(0, 0, 0, 0.1);
 }
 
 .custum-file-upload .icon {

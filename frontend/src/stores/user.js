@@ -4,6 +4,7 @@ export const useUserStore = defineStore('user', {
     state: () => ({
         username: '',
         userId: '',
+        loggedInStatus: 'Login',
     }),
     getters: {
         getUsername() {
@@ -12,6 +13,9 @@ export const useUserStore = defineStore('user', {
         getUserId() {
             return this.userId;
         },
+        getLoggedInStatus() {
+            return this.loggedInStatus;
+        }
     },  
     actions: {
         setUsername(username) {
@@ -20,9 +24,15 @@ export const useUserStore = defineStore('user', {
         setUserId(userId) {
             this.userId = userId;
         },
+        setLoggedInStatus(status) {
+            this.loggedInStatus = status;
+        },
         logout() {
             this.username = '';
             this.userId = '';
-        } 
+        },
+        logoutStatus() {
+            this.loggedInStatus = 'Login';
+        }
     },
 });

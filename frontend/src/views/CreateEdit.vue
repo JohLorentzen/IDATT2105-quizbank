@@ -2,6 +2,7 @@
 import CreateQuiz from '@/components/CreateQuiz.vue';
 import QuizGrid from '@/components/QuizGrid.vue';
 import EditQuiz from '@/components/EditQuiz.vue';
+import endpoints from '@/endpoints.json';
 import axios from 'axios';
 import { onMounted, ref } from 'vue'; 
 import { useRouter } from 'vue-router';
@@ -13,8 +14,10 @@ const currentQuiz = ref(null);
 const deleteMode = ref(false);
 
 const fetchQuizes = async () => {
+  
+  const url = `${endpoints.BASE_URL}${endpoints.GET_ALL_QUIZZES}`;
   try {
-    const response = await axios.get('http://localhost:8080/rest/quiz/user/1', {
+    const response = await axios.get( url, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
@@ -30,8 +33,10 @@ const fetchQuizes = async () => {
 };
 
 const postQuiz = async (quizData) => {
+  
+  const url = `${endpoints.BASE_URL}${endpoints.GET_ALL_QUIZZES}`
     try {
-        await axios.post('http://localhost:8080/rest/quiz', quizData, {
+        await axios.post(url, quizData, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
@@ -45,6 +50,7 @@ const postQuiz = async (quizData) => {
 
 const handleQuizSubmit = (quizData) => {
     postQuiz(quizData);
+    router.push('/createEdit');
 };
 
 const toggleDeleteMode = () => {
@@ -63,8 +69,9 @@ const selectQuiz = (quiz) => {
 };
 
 const deleteQuiz = async (quizId) => {
+  const url = `${endpoints.BASE_URL}${endpoints.GET_ALL_QUIZZES}/${quizId}`;
     try {
-        await axios.delete(`http://localhost:8080/rest/quiz/${quizId}`, {
+        await axios.delete( url, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
@@ -91,3 +98,8 @@ onMounted(fetchQuizes);
       <EditQuiz :quiz="currentQuiz" @submit="handleQuizSubmit"/>
   </div>
 </template>
+<style>
+div {
+  margin: 20px;
+}
+</style>
