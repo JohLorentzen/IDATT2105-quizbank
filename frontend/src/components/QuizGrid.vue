@@ -1,8 +1,11 @@
 <script setup>
 import {computed, ref} from 'vue';
+import ShareModal from './ShareModal.vue';
+
 const props = defineProps(['quizzes']);
 const emit = defineEmits(['selectQuiz']);
 const currentQuiz = ref(null);
+const showModal = ref(false);
 
 const availableQuizzesTitle = computed(() => {
   if (props.quizzes.length > 0) {
@@ -12,21 +15,28 @@ const availableQuizzesTitle = computed(() => {
 });
 
 function playQuiz(quiz) {
-    currentQuiz.value = quiz;
-    console.log(currentQuiz.value);
-    emit('selectQuiz', currentQuiz.value);
+  currentQuiz.value = quiz;
+  console.log(currentQuiz.value);
+  emit('selectQuiz', currentQuiz.value);
 }
 
+function shareQuiz(quiz) {
+  currentQuiz.value = quiz;
+  showModal.value = true;
+}
 </script>
+
 <template>
   <h1>{{ availableQuizzesTitle }}</h1>
-    <div v-if="!currentQuiz" class="quiz-grid">
-      <div class="quiz-card" v-for="quiz in quizzes" :key="quiz.quizId" @click="playQuiz(quiz)">
-        <h2>{{ quiz.quizName }}</h2>
-        <p class="category">{{ quiz.category }}</p>
-        <p class="questions">{{ quiz.questions ? `${quiz.questions.length} questions` : 'No questions' }}</p>
-      </div>
+  <div v-if="!currentQuiz" class="quiz-grid">
+    <div class="quiz-card" v-for="quiz in quizzes" :key="quiz.quizId" @click="playQuiz(quiz)">
+      <h2>{{ quiz.quizName }}</h2>
+      <p class="category">{{ quiz.category }}</p>
+      <p class="questions">{{ quiz.questions ? `${quiz.questions.length} questions` : 'No questions' }}</p>
+      <button @click.stop="shareQuiz(quiz)" class="share-button">Share</button>
     </div>
+  </div>
+  <ShareModal v-if="showModal" :quiz="currentQuiz" @close="showModal = false" />
 </template>
 
 
@@ -124,4 +134,21 @@ p.questions {
     font-size: 1.125rem;
   }
 }
+
+.share-button {
+  margin-top: 1em;
+  border: none;
+  padding: 0.5em 1em;
+  border-radius: 1em;
+  background: var(--button-bg-strong-blue);
+  font-weight: bold;
+  color: white;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.share-button:hover {
+  background: var(--button-bg-hover-blue);
+}
+
 </style>
