@@ -1,10 +1,11 @@
 <script setup>
-import { ref, computed } from 'vue';
-import { useQuizStore } from '@/stores/quiz';
+import {ref, computed, defineEmits} from 'vue';
+import {useQuizStore} from '@/stores/quiz';
 import Question from "@/components/Question.vue";
 import QuizSummary from "@/components/QuizSummary.vue";
 import axios from 'axios';
 import endpoints from '@/endpoints.json';
+import router from "@/router/index.js";
 
 const currentQuestionIndex = ref(0);
 const answers = ref([]);
@@ -12,9 +13,11 @@ const quizCompleted = ref(false);
 const correctAnswersCount = ref(0);
 const showResults = ref(false);
 const props = defineProps({
-  selectedQuiz: Object
+      selectedQuiz: Object
     }
 );
+
+const emit = defineEmits(['backToQuizes']);
 
 
 const incorrectAnswersCount = computed(() => answers.value.length - correctAnswersCount.value);
@@ -27,16 +30,15 @@ const submitAnswer = (submittedAnswer) => {
     isCorrect = submittedAnswer.trim().toLowerCase() === currentQuestion.solution.trim().toLowerCase();
   } else if (currentQuestion.type === 'MULTIPLE_CHOICE') {
     isCorrect = submittedAnswer === currentQuestion.solution;
-  }
-  else if (currentQuestion.type === 'TRUE_FALSE') {
+  } else if (currentQuestion.type === 'TRUE_FALSE') {
     isCorrect = submittedAnswer === currentQuestion.solution;
   }
-  
+
   if (isCorrect) {
     correctAnswersCount.value++;
   }
 
-  answers.value.push({ submittedAnswer, isCorrect  });
+  answers.value.push({submittedAnswer, isCorrect});
 
   if (currentQuestionIndex.value < props.selectedQuiz.questions.length - 1) {
     currentQuestionIndex.value++;
@@ -73,11 +75,14 @@ function postGrade() {
       Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
   })
-    .catch((error) => {
-      console.log(error);
-    });
+      .catch((error) => {
+        console.log(error);
+      });
 }
 
+const handleBackToQuizes = () => {
+  emit('backToQuizes');
+};
 
 </script>
 
@@ -93,12 +98,19 @@ function postGrade() {
           class="question-container"
       />
     </div>
-    <QuizSummary v-else-if="showResults" :questions="selectedQuiz.questions" :answers="answers" />
+    <QuizSummary v-else-if="showResults" :questions="selectedQuiz.questions" :answers="answers"
+                 @backToQuizes="handleBackToQuizes"/>
     <div v-else>
+      <div class="quiz-results">
+        <h3>Quiz Completed!</h3>
+        <p>Correct Answers: {{ correctAnswersCount }}</p>
+        <p>Incorrect Answers: {{ incorrectAnswersCount }}</p>
+      </div>
       <button @click="restartQuiz" class="restart-quiz-button">Try again</button>
       <button @click="postGrade" class="check-results-button">Check Results</button>
+      <button @click="handleBackToQuizes" class="back-to-quizes-button">Back to Quizes</button>
     </div>
-    
+
   </div>
 </template>
 

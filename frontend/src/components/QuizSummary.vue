@@ -1,13 +1,12 @@
 <script setup>
+import {defineProps, defineEmits, ref, computed} from 'vue';
 
 const props = defineProps({
   questions: Array,
   answers: Array,
 });
 
-const toQuizes = () => {
-  emit('toQuizes');
-};
+const emit = defineEmits(['backToQuizes']);
 
 
 
@@ -35,7 +34,7 @@ const toQuizes = () => {
       </tr>
     </tbody>
   </table>
-  <button @click="toQuizes">Back to Quizes</button>
+  <button @click="emit('backToQuizes')">Back to Quizes</button>
 </template>
 
 

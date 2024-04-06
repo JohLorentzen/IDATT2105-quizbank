@@ -1,11 +1,14 @@
 <script setup>
 import {computed, ref} from 'vue';
 import ShareModal from './ShareModal.vue';
+import AuditLogModal from './AuditLogModal.vue';
 
 const props = defineProps(['quizzes']);
 const emit = defineEmits(['selectQuiz']);
 const currentQuiz = ref(null);
-const showModal = ref(false);
+const selectedQuiz = ref(null);
+const showSharingModal = ref(false);
+const showAuditLogModal = ref(false);
 
 const availableQuizzesTitle = computed(() => {
   if (props.quizzes.length > 0) {
@@ -16,13 +19,17 @@ const availableQuizzesTitle = computed(() => {
 
 function playQuiz(quiz) {
   currentQuiz.value = quiz;
-  console.log(currentQuiz.value);
   emit('selectQuiz', currentQuiz.value);
 }
 
 function shareQuiz(quiz) {
-  currentQuiz.value = quiz;
-  showModal.value = true;
+  selectedQuiz.value = quiz;
+  showSharingModal.value = true;
+}
+
+function showAuditLog(quiz) {
+  selectedQuiz.value = quiz;
+  showAuditLogModal.value = true;
 }
 </script>
 
@@ -30,13 +37,19 @@ function shareQuiz(quiz) {
   <h1>{{ availableQuizzesTitle }}</h1>
   <div v-if="!currentQuiz" class="quiz-grid">
     <div class="quiz-card" v-for="quiz in quizzes" :key="quiz.quizId" @click="playQuiz(quiz)">
-      <h2>{{ quiz.quizName }}</h2>
-      <p class="category">{{ quiz.category }}</p>
-      <p class="questions">{{ quiz.questions ? `${quiz.questions.length} questions` : 'No questions' }}</p>
-      <button @click.stop="shareQuiz(quiz)" class="share-button">Share</button>
+      <div class="quiz-details">
+        <h2>{{ quiz.quizName }}</h2>
+        <p class="category">{{ quiz.category }}</p>
+        <p class="questions">{{ quiz.questions ? `${quiz.questions.length} questions` : 'No questions' }}</p>
+      </div>
+      <div class="quiz-actions">
+        <button @click.stop="shareQuiz(quiz)" class="share-button">Share</button>
+        <button @click.stop="showAuditLog(quiz)" class="revision-button">Show history</button>
+      </div>
     </div>
   </div>
-  <ShareModal v-if="showModal" :quiz="currentQuiz" @close="showModal = false" />
+  <ShareModal v-if="showSharingModal" :quiz="selectedQuiz" @close="showSharingModal = false"/>
+  <AuditLogModal v-if="showAuditLogModal" :quiz="selectedQuiz" @close="showAuditLogModal = false"/>
 </template>
 
 
@@ -64,8 +77,8 @@ h1 {
   background: var(--bg-very-light-blue);
   padding: 1em;
   display: flex;
-  flex-direction: column;
-  align-items: start;
+  justify-content: space-between;
+  align-items: center;
   border-radius: 0.8em;
   border: 1px solid var(--border-very-light-blue);
 }
@@ -149,6 +162,34 @@ p.questions {
 
 .share-button:hover {
   background: var(--button-bg-hover-blue);
+}
+
+.quiz-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.quiz-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.revision-button {
+  margin-top: 1em;
+  border: none;
+  padding: 0.5em 1em;
+  border-radius: 1em;
+  background: darkslategrey;
+  font-weight: bold;
+  color: white;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.revision-button:hover {
+  background: darkcyan;
 }
 
 </style>

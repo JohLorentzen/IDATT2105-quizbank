@@ -103,7 +103,7 @@ onMounted(fetchQuizes);
       <div v-else>
         <button @click="createQuiz = true"> Create quiz</button>
         <button @click="toggleDeleteMode">Delete quiz</button>
-        <QuizGrid v-show="!showModal" :quizzes="quizzes" @selectQuiz="selectQuiz"/> <!-- Use v-show instead of v-if -->
+        <QuizGrid :quizzes="quizzes" @selectQuiz="selectQuiz"/>
       </div>
       <div v-if="currentQuiz">
         <EditQuiz :quiz="currentQuiz" @submit="handleQuizSubmit"/>
