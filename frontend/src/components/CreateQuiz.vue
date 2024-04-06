@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, watch, onMounted } from "vue";
 import { useUserStore } from "@/stores/user";
+import { useQuizesStore } from "@/stores/quizes";
 import axios from "axios";
 
 const userStore = useUserStore();
@@ -23,12 +24,19 @@ const question = ref({
 
 });
 const categories = ref([]);
+const quizesStore = useQuizesStore();
+
 const fetchCategories = () => {
+    if (quizesStore.getCategories) {
+      categories.value = quizesStore.categories;
+      return;
+    }
     axios.get('http://localhost:8080/rest/quiz/categories', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     }).then(response => {
+      quizesStore.setCategories(response.data);
       categories.value = response.data;
     }, error => {
 
