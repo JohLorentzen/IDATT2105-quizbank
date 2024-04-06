@@ -103,12 +103,19 @@
   justify-content: center;
 }
 
+.soMe h3 {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
 .social-links {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 1rem;
 }
+
 .social-links a {
   color: white;
 }
