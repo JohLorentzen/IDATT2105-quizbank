@@ -20,7 +20,6 @@ const submit = () => {
 </script>
 
 <template>
-    <h1>{{ title }}</h1>
     <form class="form">
         <div class="title">Contact us</div>
         <input type="text" v-model="email" placeholder="Your email" class="input">

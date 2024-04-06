@@ -10,7 +10,7 @@ const chartDataReal = ref([]);
 const abortFetch = ref(true);
 
 const fetchQuizAttempts = () => {
-  if (abortFetch) {
+  if (abortFetch.value) {
     return
   }
 
@@ -50,7 +50,7 @@ const formatDate = (date) => {
 };
 
 onBeforeMount(() => {
-  abortFetch.value = isUserLoggedIn();
+  abortFetch.value = !isUserLoggedIn();
 })
 onMounted(fetchQuizAttempts);
 </script>
