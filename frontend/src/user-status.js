@@ -2,7 +2,6 @@ import router from "@/router/index.js";
 
 export function isUserLoggedIn() {
 
-    console.log(localStorage.getItem('token'))
     if (localStorage.getItem('token')){
         return true;
     }
