@@ -61,6 +61,11 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: () => import('../views/NotFound.vue')
+    },
+    {
+      path: '/login-or-signup',
+      name: 'login-or-signup',
+      component: () => import('../components/modals/LoginOrSignupModal.vue')
     }
   ],
   linkActiveClass: 'active',

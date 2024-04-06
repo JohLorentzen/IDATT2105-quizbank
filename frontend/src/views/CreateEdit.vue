@@ -4,16 +4,21 @@ import QuizGrid from '@/components/QuizGrid.vue';
 import EditQuiz from '@/components/EditQuiz.vue';
 import endpoints from '@/endpoints.json';
 import axios from 'axios';
-import {onMounted, ref} from 'vue';
+import {onBeforeMount, onMounted, ref} from 'vue';
 import {useRouter} from 'vue-router';
+import {isUserLoggedIn} from "@/user-status.js";
 
 const router = useRouter();
 const quizzes = ref([]);
 const createQuiz = ref(false);
 const currentQuiz = ref(null);
 const deleteMode = ref(false);
+const abortFetch = ref(true);
 
 const fetchQuizes = async () => {
+  if (abortFetch) {
+    return;
+  }
 
   const url = `${endpoints.BASE_URL}${endpoints.MY_QUIZZES}`;
   try {
@@ -82,6 +87,9 @@ const deleteQuiz = async (quizId) => {
   }
 };
 
+onBeforeMount(() => {
+  abortFetch.value = isUserLoggedIn();
+})
 onMounted(fetchQuizes);
 </script>
 <template>
