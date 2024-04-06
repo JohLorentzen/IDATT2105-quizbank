@@ -1,10 +1,11 @@
 <script setup>
-import { ref, computed } from 'vue';
-import { useQuizStore } from '@/stores/quiz';
+import {ref, computed, defineEmits} from 'vue';
+import {useQuizStore} from '@/stores/quiz';
 import Question from "@/components/Question.vue";
 import QuizSummary from "@/components/QuizSummary.vue";
 import axios from 'axios';
 import endpoints from '@/endpoints.json';
+import router from "@/router/index.js";
 
 const currentQuestionIndex = ref(0);
 const answers = ref([]);
@@ -12,9 +13,11 @@ const quizCompleted = ref(false);
 const correctAnswersCount = ref(0);
 const showResults = ref(false);
 const props = defineProps({
-  selectedQuiz: Object
+      selectedQuiz: Object
     }
 );
+
+const emit = defineEmits(['backToQuizes']);
 
 
 const incorrectAnswersCount = computed(() => answers.value.length - correctAnswersCount.value);
@@ -78,6 +81,9 @@ function postGrade() {
     });
 }
 
+const handleBackToQuizes = () => {
+  emit('backToQuizes');
+};
 
 </script>
 
@@ -93,12 +99,14 @@ function postGrade() {
           class="question-container"
       />
     </div>
-    <QuizSummary v-else-if="showResults" :questions="selectedQuiz.questions" :answers="answers" />
+    <QuizSummary v-else-if="showResults" :questions="selectedQuiz.questions" :answers="answers"
+                 @backToQuizes="handleBackToQuizes"/>
     <div v-else>
       <button @click="restartQuiz" class="restart-quiz-button">Try again</button>
       <button @click="postGrade" class="check-results-button">Check Results</button>
+      <button @click="handleBackToQuizes" class="back-to-quizes-button">Back to Quizes</button>
     </div>
-    
+
   </div>
 </template>
 
