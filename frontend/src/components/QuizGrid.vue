@@ -6,6 +6,7 @@ import AuditLogModal from './AuditLogModal.vue';
 const props = defineProps(['quizzes']);
 const emit = defineEmits(['selectQuiz']);
 const currentQuiz = ref(null);
+const selectedQuiz = ref(null);
 const showSharingModal = ref(false);
 const showAuditLogModal = ref(false);
 
@@ -18,17 +19,16 @@ const availableQuizzesTitle = computed(() => {
 
 function playQuiz(quiz) {
   currentQuiz.value = quiz;
-  console.log(currentQuiz.value);
   emit('selectQuiz', currentQuiz.value);
 }
 
 function shareQuiz(quiz) {
-  currentQuiz.value = quiz;
+  selectedQuiz.value = quiz;
   showSharingModal.value = true;
 }
 
 function showAuditLog(quiz) {
-  currentQuiz.value = quiz;
+  selectedQuiz.value = quiz;
   showAuditLogModal.value = true;
 }
 </script>
@@ -48,8 +48,8 @@ function showAuditLog(quiz) {
       </div>
     </div>
   </div>
-  <ShareModal v-if="showSharingModal" :quiz="currentQuiz" @close="showSharingModal = false"/>
-  <AuditLogModal v-if="showAuditLogModal" :quiz="currentQuiz" @close="showAuditLogModal = false"/>
+  <ShareModal v-if="showSharingModal" :quiz="selectedQuiz" @close="showSharingModal = false"/>
+  <AuditLogModal v-if="showAuditLogModal" :quiz="selectedQuiz" @close="showAuditLogModal = false"/>
 </template>
 
 
