@@ -1,5 +1,4 @@
-<script setup>
-</script>
+<script setup></script>
 <template>
   <footer class="footer">
     <div class="footer-upper">
@@ -11,15 +10,33 @@
         <router-link to="/about">About Us</router-link>
         <!-- Add more links as needed -->
       </div>
-      <div>
+      <div class="soMe">
         <h3>Follow us</h3>
         <div class="social-links">
-          
+          <a href="https://twitter.com/" target="_blank">
+            <FontAwesomeIcon icon="fa-brands fa-x-twitter" class="fa-3x" />
+          </a>
+          <a href="https://www.facebook.com/" target="_blank">
+            <FontAwesomeIcon icon="fa-brands fa-facebook" class="fa-3x" />
+          </a>
+          <a
+            href="https://www.instagram.com/"
+            target="_blank"
+          >
+            <FontAwesomeIcon icon="fa-brands fa-instagram" class="fa-3x" />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/"
+            target="_blank"
+          >
+            <FontAwesomeIcon icon="fa-brands fa-linkedin" class="fa-3x" />
+          </a>
         </div>
       </div>
+
       <div class="footer-newsletter">
         <h3>Newsletter</h3>
-        <input type="email" placeholder="Your email here">
+        <input type="email" placeholder="Your email here" />
         <button>Subscribe</button>
       </div>
     </div>
@@ -42,24 +59,27 @@
   justify-content: space-between;
 }
 
-.footer-nav, .footer-newsletter {
+.footer-nav,
+.footer-newsletter {
   display: flex;
   flex-direction: column;
 }
 
-.footer-nav h3, .footer-newsletter h3 {
+.footer-nav h3,
+.footer-newsletter h3 {
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 0.5em;
 }
 
-.footer-nav a, .footer-newsletter button {
+.footer-nav a,
+.footer-newsletter button {
   margin-bottom: 5px;
   color: white;
   text-decoration: none;
 }
 
-.footer-newsletter input[type='email'] {
+.footer-newsletter input[type="email"] {
   padding: 5px;
 }
 
@@ -76,16 +96,25 @@
   background-color: var(--text-color-grey);
 }
 
-.social-links {
+.soMe {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.social-links .icon {
-  width: 20px;
-  height: 20px;
-  background-size: contain;
-  margin-right: 10px;
-  /* Add background images for each icon */
+.social-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.social-links a {
+  color: white;
+}
+
+.social-links .fa-3x {
+  font-size: 3em;
 }
 
 .legal-links {
@@ -94,10 +123,7 @@
   gap: 10px;
 }
 
-.legal-links a {
-  color: white;
-  text-decoration: none;
-}
+
 
 @media (min-width: 1480px) {
   .footer {
