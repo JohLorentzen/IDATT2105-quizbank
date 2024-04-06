@@ -13,9 +13,9 @@ const chosenFilters = ref([]);
 
 const fetchFilters = async () => {
   try {
-    if (!quizesStore.getCategories()) {
-      const { data: categories } = await axios.get('http://localhost:8080/rest/quiz/categories', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    if (!quizesStore.getCategories.length > 0) {
+      const {data: categories} = await axios.get('http://localhost:8080/rest/quiz/categories', {
+        headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
       });
       quizesStore.setCategories(categories);
     }
@@ -25,7 +25,7 @@ const fetchFilters = async () => {
     });
 
     filters.value = {
-      categories: quizesStore.getCategories(),
+      categories: quizesStore.getCategories,
       tags
     };
   } catch (error) {

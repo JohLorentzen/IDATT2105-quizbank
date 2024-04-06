@@ -4,7 +4,7 @@ export const useQuizesStore = defineStore('quizes', {
     state: () => ({
         quizes: Array,
         currentQuiz: Number,
-        categories: Array,
+        categories: [],
     }),
     getters: {
 
