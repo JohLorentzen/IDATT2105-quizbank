@@ -3,6 +3,7 @@ package quizbank.config;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import quizbank.model.AuditLogEntry;
 import quizbank.model.Question;
 import quizbank.model.Quiz;
 import quizbank.model.QuizAttempt;
@@ -10,6 +11,7 @@ import quizbank.model.User;
 import quizbank.enums.DifficultyLevel;
 import quizbank.enums.Category;
 import quizbank.enums.QuestionType;
+import quizbank.repository.AuditLogRepository;
 import quizbank.repository.QuizAttemptRepository;
 import quizbank.repository.QuizRepository;
 import quizbank.repository.UserRepository;
@@ -23,7 +25,8 @@ import java.util.List;
 @Configuration
 public class LoadDatabase {
     @Bean
-    CommandLineRunner initDatabase(QuizRepository quizRepository, UserRepository userRepository, QuizAttemptRepository quizAttemptRepository) {
+    CommandLineRunner initDatabase(QuizRepository quizRepository, UserRepository userRepository,
+                                   QuizAttemptRepository quizAttemptRepository, AuditLogRepository auditLogRepository) {
         return args -> {
             User user = userRepository.findByUsername("testuser").orElseGet(() -> {
                 User newUser = new User();
@@ -68,7 +71,33 @@ public class LoadDatabase {
             quizAttemptRepository.saveAll(quizAttempts);
             List<QuizAttempt> quizAttempts2 = getQuizAttempts(user, quiz2);
             quizAttemptRepository.saveAll(quizAttempts2);
+
+            auditLogRepository.saveAll(getAuditLogEntries(quiz1, user));
+            auditLogRepository.saveAll(getAuditLogEntries(quiz2, user));
         };
+    }
+
+    private static List<AuditLogEntry> getAuditLogEntries(Quiz quiz, User user) {
+        List<AuditLogEntry> auditLogEntries = new ArrayList<>();
+        AuditLogEntry auditLogEntry = new AuditLogEntry();
+        auditLogEntry.setQuizId(quiz.getId());
+        auditLogEntry.setAction("Quiz created");
+        auditLogEntry.setTimestamp(LocalDateTime.now().minusHours(quiz.getId()));
+        auditLogEntry.setUsername(user.getUsername());
+        auditLogEntries.add(auditLogEntry);
+        AuditLogEntry auditLogEntry2 = new AuditLogEntry();
+        auditLogEntry2.setQuizId(quiz.getId());
+        auditLogEntry2.setAction("Quiz edited");
+        auditLogEntry2.setTimestamp(LocalDateTime.now().minusHours(1 + quiz.getId()));
+        auditLogEntry2.setUsername(user.getUsername());
+        auditLogEntries.add(auditLogEntry2);
+        AuditLogEntry auditLogEntry3 = new AuditLogEntry();
+        auditLogEntry3.setQuizId(quiz.getId());
+        auditLogEntry3.setAction("Quiz deleted");
+        auditLogEntry3.setTimestamp(LocalDateTime.now().minusHours(5 + quiz.getId()));
+        auditLogEntry3.setUsername(user.getUsername());
+        auditLogEntries.add(auditLogEntry3);
+        return auditLogEntries;
     }
 
     private static List<QuizAttempt> getQuizAttempts(User user, Quiz quiz) {
