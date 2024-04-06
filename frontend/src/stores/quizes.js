@@ -2,12 +2,15 @@ import { defineStore } from 'pinia';
 
 export const useQuizesStore = defineStore('quizes', {
     state: () => ({
-        quizes: [],
-        currentQuiz: 0,
-
+        quizes: Array,
+        currentQuiz: Number,
+        categories: Array,
     }),
     getters: {
-        
+
+        getCategories() {
+            return this.categories;
+        },
         getQuizes() {
             return this.quizes;
         },
@@ -18,6 +21,9 @@ export const useQuizesStore = defineStore('quizes', {
     actions: {
         setQuizes(quizes) {
             this.quizes = quizes;
-        }
+        },
+        setCategories(categories) {
+            this.categories = categories;
+        },
     },
 });

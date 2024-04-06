@@ -13,20 +13,20 @@
       <div class="soMe">
         <h3>Follow us</h3>
         <div class="social-links">
-          <a href="https://twitter.com/" target="_blank">
+          <a href="https://twitter.com/" alt="twitter link" target="_blank">
             <FontAwesomeIcon icon="fa-brands fa-x-twitter" class="fa-3x" />
           </a>
-          <a href="https://www.facebook.com/" target="_blank">
+          <a href="https://www.facebook.com/" alt="facebook link" target="_blank">
             <FontAwesomeIcon icon="fa-brands fa-facebook" class="fa-3x" />
           </a>
           <a
-            href="https://www.instagram.com/"
+            href="https://www.instagram.com/" alt="instagram link"
             target="_blank"
           >
             <FontAwesomeIcon icon="fa-brands fa-instagram" class="fa-3x" />
           </a>
           <a
-            href="https://www.linkedin.com/in/"
+            href="https://www.linkedin.com/in/" alt="linkedin link"
             target="_blank"
           >
             <FontAwesomeIcon icon="fa-brands fa-linkedin" class="fa-3x" />
