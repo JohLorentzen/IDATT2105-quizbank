@@ -62,7 +62,7 @@ main {
   background: var(--bg-very-light-blue-shadow);
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: 50px 80px 1.5em 1fr;
+  grid-auto-rows: max-content;
   padding: 2em 0;
 }
 

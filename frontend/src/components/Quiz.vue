@@ -104,8 +104,10 @@ function postGrade() {
 
 <style scoped>
 .quiz-container {
+  grid-column: 2 / -2;
+  grid-row: 1 / -1;
   max-width: 600px;
-  margin: auto;
+  margin: 0 auto;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;

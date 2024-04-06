@@ -76,37 +76,46 @@ function hideSuggestions() {
 
 
 <template>
-  <div class="search-container" v-on-click-outside="hideSuggestions">
-    <div class="row">
-      <input
-          type="text"
-          placeholder="Search for categories or tags..."
-          autocomplete="off"
-          v-model="searchTerm"
-          @focus="showSuggestions"
-      />
+  <div class="component-container">
+    <div class="search-container" v-on-click-outside="hideSuggestions">
+      <div class="row">
+        <input
+            type="text"
+            placeholder="Search for categories or tags..."
+            autocomplete="off"
+            v-model="searchTerm"
+            @focus="showSuggestions"
+        />
+      </div>
+      <div class="search-results" v-if="showResultContainer">
+        <p>{{ matchingFilterMessage }}</p>
+        <ul>
+          <li v-for="filter in matchingFilters" :key="filter" @click="chooseFilter(filter)">
+            {{ filter }}
+          </li>
+        </ul>
+      </div>
     </div>
-    <div class="search-results" v-if="showResultContainer">
-      <p>{{ matchingFilterMessage }}</p>
+    <div class="chosen-filters-container" v-if="chosenFilters.length > 0">
+      <p>Chosen Filters</p>
       <ul>
-        <li v-for="filter in matchingFilters" :key="filter" @click="chooseFilter(filter)">
+        <li v-for="filter in chosenFilters" :key="filter" @click="removeFilter(filter)">
           {{ filter }}
         </li>
       </ul>
     </div>
   </div>
-  <div class="chosen-filters-container" v-if="chosenFilters.length > 0">
-    <p>Chosen Filters</p>
-    <ul>
-      <li v-for="filter in chosenFilters" :key="filter" @click="removeFilter(filter)">
-        {{ filter }}
-      </li>
-    </ul>
-  </div>
 </template>
 
 
 <style scoped>
+.component-container {
+  display: grid;
+  grid-column: 2 / -2;
+  grid-template-rows: 50px 80px;
+  height: 140px;
+}
+
 .search-container, .chosen-filters-container {
   grid-column: 2 / -2;
   background-color: white;

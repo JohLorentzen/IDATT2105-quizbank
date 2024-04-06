@@ -33,22 +33,30 @@ function closeModal() {
 </script>
 
 <template>
-  <h1>{{ availableQuizzesTitle }}</h1>
-  <div v-if="!currentQuiz" class="quiz-grid">
-    <div class="quiz-card" v-for="quiz in quizzes" :key="quiz.quizId" @click="playQuiz(quiz)">
-      <h2>{{ quiz.quizName }}</h2>
-      <p class="category">{{ quiz.category }}</p>
-      <div class="questions-and-share">
-        <button @click.stop="shareQuiz(quiz)" class="share-button">Share</button>
-        <p class="questions">{{ quiz.questions ? `${quiz.questions.length} questions` : 'No questions' }}</p>
+  <div class="component-container">
+    <h1>{{ availableQuizzesTitle }}</h1>
+    <div v-if="!currentQuiz" class="quiz-grid">
+      <div class="quiz-card" v-for="quiz in quizzes" :key="quiz.quizId" @click="playQuiz(quiz)">
+        <h2>{{ quiz.quizName }}</h2>
+        <p class="category">{{ quiz.category }}</p>
+        <div class="questions-and-share">
+          <button @click.stop="shareQuiz(quiz)" class="share-button">Share</button>
+          <p class="questions">{{ quiz.questions ? `${quiz.questions.length} questions` : 'No questions' }}</p>
+        </div>
       </div>
     </div>
+    <ShareModal v-if="showModal" :quiz="sharedQuiz" @close="closeModal" />
   </div>
-  <ShareModal v-if="showModal" :quiz="sharedQuiz" @close="closeModal" />
 </template>
 
 
 <style scoped>
+.component-container {
+  grid-column: 2 / -2;
+  display: grid;
+  grid-template-rows: 1.5em 1fr;
+}
+
 h1 {
   color: var(--text-color-grey);
   font-size: 0.8rem;
