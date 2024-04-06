@@ -30,16 +30,15 @@ const submitAnswer = (submittedAnswer) => {
     isCorrect = submittedAnswer.trim().toLowerCase() === currentQuestion.solution.trim().toLowerCase();
   } else if (currentQuestion.type === 'MULTIPLE_CHOICE') {
     isCorrect = submittedAnswer === currentQuestion.solution;
-  }
-  else if (currentQuestion.type === 'TRUE_FALSE') {
+  } else if (currentQuestion.type === 'TRUE_FALSE') {
     isCorrect = submittedAnswer === currentQuestion.solution;
   }
-  
+
   if (isCorrect) {
     correctAnswersCount.value++;
   }
 
-  answers.value.push({ submittedAnswer, isCorrect  });
+  answers.value.push({submittedAnswer, isCorrect});
 
   if (currentQuestionIndex.value < props.selectedQuiz.questions.length - 1) {
     currentQuestionIndex.value++;
@@ -76,9 +75,9 @@ function postGrade() {
       Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
   })
-    .catch((error) => {
-      console.log(error);
-    });
+      .catch((error) => {
+        console.log(error);
+      });
 }
 
 const handleBackToQuizes = () => {
@@ -102,6 +101,11 @@ const handleBackToQuizes = () => {
     <QuizSummary v-else-if="showResults" :questions="selectedQuiz.questions" :answers="answers"
                  @backToQuizes="handleBackToQuizes"/>
     <div v-else>
+      <div class="quiz-results">
+        <h3>Quiz Completed!</h3>
+        <p>Correct Answers: {{ correctAnswersCount }}</p>
+        <p>Incorrect Answers: {{ incorrectAnswersCount }}</p>
+      </div>
       <button @click="restartQuiz" class="restart-quiz-button">Try again</button>
       <button @click="postGrade" class="check-results-button">Check Results</button>
       <button @click="handleBackToQuizes" class="back-to-quizes-button">Back to Quizes</button>
