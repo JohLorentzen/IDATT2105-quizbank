@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import quizbank.dto.UserDTO;
 import quizbank.service.UserService;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,7 +51,9 @@ class QuizAttemptsControllerTest {
     @Test
     @WithMockUser
     void getUserQuizAttempts() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/rest/quiz-attempts/1"))
+        when(userService.findUserByUsername(anyString())).thenReturn(new UserDTO());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/rest/quiz-attempts"))
                 .andExpect(status().isOk());
     }
 

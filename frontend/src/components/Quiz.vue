@@ -44,6 +44,7 @@ const submitAnswer = (submittedAnswer) => {
     currentQuestionIndex.value++;
   } else {
     quizCompleted.value = true;
+    postGrade();
   }
 };
 
@@ -65,7 +66,6 @@ function postGrade() {
     correctAnswers: correctAnswersCount.value,
   };
 
-  showResults.value = true;
   axios.post(url, {
     quizId: props.selectedQuiz.quizId,
     totalQuestions: props.selectedQuiz.questions.length,
@@ -107,7 +107,7 @@ const handleBackToQuizes = () => {
         <p>Incorrect Answers: {{ incorrectAnswersCount }}</p>
       </div>
       <button @click="restartQuiz" class="restart-quiz-button">Try again</button>
-      <button @click="postGrade" class="check-results-button">Check Results</button>
+      <button @click="showResults = true" class="show-results-button">Show Results</button>
       <button @click="handleBackToQuizes" class="back-to-quizes-button">Back to Quizes</button>
     </div>
 
