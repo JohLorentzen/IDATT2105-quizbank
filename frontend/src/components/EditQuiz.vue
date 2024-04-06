@@ -122,6 +122,7 @@ const formatChoices = (question) => {
       <option value="MEDIUM">Medium</option>
       <option value="HARD">Hard</option>
     </select>
+    <button @click="addQuestion">Add New Question</button>
     <div v-if="quiz.questions.length > 0">
       <div v-if="quiz.questions[currentQuestionIndex]">
         <h3>{{ quiz.questions[currentQuestionIndex].problem }}</h3>
@@ -185,7 +186,6 @@ const formatChoices = (question) => {
         <button @click="removeQuestion">Remove Question</button>
         <button @click="goToPreviousQuestion">Previous</button>
         <button @click="goToNextQuestion">Next</button>
-        <button @click="addQuestion">Add New Question</button>
       </div>
     </div>
 
