@@ -8,9 +8,11 @@ import quizbank.repository.QuizAttemptRepository;
 import quizbank.repository.QuizRepository;
 import quizbank.repository.UserRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Service class for managing quiz attempts.
+ */
 @Service
 public class QuizAttemptService {
 
@@ -23,11 +25,22 @@ public class QuizAttemptService {
     @Autowired
     private QuizRepository quizRepository;
 
+    /**
+     * Records a quiz attempt.
+     *
+     * @param attemptDto the data transfer object representing the quiz attempt
+     */
     public void recordQuizAttempt(QuizAttemptDTO attemptDto) {
         QuizAttempt attempt = mapToEntity(attemptDto);
         quizAttemptRepository.save(attempt);
     }
 
+    /**
+     * Maps a QuizAttemptDTO to a QuizAttempt entity.
+     *
+     * @param attemptDto the data transfer object representing the quiz attempt
+     * @return the QuizAttempt entity
+     */
     private QuizAttempt mapToEntity(QuizAttemptDTO attemptDto) {
         QuizAttempt attempt = new QuizAttempt();
         attempt.setId(attemptDto.getId());
@@ -39,6 +52,12 @@ public class QuizAttemptService {
         return attempt;
     }
 
+    /**
+     * Fetches all quiz attempts of a user.
+     *
+     * @param userId the ID of the user
+     * @return a list of data transfer objects representing the quiz attempts
+     */
     public List<QuizAttemptDTO> getUserQuizAttempts(Long userId) {
         List<QuizAttempt> attempts = quizAttemptRepository.findByUserId(userId);
         return attempts.stream()
@@ -46,6 +65,12 @@ public class QuizAttemptService {
                 .toList();
     }
 
+    /**
+     * Maps a QuizAttempt entity to a QuizAttemptDTO.
+     *
+     * @param quizAttempt the QuizAttempt entity
+     * @return the data transfer object representing the quiz attempt
+     */
     private QuizAttemptDTO mapToDto(QuizAttempt quizAttempt) {
         QuizAttemptDTO dto = new QuizAttemptDTO();
         dto.setId(quizAttempt.getId());
