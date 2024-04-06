@@ -1,10 +1,17 @@
 <script setup>
-import {RouterView, RouterLink, useRouter} from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user.js'
-import { onMounted, onUnmounted } from "vue";
+import { computed, onMounted, onUnmounted } from "vue";
 
 const userStore = useUserStore();
 const router = useRouter();
+
+const statusText = computed(() => {
+  if (userStore.username) {
+    return "Logout"
+  }
+  return "Login"
+})
 
 const handleLogout = () => {
   if (localStorage.getItem('token')) {
@@ -28,6 +35,12 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('storage', () => {
     const token = localStorage.getItem('token');
+    const username = userStore.username;
+
+    if (username) {
+      localStorage.setItem('username', username);
+    }
+
     if (token) {
       userStore.setLoggedInStatus('Logout');
     } else {
@@ -44,7 +57,7 @@ onUnmounted(() => {
           <RouterLink to="/about">About</RouterLink>
           <RouterLink to="/createEdit">Your quizes</RouterLink>
           <RouterLink to="/quizAttempts">Your progress</RouterLink>
-          <RouterLink class="login" to="/login" @click="handleLogout">{{ userStore.loggedInStatus }}</RouterLink>
+          <RouterLink class="login" to="/login" @click="handleLogout">{{ statusText }}</RouterLink>
           <RouterLink v-if="userStore.username" to="/profile">My Profile</RouterLink>
         </nav>
     </header>
