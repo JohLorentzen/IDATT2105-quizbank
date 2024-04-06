@@ -63,7 +63,6 @@ function removeFilter(filter) {
 
 function showSuggestions() {
   if (searchTerm.value === '' && showResultContainer.value === false) {
-    console.log("This should only run once")
     setMatchingFilters();
   }
   showResultContainer.value = true;
@@ -115,7 +114,13 @@ function hideSuggestions() {
 
 .search-container {
   font-size: 16px;
-  background: var(--bg-very-light-blue-shadow)
+  background: var(--bg-very-light-blue-shadow);
+  grid-row: 1 / 3;
+}
+
+.chosen-filters-container {
+  grid-row: 2 / 3;
+  align-self: center;
 }
 
 .row {
@@ -139,6 +144,8 @@ function hideSuggestions() {
   border-radius: 10px;
   box-shadow: 0 1px 15px rgba(0, 0, 0, 0.2);
   background: white;
+  position: relative;
+  z-index: 10;
 }
 
 .search-results ul, .chosen-filters-container ul {

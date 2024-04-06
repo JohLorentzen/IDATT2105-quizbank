@@ -43,12 +43,12 @@ function shareQuiz(quiz) {
 <style scoped>
 h1 {
   color: var(--text-color-grey);
-  margin-top: 1em;
   font-size: 0.8rem;
   letter-spacing: 0.04em;
   font-weight: bolder;
   grid-column: 2 / -2;
   padding-left: 1em;
+  align-self: center;
 }
 
 .quiz-grid {
