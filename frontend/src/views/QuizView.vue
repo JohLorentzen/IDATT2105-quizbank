@@ -17,7 +17,7 @@ const router = useRouter();
 const abortFetch = ref(true);
 
 function fetchQuizes() {
-  if (abortFetch) {
+  if (abortFetch.value) {
     return;
   }
 
@@ -54,7 +54,7 @@ function filterChosenQuizes(filter) {
 }
 
 onBeforeMount(() => {
-  abortFetch.value = isUserLoggedIn();
+  abortFetch.value = !isUserLoggedIn();
 })
 onMounted(fetchQuizes);
 </script>

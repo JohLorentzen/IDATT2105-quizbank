@@ -15,8 +15,9 @@ const currentQuiz = ref(null);
 const deleteMode = ref(false);
 const abortFetch = ref(true);
 
-const fetchQuizes = async () => {
-  if (abortFetch) {
+async function fetchQuizes() {
+  console.log(abortFetch.value);
+  if (abortFetch.value) {
     return;
   }
 
@@ -35,7 +36,7 @@ const fetchQuizes = async () => {
       console.error('Error fetching quizzes:', error);
     }
   }
-};
+}
 
 const postQuiz = async (quizData) => {
 
@@ -88,7 +89,7 @@ const deleteQuiz = async (quizId) => {
 };
 
 onBeforeMount(() => {
-  abortFetch.value = isUserLoggedIn();
+  abortFetch.value = !isUserLoggedIn();
 })
 onMounted(fetchQuizes);
 </script>

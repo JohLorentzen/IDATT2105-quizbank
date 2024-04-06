@@ -1,3 +1,5 @@
+<script setup>
+</script>
 <template>
   <footer class="footer">
     <div class="footer-upper">
@@ -8,6 +10,12 @@
         <router-link to="/about">Contact</router-link>
         <router-link to="/about">About Us</router-link>
         <!-- Add more links as needed -->
+      </div>
+      <div>
+        <h3>Follow us</h3>
+        <div class="social-links">
+          
+        </div>
       </div>
       <div class="footer-newsletter">
         <h3>Newsletter</h3>
