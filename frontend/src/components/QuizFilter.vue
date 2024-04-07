@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, computed } from "vue";
 import { useQuizStore } from "@/stores/quiz";
 import axios from 'axios';
 import { vOnClickOutside } from '@vueuse/components'
