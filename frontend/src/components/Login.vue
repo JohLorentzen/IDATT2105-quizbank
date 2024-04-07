@@ -102,6 +102,7 @@ function login() {
       userNotFound.value = false;
       localStorage.setItem('token', response.data);
       localStorage.setItem('username', username.value);
+      localStorage.setItem('tokentime', Date.now());
       userStore.setUsername(username.value);
       userStore.setLoggedInStatus('Logout')
       router.push('/quiz');
