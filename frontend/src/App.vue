@@ -12,6 +12,11 @@ import Footer from './components/Footer.vue';
 </template>
 
 <style>
+
+img {
+  max-width: 500px;
+  max-height: 500px;
+}
 .navbar {
   z-index: 10;
 }
