@@ -179,10 +179,8 @@ onMounted(fetchCategories);
         </div>
         <input type="file" id="file" @change="handleFileChange">
       </label>
-      <label for="questionProblem">Question Problem</label>
+      <label for="questionProblem">Question</label>
       <input type="text" id="questionProblem" v-model="question.problem" />
-      <label for="questionSolution" v-if="question.type !== 'TRUE_FALSE'">Question Solution</label>
-       <input type="text" id="questionSolution" v-model="question.solution" v-if="question.type !== 'TRUE_FALSE'"/>
       <label for="questionType">Question Type</label>
       <select v-model="question.type" >
         <option value="" disabled selected>Select question type</option>
@@ -190,6 +188,8 @@ onMounted(fetchCategories);
         <option value="FILL_IN_THE_BLANKS">Fill in the blank</option>
         <option value="TRUE_FALSE">True or False</option>
       </select>
+      <label for="questionSolution" v-if="question.type !== 'TRUE_FALSE'">Answer</label>
+       <input type="text" id="questionSolution" v-model="question.solution" v-if="question.type !== 'TRUE_FALSE'"/>
       <div v-if="question.type === 'MULTIPLE_CHOICE'" class="multiple-choice-container">
         <p class="alternatives-title">Add alternatives</p>
         <div class="add-alternative-container">

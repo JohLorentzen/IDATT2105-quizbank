@@ -31,6 +31,22 @@ const titleText = computed(() => {
   return message;
 })
 
+const deleteBtnText = computed(() => {
+  let displayText = "Delete mode: ";
+  if (deleteMode.value) {
+    displayText += "On";
+  } else {
+    displayText += "Off"
+  }
+  return displayText;
+})
+
+const deleteBtnStyle = computed(() => {
+  return {
+    "deleteOn": deleteMode.value,
+  }
+})
+
 async function fetchQuizes() {
   console.log(abortFetch.value);
   if (abortFetch.value) {
@@ -118,8 +134,16 @@ onMounted(fetchQuizes);
         <p>Get started by creating your own quiz</p>
         <div class="action-buttons">
           <button class="create-quiz-btn" @click="createQuiz = true"> Create quiz</button>
-          <button v-if="quizzes.length > 0" @click="toggleDeleteMode">Delete quiz</button>
+          <button
+              :class="deleteBtnStyle"
+              class="toggle-delete-btn"
+              v-if="quizzes.length > 0"
+              @click="toggleDeleteMode"
+          >
+            {{ deleteBtnText }}
+          </button>
         </div>
+        <p class="warning" v-if="deleteMode">* Warning: You can now delete quizzes by clicking on them</p>
         <QuizGrid v-if="quizzes.length > 0" :quizzes="quizzes" :display-own="true" @selectQuiz="selectQuiz"/>
       </div>
       <div v-if="currentQuiz">
@@ -145,7 +169,7 @@ h1 {
 
 .action-buttons {
   display: flex;
-  margin: 1em 0 2em;
+  margin: 1em 0 0.3em;
   gap: 1em;
 }
 
@@ -154,15 +178,27 @@ h1 {
   align-self: center;
 }
 
-.create-quiz-btn {
+button {
   border: none;
   padding: 1em 2em;
   border-radius: 0.6em;
-  background: var(--button-bg-strong-blue);
   font-weight: bold;
-  color: white;
   font-size: 1rem;
   cursor: pointer;
+}
+
+.create-quiz-btn {
+  background: var(--button-bg-strong-blue);
+  color: white;
+}
+
+.deleteOn {
+  background-color: #ffa69e;
+}
+
+.warning {
+  font-size: 0.8rem;
+  margin-bottom: 2em;
 }
 
 .create-quiz-btn:hover {
