@@ -53,7 +53,7 @@ onMounted(fetchQuizes);
   <main>
     <QuizFilter v-if="quizes.length > 0 && !currentQuiz" @updateFilters="filterChosenQuizes"/>
     <QuizGrid v-if="!currentQuiz" :quizzes="filteredQuizes" @selectQuiz="currentQuiz = $event"/>
-    <Quiz v-if="currentQuiz" :selectedQuiz="currentQuiz" @closeQuiz="closeQuiz"/>
+    <Quiz v-if="currentQuiz" :selectedQuiz="currentQuiz" @closeQuiz="currentQuiz = null"/>
   </main>
 </template>
 
@@ -62,7 +62,7 @@ main {
   background: var(--bg-very-light-blue-shadow);
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-auto-rows: max-content;
+  grid-auto-rows: minmax(min-content, max-content);
   padding: 2em 0;
 }
 

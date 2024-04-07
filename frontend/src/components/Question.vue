@@ -49,8 +49,14 @@ const getImageSrc = (base64Image) => {
 <style scoped>
 
 .question-container {
-  margin-bottom: 20px;
   color: #004494;
+  display: flex;
+  flex-direction: column;
+}
+
+.problem-statement {
+  font-size: 2rem;
+  font-weight: bold;
 }
 
 /* Style for the image container */
@@ -66,26 +72,26 @@ const getImageSrc = (base64Image) => {
   border-radius: 10px; /* Optional: adds rounded corners to the image */
 }
 
-.choices-container {
-  margin-top: 10px;
+.choice-option {
+  margin-top: 0.4em;
 }
 
 .choice-label {
+  font-size: 1.3em;
   color: #004494 ;
-  display: block;
-  margin-bottom: 5px;
+  margin: 0.3em 0 0 0.5em;
   cursor: pointer;
   user-select: none;
+
 }
 
-input[type="radio"] {
-  margin-right: 10px;
+input {
+  margin-top: 1em;
 }
 
 input[type="text"] {
   width: 100%;
   padding: 8px;
-  margin-top: 5px;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -93,11 +99,12 @@ input[type="text"] {
 .submit-button {
   background-color: #0056b3;
   color: white;
-  padding: 10px 15px;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
-  margin-top: 20px;
+  width: 100%;
+  padding: 1em 2em;
+  border-radius: 0.6em;
+  margin-top: 3em;
 }
 
 .submit-button:hover {

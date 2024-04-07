@@ -17,7 +17,6 @@ const availableQuizzesTitle = computed(() => {
 
 function playQuiz(quiz) {
   currentQuiz.value = quiz;
-  console.log(currentQuiz.value);
   emit('selectQuiz', currentQuiz.value);
 }
 

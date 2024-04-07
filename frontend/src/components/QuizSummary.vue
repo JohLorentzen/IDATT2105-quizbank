@@ -5,12 +5,17 @@ const props = defineProps({
   answers: Array,
 });
 
-const toQuizes = () => {
-  emit('toQuizes');
-};
+const emit = defineEmits(['toQuizzes'])
 
+function isCorrect(answer) {
+  return answer.isCorrect ? 'correct' : 'incorrect';
+}
 
-
+function getScore() {
+  const score = props.answers.filter(a => a.isCorrect).length;
+  const numOfQuestions = props.questions.length;
+  return `You got ${score} / ${numOfQuestions} correct answers`
+}
 
 </script>
 <template>
@@ -25,8 +30,8 @@ const toQuizes = () => {
     <tbody>
       <tr v-for="(answer, index) in props.answers" :key="index">
         <td>{{ props.questions[index].problem }}</td>
-        <td :class="answer.isCorrect ? 'correct' : 'incorrect'">
-          {{ answer.submittedAnswer }}
+        <td :class="isCorrect(answer)">
+          {{ answer.submittedAnswer }} ({{ isCorrect(answer) }})
         </td>
         <td>
           <!-- Display the solution only if the answer is incorrect, otherwise indicate correctness -->
@@ -35,12 +40,16 @@ const toQuizes = () => {
       </tr>
     </tbody>
   </table>
-  <button @click="toQuizes">Back to Quizes</button>
+  <p class="score-summary">{{ getScore() }}</p>
+  <div class="btn-container">
+    <button @click="emit('toQuizzes')">Back to Quizes</button>
+  </div>
 </template>
 
 
 <style scoped>
 .results-table {
+  margin-top: 1.2em;
   width: 100%;
   border-collapse: collapse;
 }
@@ -56,4 +65,34 @@ const toQuizes = () => {
   background-color: #f4f4f4;
 }
 
+.correct {
+  background-color: #80ed99;
+}
+
+.incorrect {
+  background-color: #ffa69e;
+}
+
+.score-summary {
+  margin-top: 1em;
+  font-size: 1.4rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+button {
+  display: block;
+  margin: 2em auto 0;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  padding: 1em 2em;
+  border-radius: 0.6em;
+  background-color: #0056b3;
+  color: white;
+}
+
+button:hover {
+  background-color: #004494;
+}
 </style>
