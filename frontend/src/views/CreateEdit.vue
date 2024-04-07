@@ -52,7 +52,6 @@ const deleteBtnStyle = computed(() => {
 })
 
 async function fetchQuizes() {
-  console.log(abortFetch.value);
   if (abortFetch.value) {
     return;
   }
