@@ -36,6 +36,19 @@ function closeModal() {
   selectedQuiz.value = null;
   showSharingModal.value = false;
 }
+
+function difficultyClass(quiz) {
+  switch (quiz.difficultyLevel.toLowerCase()) {
+    case 'hard':
+      return 'difficulty-hard';
+    case 'medium':
+      return 'difficulty-medium';
+    case 'easy':
+      return 'difficulty-easy';
+    default:
+      return '';
+  }
+}
 </script>
 
 <template>
@@ -44,7 +57,10 @@ function closeModal() {
     <div v-if="!currentQuiz" class="quiz-grid">
       <div class="quiz-card" v-for="quiz in quizzes" :key="quiz.quizId" @click="playQuiz(quiz)">
         <h2>{{ quiz.quizName }}</h2>
-        <p class="category">{{ quiz.category }}</p>
+        <div class="category-difficulty-container">
+          <p class="category">{{ quiz.category }}</p>
+          <p class="difficulty" :class="difficultyClass(quiz)">{{ quiz.difficultyLevel }}</p>
+        </div>
         <div class="questions-and-share">
           <button @click.stop="shareQuiz(quiz)" class="share-button">Share</button>
           <button @click.stop="showAuditLog(quiz)" class="revision-button">Show history</button>
@@ -207,6 +223,30 @@ p.questions {
 
   p.questions {
     font-size: 1rem;
+  }
+
+  .difficulty {
+    font-size: 0.8rem;
+    font-weight: bold;
+    align-self: center;
+    margin-left: 1em;
+  }
+
+  .difficulty-hard {
+    color: darkred;
+  }
+
+  .difficulty-medium {
+    color: darkblue;
+  }
+
+  .difficulty-easy {
+    color: darkgreen;
+  }
+
+  .category-difficulty-container {
+    display: flex;
+    justify-content: space-between;
   }
 }
 </style>

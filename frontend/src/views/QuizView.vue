@@ -53,14 +53,25 @@ function filterChosenQuizes(filter) {
   }
 }
 
+function filterDifficulty(difficulty) {
+  if (!difficulty) {
+    filteredQuizes.value = quizes.value;
+    return;
+  }
+
+  filteredQuizes.value = quizes.value.filter(quiz => quiz.difficultyLevel.toLowerCase() === difficulty);
+}
+
 onBeforeMount(() => {
   abortFetch.value = !isUserLoggedIn();
 })
 onMounted(fetchQuizes);
 </script>
+
 <template>
   <main>
-    <QuizFilter v-if="quizes.length > 0 && !currentQuiz" @updateFilters="filterChosenQuizes"/>
+    <QuizFilter v-if="quizes.length > 0 && !currentQuiz" @updateFilters="filterChosenQuizes"  @updateDifficultyFilter="filterDifficulty"
+    style="margin-bottom: 100px"/>
     <QuizGrid v-if="!currentQuiz" :quizzes="filteredQuizes" @selectQuiz="currentQuiz = $event"/>
     <Quiz v-if="currentQuiz" :selectedQuiz="currentQuiz" @closeQuiz="currentQuiz = null"/>
   </main>
