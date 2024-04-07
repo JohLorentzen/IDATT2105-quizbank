@@ -5,6 +5,10 @@ import quizbank.enums.DifficultyLevel;
 
 import java.time.LocalDateTime;
 
+/**
+ * Represents a quiz attempt by a user.
+ * This class is used to transfer quiz attempt data between the frontend and the backend.
+ */
 public class QuizAttemptDTO {
     private Long id;
     private Long quizId;

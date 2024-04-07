@@ -1,5 +1,8 @@
 package quizbank.enums;
 
+/**
+ * Represents the category of a quiz.
+ */
 public enum Category {
     SCIENCE,
     HISTORY,
