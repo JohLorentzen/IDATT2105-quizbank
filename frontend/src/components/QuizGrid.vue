@@ -63,7 +63,7 @@ function difficultyClass(quiz) {
         </div>
         <div class="questions-and-share">
           <button @click.stop="shareQuiz(quiz)" class="share-button">Share</button>
-          <button @click.stop="showAuditLog(quiz)" class="revision-button">Show history</button>
+          <button @click.stop="showAuditLog(quiz)" class="revision-button">History</button>
           <p class="questions">{{ quiz.questions ? `${quiz.questions.length} questions` : 'No questions' }}</p>
         </div>
       </div>
@@ -146,9 +146,10 @@ p.questions {
 }
 
 .share-button {
+  margin-top: 1em;
   border: none;
   padding: 0.5em 1em;
-  border-radius: 1.4em;
+  border-radius: 1em;
   background: var(--button-bg-strong-blue);
   font-weight: bold;
   color: white;
@@ -168,7 +169,7 @@ p.questions {
   background: darkslategrey;
   font-weight: bold;
   color: white;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   cursor: pointer;
 }
 
