@@ -89,9 +89,11 @@ const submit = () => {
   emit("submitQuiz", quiz.value);
 };
 const quizView = ref(true);
+
 const buttonLabel = computed(() =>
   quizView.value ? "Add question" : "Quiz details"
 );
+
 const changeView = () => {
   quizView.value = !quizView.value;
 };
@@ -133,21 +135,22 @@ const addAlternative = (alternative) => {
 };
 onMounted(fetchCategories);
 </script>
+
 <template>
-  <button @click="changeView">{{ buttonLabel }}</button>
-  <button @click="submit" type="submit" :disabled="!isQuizValid">Save quiz</button>
-  <div v-if="quizView">
+  <div v-if="quizView" class="quiz-container">
     <form>
       <label for="quizName">Quiz Name</label>
       <input type="text" id="quizName" v-model="quiz.quizName" />
       <label for="quizDifficulty">Quiz Difficulty</label>
       <select id="quizDifficulty" v-model="quiz.difficultyLevel">
+        <option value="" disabled selected>Select difficulty</option>
         <option value="EASY">Easy</option>
         <option value="MEDIUM">Medium</option>
         <option value="HARD">Hard</option>
       </select>
       <label for="quizCategory">Quiz Category</label>
       <select id="quizCategory" v-model="quiz.category">
+        <option value="" disabled selected>Select category</option>
         <option v-for="category in categories" :value="category">{{ category }}</option>
       </select>
     </form>
@@ -168,7 +171,8 @@ onMounted(fetchCategories);
       <label for="questionSolution">Question Solution</label>
       <input type="text" id="questionSolution" v-model="question.solution" />
       <label for="questionType">Question Type</label>
-      <select v-model="question.type">
+      <select v-model="question.type" >
+        <option value="" disabled selected>Select question type</option>
         <option value="MULTIPLE_CHOICE">Multiple Choice</option>
         <option value="FILL_IN_THE_BLANKS">Fill in the blank</option>
         <option value="TRUE_FALSE">True or False</option>
@@ -179,7 +183,6 @@ onMounted(fetchCategories);
         <button type="button" @click="addAlternative(alternativeInput)">
           Add alternative
         </button>
-
         <p>alternatives</p>
         <ul>
           <li v-for="(answer, index) in question.choices" :key="index">
@@ -196,13 +199,62 @@ onMounted(fetchCategories);
       <button @click="saveQuestion" :disabled="!isQuestionValid">Save question</button>
     </form>
   </div>
+  <div class="button-container">
+    <button @click="changeView">{{ buttonLabel }}</button>
+    <button @click="submit" type="submit" :disabled="!isQuizValid">Save quiz</button>
+  </div>
 </template>
 <style scoped>
+.quiz-container {
+  background-color: var(--bg-light-gray);
+  padding: 1.5em 1.5em 0.5em;
+  border-radius: 1em;
+  max-width: 600px;
+  margin-top: 1em;
+}
+
 form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
 }
+
+label {
+  font-size: 1.1rem;
+  color: var(--text-color-grey);
+}
+
+form input, select {
+  font-size: 1.125rem;
+  margin-bottom: 1em;
+  padding: 0.2em;
+  margin-top: 0.1em;
+}
+
+.button-container {
+  display: flex;
+  margin-top: 1.5em;
+  gap: 1.5em;
+}
+
+.button-container button {
+  border: none;
+  padding: 0.7em 1.4em;
+  background: var(--button-bg-strong-blue);
+  font-weight: bold;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 0.5em;
+}
+
+button:hover {
+  background: var(--button-bg-hover-blue);
+}
+
+button:active {
+  background: var(--button-bg-active-blue);
+}
+
 .custum-file-upload {
   height: 200px;
   width: 300px;

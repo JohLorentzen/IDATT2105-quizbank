@@ -4,7 +4,7 @@ import QuizGrid from '@/components/QuizGrid.vue';
 import EditQuiz from '@/components/EditQuiz.vue';
 import endpoints from '@/endpoints.json';
 import axios from 'axios';
-import {onBeforeMount, onMounted, ref} from 'vue';
+import {computed, onBeforeMount, onMounted, ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {isUserLoggedIn} from "@/user-status.js";
 
@@ -14,6 +14,15 @@ const createQuiz = ref(false);
 const currentQuiz = ref(null);
 const deleteMode = ref(false);
 const abortFetch = ref(true);
+
+const titleText = computed(() => {
+  if (createQuiz.value) {
+    return "Create Quiz"
+  }
+
+  const numberOfQuizzes = quizzes.value.length;
+  return `You have ${numberOfQuizzes} quizzes`
+})
 
 async function fetchQuizes() {
   console.log(abortFetch.value);
@@ -96,13 +105,12 @@ onMounted(fetchQuizes);
 <template>
   <main>
     <div class="create-edit">
-      <h1>Quizes</h1>
-      <div v-if="createQuiz">
-        <CreateQuiz @submitQuiz="handleQuizSubmit"/>
-      </div>
+      <h1>{{ titleText }}</h1>
+      <CreateQuiz v-if="createQuiz" @submitQuiz="handleQuizSubmit"/>
       <div v-else>
+        <p>Get started by creating your own quiz</p>
         <button @click="createQuiz = true"> Create quiz</button>
-        <button @click="toggleDeleteMode">Delete quiz</button>
+        <button v-if="quizzes.length > 0" @click="toggleDeleteMode">Delete quiz</button>
         <QuizGrid :quizzes="quizzes" @selectQuiz="selectQuiz"/>
       </div>
       <div v-if="currentQuiz">
@@ -113,4 +121,20 @@ onMounted(fetchQuizes);
 </template>
 
 <style scoped>
+main {
+  background-color: var(--bg-very-light-blue-shadow);
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-column: 1 / -1;
+  padding: 2em 0;
+}
+
+h1 {
+  font-weight: bold;
+  font-size: 2.6em;
+}
+
+.create-edit {
+  grid-column: 2 / -2;
+}
 </style>
