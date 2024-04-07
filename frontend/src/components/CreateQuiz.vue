@@ -27,10 +27,26 @@ const question = ref({
 const quizStore = useQuizStore();
 
 const categories = ref([]);
+const quizesStore = useQuizesStore();
 
-categories.value = quizStore.getCategories;
-console.log(categories.value);
+const fetchCategories = () => {
+    if (quizesStore.getCategories.length > 0) {
+      categories.value = quizesStore.categories;
+      return;
+    }
+    const url = `${endpoints.BASE_URL}${endpoints.MY_QUIZZES}`;
+    axios.get( url, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    }).then(response => {
+      quizesStore.setCategories(response.data);
+      categories.value = response.data;
+    }, error => {
 
+      console.log("This is axios error " + error);
+    })
+};
 const MAX_IMAGE_SIZE = 5000000; // e.g., 5MB
 const VALID_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
 
