@@ -1,11 +1,11 @@
 <script setup>
 import { onMounted, ref, watch } from "vue";
-import { useQuizesStore } from "@/stores/quizes";
+import { useQuizStore } from "@/stores/quiz";
 import axios from 'axios';
 
 const emit = defineEmits(['updateFilters']);
 
-const quizesStore = useQuizesStore();
+const quizStore = useQuizStore();
 const searchTerm = ref("");
 const filters = ref({ categories: [], tags: [] });
 const matchingFilters = ref([]);
@@ -13,11 +13,11 @@ const chosenFilters = ref([]);
 
 const fetchFilters = async () => {
   try {
-    if (!quizesStore.getCategories.length > 0) {
+    if (!quizStore.getCategories.length) {
       const {data: categories} = await axios.get('http://localhost:8080/rest/quiz/categories', {
         headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
       });
-      quizesStore.setCategories(categories);
+      quizStore.setCategories(categories);
     }
 
     const { data: tags } = await axios.get('http://localhost:8080/rest/quiz/tags', {
@@ -25,7 +25,7 @@ const fetchFilters = async () => {
     });
 
     filters.value = {
-      categories: quizesStore.getCategories,
+      categories: quizStore.getCategories,
       tags
     };
   } catch (error) {

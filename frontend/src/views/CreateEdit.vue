@@ -7,6 +7,7 @@ import axios from 'axios';
 import {onBeforeMount, onMounted, ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {isUserLoggedIn} from "@/user-status.js";
+import {useQuizStore} from "@/stores/quiz";
 
 const router = useRouter();
 const quizzes = ref([]);
@@ -14,6 +15,7 @@ const createQuiz = ref(false);
 const currentQuiz = ref(null);
 const deleteMode = ref(false);
 const abortFetch = ref(true);
+const quizStore = useQuizStore();
 
 async function fetchQuizes() {
   console.log(abortFetch.value);
@@ -36,7 +38,23 @@ async function fetchQuizes() {
       console.error('Error fetching quizzes:', error);
     }
   }
-}
+};
+
+const fetchCategories = () => {
+    if (quizStore.getCategories) {
+      return;
+    }
+    axios.get('http://localhost:8080/rest/quiz/categories', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    }).then(response => {
+      quizStore.setCategories(response.data);
+    }, error => {
+
+      console.log("This is axios error " + error);
+    })
+};
 
 const postQuiz = async (quizData) => {
 
@@ -91,7 +109,7 @@ const deleteQuiz = async (quizId) => {
 onBeforeMount(() => {
   abortFetch.value = !isUserLoggedIn();
 })
-onMounted(fetchQuizes);
+onMounted(fetchQuizes, fetchCategories);
 </script>
 <template>
   <main>

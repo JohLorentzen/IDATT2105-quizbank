@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, watch, onMounted } from "vue";
 import { useUserStore } from "@/stores/user";
-import { useQuizesStore } from "@/stores/quizes";
+import { useQuizStore } from "@/stores/quiz";
 import axios from "axios";
 
 const userStore = useUserStore();
@@ -23,26 +23,12 @@ const question = ref({
   image: null,
 
 });
-const categories = ref([]);
-const quizesStore = useQuizesStore();
 
-const fetchCategories = () => {
-    if (quizesStore.getCategories) {
-      categories.value = quizesStore.categories;
-      return;
-    }
-    axios.get('http://localhost:8080/rest/quiz/categories', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    }).then(response => {
-      quizesStore.setCategories(response.data);
-      categories.value = response.data;
-    }, error => {
+const quizStore = useQuizStore();
 
-      console.log("This is axios error " + error);
-    })
-};
+
+const categories = quizStore.getCategories;
+
 const MAX_IMAGE_SIZE = 5000000; // e.g., 5MB
 const VALID_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
 
@@ -131,7 +117,6 @@ const addAlternative = (alternative) => {
   question.value.choices.push(alternative);
   alternativeInput.value = ""; // Refresh the input field
 };
-onMounted(fetchCategories);
 </script>
 <template>
   <button @click="changeView">{{ buttonLabel }}</button>

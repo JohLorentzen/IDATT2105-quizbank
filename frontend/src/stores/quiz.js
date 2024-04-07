@@ -1,38 +1,36 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
-export const useQuizStore = defineStore('quiz', {
+export const useQuizStore = defineStore("quiz", {
   state: () => ({
-    questions: [],
-    length: 0,
-    currentQuestion: 0,
-    correctAnswers: 0,
-    userAnswers: [],
+    quizes: Array,
+    categories: Array,
+    userAnswers: Array,
   }),
   getters: {
-    getQuestions() {
-      return this.questions;
+    getCategories() {
+      return this.categories;
     },
-    getLength() {
-      return () => {
-        return this.length;
-      };
+    getQuizes() {
+      return this.quizes;
     },
-    getQuestion() {
-      return () => {
-        const question = this.questions[this.currentQuestion];
-        this.currentQuestion++;
-        return question;
-      };
+    getQuiz(quizId) {
+      return this.quizes.find((quiz) => quiz.id === quizId);
     },
+
     getUserAnswers() {
       return this.userAnswers;
     },
   },
   actions: {
-    
+    setQuizes(quizes) {
+      this.quizes = quizes;
+    },
+    setCategories(categories) {
+      this.categories = categories;
+    },
     resetUserAnswers() {
       this.userAnswers = [];
-    }, 
+    },
     setQuestions(questions) {
       this.questions = questions;
       console.log(questions.length);

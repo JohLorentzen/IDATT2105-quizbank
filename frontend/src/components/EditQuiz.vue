@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { useQuizesStore } from "@/stores/quizes";
+import { useQuizStore } from "@/stores/quiz";
 import Papa from "papaparse";
 
 
@@ -12,8 +12,8 @@ const currentQuestionIndex = ref(0);
 const emit = defineEmits(["submit"]);
 const quiz = ref(props.quiz);
 const newAlternative = ref("");
-const quizesStore = useQuizesStore();
-const categories = useQuizesStore().getCategories;
+const quizStore = useQuizStore();
+const categories = quizStore.getCategories;
 
 const submit = () => {
   emit("submit", quiz.value);

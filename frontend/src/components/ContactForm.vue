@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 
-const title = ref('Contact us')
 const email = ref('')
 const message = ref('')
 

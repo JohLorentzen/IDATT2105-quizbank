@@ -1,6 +1,5 @@
 <script setup>
-import {ref, computed, defineEmits} from 'vue';
-import {useQuizStore} from '@/stores/quiz';
+import {ref, computed} from 'vue';
 import Question from "@/components/Question.vue";
 import QuizSummary from "@/components/QuizSummary.vue";
 import axios from 'axios';
@@ -25,7 +24,6 @@ const incorrectAnswersCount = computed(() => answers.value.length - correctAnswe
 const submitAnswer = (submittedAnswer) => {
   const currentQuestion = props.selectedQuiz.questions[currentQuestionIndex.value];
   let isCorrect = false;
-  console.log(currentQuestion);
   if (currentQuestion.type === 'FILL_IN_THE_BLANKS') {
     isCorrect = submittedAnswer.trim().toLowerCase() === currentQuestion.solution.trim().toLowerCase();
   } else if (currentQuestion.type === 'MULTIPLE_CHOICE') {
