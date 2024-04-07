@@ -112,9 +112,16 @@ public class LoadDatabase {
             auditLogRepository.saveAll(getAuditLogEntries(quiz2, user));
 
             // Create Users
-            User user1 = new User("testuser1", new BCryptPasswordEncoder().encode("password"));
-            User user2 = new User("testuser2", new BCryptPasswordEncoder().encode("password"));
-            userRepository.saveAll(Arrays.asList(user1, user2));
+            User user1 = userRepository.findByUsername("testuser1").orElseGet(() -> {
+                User newUser = new User("testuser1", new BCryptPasswordEncoder().encode("password"));
+                return userRepository.save(newUser);
+            });
+
+            User user2 = userRepository.findByUsername("testuser2").orElseGet(() -> {
+                User newUser = new User
+                        ("testuser2", new BCryptPasswordEncoder().encode("password"));
+                return userRepository.save(newUser);
+            });
 
             // Create Quizzes
             Quiz quiz3 = new Quiz();
