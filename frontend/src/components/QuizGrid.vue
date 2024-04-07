@@ -141,12 +141,14 @@ h1 {
 
 .questions-and-share {
   display: flex;
-  justify-content: space-between;
+  justify-content: start;
   align-items: end;
   width: 100%;
+  gap: 0.8em;
 }
 
 p.questions {
+  margin-left: auto;
   font-size: 0.70rem;
   color: var(--text-color-grey);
 }

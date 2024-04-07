@@ -148,7 +148,7 @@ onMounted(fetchQuizes);
           </button>
         </div>
         <p class="warning" v-if="deleteMode">* Warning: You can now delete quizzes by clicking on them</p>
-        <p class="warning" v-if="!deleteMode">* Note: You can edit your quizzes by clicking on them</p>
+        <p class="warning" v-if="!deleteMode && quizzes.length > 0">* Note: You can edit your quizzes by clicking on them</p>
         <QuizGrid v-if="quizzes.length > 0" :quizzes="quizzes" :deleteMode="deleteMode" :display-own="true" @selectQuiz="selectQuiz"/>
       </div>
       <EditQuiz v-if="currentQuiz" :quiz="currentQuiz" @submit="handleQuizSubmit"/>
