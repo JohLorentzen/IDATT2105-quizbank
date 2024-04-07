@@ -11,6 +11,7 @@ import {useQuizStore} from "@/stores/quiz";
 
 const router = useRouter();
 const createQuiz = ref(false);
+const quizzes = ref([]);
 const currentQuiz = ref(null);
 const deleteMode = ref(false);
 const abortFetch = ref(true);
@@ -20,9 +21,7 @@ async function fetchQuizes() {
   if (abortFetch.value) {
     return;
   }
-  if (abortFetch.value) {
-    return;
-  }
+  fetchCategories();
   const url = `${endpoints.BASE_URL}${endpoints.MY_QUIZZES}`;
   try {
     const response = await axios.get(url, {
@@ -31,6 +30,7 @@ async function fetchQuizes() {
       },
     });
     quizStore.setQuizes(response.data);
+    quizzes.value = response.data;  
   } catch (error) {
     if (error.response && [401, 404].includes(error.response.status)) {
       router.push('/login');
@@ -41,12 +41,11 @@ async function fetchQuizes() {
 };
 
 function fetchCategories() {
-  
     if (quizStore.getCategories.length > 0) {
-      console.log("Categories already fetched");
       return;
     }
-    axios.get('http://localhost:8080/rest/quiz/categories', {
+    const url = `${endpoints.BASE_URL}${endpoints.GET_CATEGORIES}`;
+    axios.get( url, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
@@ -59,7 +58,6 @@ function fetchCategories() {
 };
 
 const postQuiz = async (quizData) => {
-
   const url = `${endpoints.BASE_URL}${endpoints.GET_ALL_QUIZZES}`
   try {
     await axios.post(url, quizData, {
@@ -67,31 +65,12 @@ const postQuiz = async (quizData) => {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
-    createQuiz.value = false;
+    
     fetchQuizes();
   } catch (error) {
     console.error('Error posting quiz:', error);
   }
-};
-
-const handleQuizSubmit = (quizData) => {
-  postQuiz(quizData);
-  router.push('/createEdit');
-};
-
-const toggleDeleteMode = () => {
-  deleteMode.value = !deleteMode.value;
-};
-const selectQuiz = (quiz) => {
-  if (deleteMode.value) {
-    const isConfirmed = confirm(`Are you sure you want to delete the quiz "${quiz.quizName}"?`);
-    if (isConfirmed) {
-      deleteQuiz(quiz.quizId);
-    }
-    deleteMode.value = false;
-  } else {
-    currentQuiz.value = quiz;
-  }
+  createQuiz.value = false;
 };
 
 const deleteQuiz = async (quizId) => {
@@ -106,24 +85,45 @@ const deleteQuiz = async (quizId) => {
   } catch (error) {
     console.error('Error deleting quiz:', error);
   }
+  currentQuiz.value = null;
+};
+const handleQuizSubmit = (quizData) => {
+  postQuiz(quizData);
 };
 
+const handleDeleteQuiz = (quizId) => {
+  deleteQuiz(quizId);
+};
+
+const toggleDeleteMode = () => {
+  deleteMode.value = !deleteMode.value;
+};
+const selectQuiz = (quiz) => {
+  if (deleteMode.value) {
+    const isConfirmed = confirm(`Are you sure you want to delete the quiz "${quiz.quizName}"?`);
+    if (isConfirmed) {
+      handleDeleteQuiz(quiz.quizId);
+    }
+  } else {
+    currentQuiz.value = quiz;
+  }
+};
 onBeforeMount(() => {
   abortFetch.value = !isUserLoggedIn();
 })
-onMounted(fetchQuizes, fetchCategories);
+onMounted(fetchQuizes);
 </script>
 <template>
   <main>
     <div class="create-edit">
       <h1>Quizes</h1>
       <div v-if="createQuiz">
-        <CreateQuiz @submitQuiz="handleQuizSubmit"/>
+        <CreateQuiz @submit="handleQuizSubmit"/>
       </div>
       <div v-else>
         <button @click="createQuiz = true"> Create quiz</button>
         <button @click="toggleDeleteMode">Delete quiz</button>
-        <QuizGrid :quizzes="quizStore.getQuizes" @selectQuiz="selectQuiz"/>
+        <QuizGrid :quizzes="quizzes" @selectQuiz="selectQuiz"/>
       </div>
       <div v-if="currentQuiz">
         <EditQuiz :quiz="currentQuiz" @submit="handleQuizSubmit"/>

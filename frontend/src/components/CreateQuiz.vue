@@ -6,7 +6,7 @@ import axios from "axios";
 
 const userStore = useUserStore();
 
-const quiz = ref({                                          
+const quiz = ref({
   quizId: null,
   quizName: "",
   createdByUserId: null,
@@ -21,77 +21,64 @@ const question = ref({
   type: "",
   choices: [],
   image: null,
-
 });
-
 const quizStore = useQuizStore();
-
+const alternativeInput = ref("");
+const emit = defineEmits(["submit"]);
 const categories = ref([]);
-const quizesStore = useQuizesStore();
-
-const fetchCategories = () => {
-    if (quizesStore.getCategories.length > 0) {
-      categories.value = quizesStore.categories;
-      return;
-    }
-    const url = `${endpoints.BASE_URL}${endpoints.MY_QUIZZES}`;
-    axios.get( url, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    }).then(response => {
-      quizesStore.setCategories(response.data);
-      categories.value = response.data;
-    }, error => {
-
-      console.log("This is axios error " + error);
-    })
-};
 const MAX_IMAGE_SIZE = 5000000; // e.g., 5MB
-const VALID_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
+const VALID_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif"];
+const quizView = ref(true);
+
+onMounted(() => {
+  categories.value = quizStore.getCategories;
+});
 
 const handleFileChange = (event) => {
   const file = event.target.files[0];
   if (!file) return;
-
   if (!VALID_IMAGE_TYPES.includes(file.type)) {
-    alert('Invalid file type. Only JPEG, PNG and GIF are allowed.');
+    alert("Invalid file type. Only JPEG, PNG and GIF are allowed.");
     return;
   }
-
   if (file.size > MAX_IMAGE_SIZE) {
     alert(`File is too large. Maximum size is ${MAX_IMAGE_SIZE / 1000000} MB.`);
     return;
   }
-
   const reader = new FileReader();
   reader.readAsDataURL(file);
   reader.onload = () => {
-  const base64String = reader.result.split(',')[1];
-  question.value.image = base64String;
-  } ;
+    const base64String = reader.result.split(",")[1];
+    question.value.image = base64String;
+  };
   reader.onerror = (error) => {
-    console.error('Error reading file:', error);
+    console.error("Error reading file:", error);
   };
 };
 
 const isQuestionValid = computed(() => {
-  return question.value.problem && question.value.solution && question.value.type &&
-         (question.value.type !== 'MULTIPLE_CHOICE' || question.value.choices.length > 0);
+  return (
+    question.value.problem &&
+    question.value.solution &&
+    question.value.type &&
+    (question.value.type !== "MULTIPLE_CHOICE" ||
+      question.value.choices.length > 0)
+  );
 });
+
 const isQuizValid = computed(() => {
-  return quiz.value.quizName && quiz.value.difficultyLevel && quiz.value.category;
+  return (
+    quiz.value.quizName && quiz.value.difficultyLevel && quiz.value.category
+  );
 });
-const alternativeInput = ref("");
-const emit = defineEmits(["submitQuiz"]);
+
 const submit = () => {
   if (!isQuizValid.value) {
     alert("Please fill all quiz fields and add at least one question.");
     return;
   }
-  emit("submitQuiz", quiz.value);
+  emit("submit", quiz.value);
 };
-const quizView = ref(true);
 const buttonLabel = computed(() =>
   quizView.value ? "Add question" : "Quiz details"
 );
@@ -99,16 +86,21 @@ const changeView = () => {
   quizView.value = !quizView.value;
 };
 
-watch(() => question.value.type, (newType) => {
-  if (newType === 'TRUE_FALSE') {
-    question.value.solution = 'TRUE'; // or 'FALSE', depending on your preference
+watch(
+  () => question.value.type,
+  (newType) => {
+    if (newType === "TRUE_FALSE") {
+      question.value.solution = "TRUE"; // or 'FALSE', depending on your preference
+    }
   }
-});
+);
 
 const saveQuestion = (event) => {
   event.preventDefault();
   if (!isQuestionValid.value) {
-    alert("Please fill all question fields and add at least one alternative for multiple choice questions.");
+    alert(
+      "Please fill all question fields and add at least one alternative for multiple choice questions."
+    );
     return;
   }
   question.value.choices.push(question.value.solution);
@@ -136,7 +128,9 @@ const addAlternative = (alternative) => {
 </script>
 <template>
   <button @click="changeView">{{ buttonLabel }}</button>
-  <button @click="submit" type="submit" :disabled="!isQuizValid">Save quiz</button>
+  <button @click="submit" type="submit" :disabled="!isQuizValid">
+    Save quiz
+  </button>
   <div v-if="quizView">
     <form>
       <label for="quizName">Quiz Name</label>
@@ -149,7 +143,9 @@ const addAlternative = (alternative) => {
       </select>
       <label for="quizCategory">Quiz Category</label>
       <select id="quizCategory" v-model="quiz.category">
-        <option v-for="category in categories" :value="category">{{ category }}</option>
+        <option v-for="category in categories" :value="category">
+          {{ category }}
+        </option>
       </select>
     </form>
   </div>
@@ -157,12 +153,27 @@ const addAlternative = (alternative) => {
     <form>
       <label class="custum-file-upload" for="file">
         <div class="icon">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="" viewBox="0 0 24 24"><g stroke-width="0" id="SVGRepo_bgCarrier"></g><g stroke-linejoin="round" stroke-linecap="round" id="SVGRepo_tracerCarrier"></g><g id="SVGRepo_iconCarrier"> <path fill="" d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H7C7.55228 23 8 22.5523 8 22C8 21.4477 7.55228 21 7 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3H18C18.5523 3 19 3.44772 19 4V9C19 9.55228 19.4477 10 20 10C20.5523 10 21 9.55228 21 9V4C21 2.34315 19.6569 1 18 1H10ZM9 7H6.41421L9 4.41421V7ZM14 15.5C14 14.1193 15.1193 13 16.5 13C17.8807 13 19 14.1193 19 15.5V16V17H20C21.1046 17 22 17.8954 22 19C22 20.1046 21.1046 21 20 21H13C11.8954 21 11 20.1046 11 19C11 17.8954 11.8954 17 13 17H14V16V15.5ZM16.5 11C14.142 11 12.2076 12.8136 12.0156 15.122C10.2825 15.5606 9 17.1305 9 19C9 21.2091 10.7909 23 13 23H20C22.2091 23 24 21.2091 24 19C24 17.1305 22.7175 15.5606 20.9844 15.122C20.7924 12.8136 18.858 11 16.5 11Z" clip-rule="evenodd" fill-rule="evenodd"></path> </g></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="" viewBox="0 0 24 24">
+            <g stroke-width="0" id="SVGRepo_bgCarrier"></g>
+            <g
+              stroke-linejoin="round"
+              stroke-linecap="round"
+              id="SVGRepo_tracerCarrier"
+            ></g>
+            <g id="SVGRepo_iconCarrier">
+              <path
+                fill=""
+                d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H7C7.55228 23 8 22.5523 8 22C8 21.4477 7.55228 21 7 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3H18C18.5523 3 19 3.44772 19 4V9C19 9.55228 19.4477 10 20 10C20.5523 10 21 9.55228 21 9V4C21 2.34315 19.6569 1 18 1H10ZM9 7H6.41421L9 4.41421V7ZM14 15.5C14 14.1193 15.1193 13 16.5 13C17.8807 13 19 14.1193 19 15.5V16V17H20C21.1046 17 22 17.8954 22 19C22 20.1046 21.1046 21 20 21H13C11.8954 21 11 20.1046 11 19C11 17.8954 11.8954 17 13 17H14V16V15.5ZM16.5 11C14.142 11 12.2076 12.8136 12.0156 15.122C10.2825 15.5606 9 17.1305 9 19C9 21.2091 10.7909 23 13 23H20C22.2091 23 24 21.2091 24 19C24 17.1305 22.7175 15.5606 20.9844 15.122C20.7924 12.8136 18.858 11 16.5 11Z"
+                clip-rule="evenodd"
+                fill-rule="evenodd"
+              ></path>
+            </g>
+          </svg>
         </div>
         <div class="text">
-          <span>Click to upload image</span>                     
+          <span>Click to upload image</span>
         </div>
-        <input type="file" id="file" @change="handleFileChange">
+        <input type="file" id="file" @change="handleFileChange" />
       </label>
       <label for="questionProblem">Question Problem</label>
       <input type="text" id="questionProblem" v-model="question.problem" />
@@ -189,11 +200,23 @@ const addAlternative = (alternative) => {
       </div>
       <div v-else-if="question.type === 'TRUE_FALSE'">
         <label for="trueOption">True</label>
-        <input type="radio" id="trueOption" value="TRUE" v-model="question.solution">
+        <input
+          type="radio"
+          id="trueOption"
+          value="TRUE"
+          v-model="question.solution"
+        />
         <label for="falseOption">False</label>
-        <input type="radio" id="falseOption" value="FALSE" v-model="question.solution">
+        <input
+          type="radio"
+          id="falseOption"
+          value="FALSE"
+          v-model="question.solution"
+        />
       </div>
-      <button @click="saveQuestion" :disabled="!isQuestionValid">Save question</button>
+      <button @click="saveQuestion" :disabled="!isQuestionValid">
+        Save question
+      </button>
     </form>
   </div>
 </template>
@@ -217,7 +240,7 @@ form {
   background-color: rgba(255, 255, 255, 1);
   padding: 1.5rem;
   border-radius: 10px;
-  box-shadow: 0px 48px 35px -48px rgba(0,0,0,0.1);
+  box-shadow: 0px 48px 35px -48px rgba(0, 0, 0, 0.1);
 }
 
 .custum-file-upload .icon {
