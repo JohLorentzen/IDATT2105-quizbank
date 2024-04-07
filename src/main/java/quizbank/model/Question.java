@@ -7,6 +7,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Represents a question in a quiz.
+ * Each question has a problem, a solution, a type, and a list of choices.
+ */
 @Entity
 public class Question {
     @Id

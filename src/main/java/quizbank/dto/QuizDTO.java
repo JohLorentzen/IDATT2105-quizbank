@@ -2,6 +2,10 @@ package quizbank.dto;
 
 import java.util.List;
 
+/**
+ * Represents a quiz.
+ * This class is used to transfer quiz data between the frontend and the backend.
+ */
 public class QuizDTO {
     private Long quizId;
     private String quizName;

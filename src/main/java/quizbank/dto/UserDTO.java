@@ -1,5 +1,8 @@
 package quizbank.dto;
 
+/**
+ * Represents a user in the system.
+ */
 public class UserDTO {
     private Long id;
 

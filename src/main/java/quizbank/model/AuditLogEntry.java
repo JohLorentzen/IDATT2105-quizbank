@@ -6,6 +6,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 
+/**
+ * Represents an entry in the audit log.
+ */
 @Entity
 public class AuditLogEntry {
     @Id

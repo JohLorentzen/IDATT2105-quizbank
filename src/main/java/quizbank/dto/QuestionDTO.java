@@ -5,12 +5,16 @@ import quizbank.enums.QuestionType;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Represents a question in a quiz.
+ * This class is used to transfer question data between the frontend and the backend.
+ */
 public class QuestionDTO {
     private Long questionId;
     private String problem;
     private String solution;
     private QuestionType type;
-    private List<String> choices; // Include this for multiple-choice questions
+    private List<String> choices;
 
     private Set<String> tags;
     private byte[] image;

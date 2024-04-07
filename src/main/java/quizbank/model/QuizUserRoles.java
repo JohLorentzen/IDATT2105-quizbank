@@ -3,6 +3,10 @@ package quizbank.model;
 import jakarta.persistence.*;
 import quizbank.enums.Role;
 
+/**
+ * Represents a user's role in a quiz.
+ * Each QuizUserRoles has a quiz, a user, and a role.
+ */
 @Entity
 public class QuizUserRoles {
     @Id

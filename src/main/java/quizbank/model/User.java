@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
+/**
+ * Represents a user in the system.
+ */
 @Entity
 @Table(name = "users")
 public class User {
