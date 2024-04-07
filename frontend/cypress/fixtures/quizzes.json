@@ -1,0 +1,110 @@
+[
+    {
+        "quizId": 1,
+        "quizName": "Quizbank project",
+        "createdByUserId": 1,
+        "difficultyLevel": "EASY",
+        "category": "GENERAL_KNOWLEDGE",
+        "questions": [
+            {
+                "questionId": 1,
+                "problem": "Who is Johannes?",
+                "solution": "Lorentzen",
+                "type": "FILL_IN_THE_BLANKS",
+                "choices": [],
+                "tags": [
+                    "developer",
+                    "johannes"
+                ],
+                "image": null
+            },
+            {
+                "questionId": 2,
+                "problem": "Where is Sondre?",
+                "solution": "Hemsedal",
+                "type": "FILL_IN_THE_BLANKS",
+                "choices": [],
+                "tags": [
+                    "sondre",
+                    "developer"
+                ],
+                "image": null
+            },
+            {
+                "questionId": 3,
+                "problem": "What is Jens doing?",
+                "solution": "Coding",
+                "type": "FILL_IN_THE_BLANKS",
+                "choices": [],
+                "tags": [
+                    "jens",
+                    "developer"
+                ],
+                "image": null
+            }
+        ]
+    },
+    {
+        "quizId": 2,
+        "quizName": "Trondheim quiz",
+        "createdByUserId": 1,
+        "difficultyLevel": "MEDIUM",
+        "category": "GEOGRAPHY",
+        "questions": [
+            {
+                "questionId": 4,
+                "problem": "What is Trondheims national dish?",
+                "solution": "Sodd",
+                "type": "MULTIPLE_CHOICE",
+                "choices": [
+                    "Sodd",
+                    "Pizza",
+                    "Burger",
+                    "Pasta"
+                ],
+                "tags": [],
+                "image": null
+            },
+            {
+                "questionId": 5,
+                "problem": "Trondheim is the capital of Norway?",
+                "solution": "No",
+                "type": "MULTIPLE_CHOICE",
+                "choices": [
+                    "Yes",
+                    "No"
+                ],
+                "tags": [],
+                "image": null
+            },
+            {
+                "questionId": 6,
+                "problem": "Is Gløshaugen better than Dragvoll?",
+                "solution": "Yes",
+                "type": "MULTIPLE_CHOICE",
+                "choices": [
+                    "Yes",
+                    "No"
+                ],
+                "tags": [],
+                "image": null
+            }
+        ]
+    },
+    {
+        "quizId": 5,
+        "quizName": "Test",
+        "createdByUserId": 2,
+        "difficultyLevel": "MEDIUM",
+        "category": "ENTERTAINMENT",
+        "questions": []
+    },
+    {
+        "quizId": 10,
+        "quizName": "Football players",
+        "createdByUserId": 2,
+        "difficultyLevel": "MEDIUM",
+        "category": "GEOGRAPHY",
+        "questions": []
+    }
+]
