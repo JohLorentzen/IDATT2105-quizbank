@@ -16,16 +16,17 @@ const props = defineProps({
       selectedQuiz: Object
     }
 );
+const emit = defineEmits('closeQuiz')
 
-const emit = defineEmits(['backToQuizes']);
-
+const finishedQuizTitle = computed(() => {
+  return (showResults.value) ? "Results" : "Quiz Completed"
+})
 
 const incorrectAnswersCount = computed(() => answers.value.length - correctAnswersCount.value);
 
 const submitAnswer = (submittedAnswer) => {
   const currentQuestion = props.selectedQuiz.questions[currentQuestionIndex.value];
   let isCorrect = false;
-  console.log(currentQuestion);
   if (currentQuestion.type === 'FILL_IN_THE_BLANKS') {
     isCorrect = submittedAnswer.trim().toLowerCase() === currentQuestion.solution.trim().toLowerCase();
   } else if (currentQuestion.type === 'MULTIPLE_CHOICE') {
@@ -80,61 +81,86 @@ function postGrade() {
       });
 }
 
-const handleBackToQuizes = () => {
-  emit('backToQuizes');
-};
-
 </script>
 
 <template>
-  <div class="quiz-container">
-    <h2 class="quiz-header">{{ selectedQuiz.quizName }}</h2>
-    <div v-if="!quizCompleted">
-      <Question
-          v-if="selectedQuiz.questions.length"
-          :key="currentQuestionIndex"
-          :question="selectedQuiz.questions[currentQuestionIndex]"
-          @submitAnswer="submitAnswer"
-          class="question-container"
-      />
-    </div>
-    <QuizSummary v-else-if="showResults" :questions="selectedQuiz.questions" :answers="answers"
-                 @backToQuizes="handleBackToQuizes"/>
-    <div v-else>
-      <div class="quiz-results">
-        <h3>Quiz Completed!</h3>
-        <p>Correct Answers: {{ correctAnswersCount }}</p>
-        <p>Incorrect Answers: {{ incorrectAnswersCount }}</p>
+  <div class="component-container">
+    <div class="quiz-container">
+      <h2 v-if="!quizCompleted" class="quiz-header">{{ selectedQuiz.quizName }}</h2>
+      <h2 v-else class="finished-header">{{ finishedQuizTitle }}</h2>
+      <div v-if="!quizCompleted">
+        <Question
+            v-if="selectedQuiz.questions.length"
+            :key="currentQuestionIndex"
+            :question="selectedQuiz.questions[currentQuestionIndex]"
+            @submitAnswer="submitAnswer"
+            class="question-container"
+        />
       </div>
-      <button @click="restartQuiz" class="restart-quiz-button">Try again</button>
-      <button @click="showResults = true" class="show-results-button">Show Results</button>
-      <button @click="handleBackToQuizes" class="back-to-quizes-button">Back to Quizes</button>
+      <QuizSummary v-else-if="showResults" :questions="selectedQuiz.questions" :answers="answers" @to-quizzes="emit('closeQuiz')"/>
+      <div v-else class="finished-buttons">
+        <button @click="restartQuiz" class="restart-quiz-button">Try again</button>
+        <button @click="postGrade" class="check-results-button">Check Results</button>
+        <button @click="emit('closeQuiz')" class="back-to-quizes-button">Back to Quizes</button>
+      </div>
     </div>
-
   </div>
 </template>
 
 <style scoped>
+.component-container {
+  grid-column: 2 / -2;
+  height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .quiz-container {
   max-width: 600px;
-  margin: auto;
-  padding: 20px;
-  border: 1px solid #ccc;
+  padding: 2em;
   border-radius: 8px;
   background-color: #f9f9f9;
 }
 
 .quiz-header {
-  margin-bottom: 20px;
+  font-size: 1rem;
+  color: var(--text-color-light-grey)
 }
 
-.question-container {
-  margin-bottom: 20px;
-}
-
-
-.quiz-results {
+.finished-header {
   text-align: center;
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.finished-buttons {
+  margin-top: 2em;
+  display: flex;
+  justify-content: center;
+  gap: 2em;
+}
+
+button {
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  padding: 1em 2em;
+  border-radius: 0.6em;
+}
+
+.check-results-button {
+  background-color: #0056b3;
+  color: white;
+}
+
+.check-results-button:hover {
+  background-color: #004494;
+}
+
+.restart-quiz-button:hover {
+  background-color: var(--text-color-light-grey);
+  color: var(--text-color-white)
 }
 
 .quiz-results h3 {
@@ -145,19 +171,5 @@ const handleBackToQuizes = () => {
 .quiz-results p {
   font-size: 16px;
   margin: 5px 0;
-}
-
-.try-again-button {
-  background-color: #28a745;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 20px;
-}
-
-.try-again-button:hover {
-  background-color: #218838;
 }
 </style>
