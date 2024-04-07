@@ -35,7 +35,7 @@ const alternativesText = computed(() => {
 })
 
 const fetchCategories = () => {
-    if (quizesStore.getCategories) {
+    if (quizesStore.getCategories.length > 0) {
       categories.value = quizesStore.categories;
       return;
     }

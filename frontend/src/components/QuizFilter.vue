@@ -1,14 +1,14 @@
 <script setup>
-import {onMounted, ref, watch, defineEmits, computed} from "vue";
-import { useQuizesStore } from "@/stores/quizes";
+import {computed, defineEmits, onMounted, ref, watch} from "vue";
+import {useQuizesStore} from "@/stores/quizes";
 import axios from 'axios';
-import { vOnClickOutside } from '@vueuse/components'
+import {vOnClickOutside} from '@vueuse/components'
 
-const emit = defineEmits(['updateFilters']);
+const emit = defineEmits(['updateFilters', 'updateDifficultyFilter', 'updateSharedStatusFilter']);
 
 const quizesStore = useQuizesStore();
 const searchTerm = ref("");
-const filters = ref({ categories: [], tags: [] });
+const filters = ref({categories: [], tags: []});
 const matchingFilters = ref([]);
 const chosenFilters = ref([]);
 const showResultContainer = ref(false);
@@ -33,8 +33,8 @@ const fetchFilters = async () => {
       quizesStore.setCategories(categories);
     }
 
-    const { data: tags } = await axios.get('http://localhost:8080/rest/quiz/tags', {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    const {data: tags} = await axios.get('http://localhost:8080/rest/quiz/tags', {
+      headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
     });
 
     filters.value = {
@@ -85,6 +85,17 @@ function hideSuggestions() {
   showResultContainer.value = false;
 }
 
+const selectedDifficulty = ref('');
+
+function filterDifficulty() {
+  emit('updateDifficultyFilter', selectedDifficulty.value);
+}
+
+const selectedSharedStatus = ref(false);
+
+function filterSharedStatus() {
+  emit('updateSharedStatusFilter', selectedSharedStatus.value);
+}
 </script>
 
 
@@ -109,13 +120,27 @@ function hideSuggestions() {
         </ul>
       </div>
     </div>
-    <div class="chosen-filters-container" v-if="chosenFilters.length > 0">
+    <div class="chosen-filters-container" v-if="chosenFilters?.length > 0">
       <p>Chosen Filters</p>
       <ul>
         <li v-for="filter in chosenFilters" :key="filter" @click="removeFilter(filter)">
           {{ filter }}
         </li>
       </ul>
+    </div>
+    <div class="custom-select-container">
+      <label for="difficultyFilter">Filter by difficulty</label>
+      <select class="custom-select" id="difficultySelect" v-model="selectedDifficulty" @change="filterDifficulty">
+        <option value="">All</option>
+        <option value="easy">Easy</option>
+        <option value="medium">Medium</option>
+        <option value="hard">Hard</option>
+      </select>
+    </div>
+    <div class="custom-checkbox-container">
+      <input type="checkbox" id="sharedFilter" v-model="selectedSharedStatus" @change="filterSharedStatus"
+             class="share-check-box">
+      <label for="sharedFilter">Only show quizzes shared with me</label>
     </div>
   </div>
 </template>
@@ -223,6 +248,57 @@ function hideSuggestions() {
   cursor: pointer;
 }
 
+.custom-select-container {
+  width: 100%;
+  max-width: 300px; /* Adjust based on your layout needs */
+  margin: 0 auto;
+  position: relative;
+}
+
+.custom-select {
+  display: block;
+  width: 100%;
+  padding: 0.6em 1.4em 0.5em 0.8em;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid #ccc;
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  background-color: white;
+  background-repeat: no-repeat, repeat;
+  background-position: right 0.7em top 50%, 0 0;
+  background-size: 0.65em auto, 100%;
+}
+
+.custom-select:focus {
+  border-color: #aaa;
+  outline: none;
+}
+
+.custom-select-container:focus-within .custom-select {
+  border-color: #aaa;
+}
+
+.custom-checkbox-container {
+  display: flex;
+  align-items: center;
+}
+
+.custom-checkbox-container label {
+  margin-left: 10px;
+}
+
+.share-check-box {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  align-self: center;
+}
+
+.share-check-box:checked {
+  background-color: #2196F3;
+}
 
 @media (min-width: 720px) {
   .search-container {

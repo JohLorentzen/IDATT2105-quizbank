@@ -6,7 +6,7 @@
         <h3>Links</h3>
         <router-link to="/login">Log In</router-link>
         <router-link to="/createEdit">Create quiz</router-link>
-        <router-link to="/about">Contact</router-link>
+        <a href="mailto:support@quizbank.com">Contact</a>
         <router-link to="/about">About Us</router-link>
         <!-- Add more links as needed -->
       </div>

@@ -11,6 +11,8 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
+    int THREE_HOURS = 1000 * 60 * 60 * 3;
+
     private String secret = "yourSecretKey12354565465123121321656464yourSecretKey12354565465123121321656464";
 
     public String extractUsername(String token) {
@@ -37,7 +39,7 @@ public class JwtUtil {
     public String generateToken(String username) {
         return Jwts.builder().setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 Hours
+                .setExpiration(new Date(System.currentTimeMillis() + THREE_HOURS))
                 .signWith(SignatureAlgorithm.HS256, secret).compact();
     }
 
