@@ -2,9 +2,9 @@ import { defineStore } from "pinia";
 
 export const useQuizStore = defineStore("quiz", {
   state: () => ({
-    quizes: Array,
-    categories: Array,
-    userAnswers: Array,
+    quizes: [],
+    categories: [],
+    userAnswers: [],
   }),
   getters: {
     getCategories() {

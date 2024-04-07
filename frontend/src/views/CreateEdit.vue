@@ -10,7 +10,6 @@ import {isUserLoggedIn} from "@/user-status.js";
 import {useQuizStore} from "@/stores/quiz";
 
 const router = useRouter();
-const quizzes = ref([]);
 const createQuiz = ref(false);
 const currentQuiz = ref(null);
 const deleteMode = ref(false);
@@ -18,11 +17,12 @@ const abortFetch = ref(true);
 const quizStore = useQuizStore();
 
 async function fetchQuizes() {
-  console.log(abortFetch.value);
   if (abortFetch.value) {
     return;
   }
-
+  if (abortFetch.value) {
+    return;
+  }
   const url = `${endpoints.BASE_URL}${endpoints.MY_QUIZZES}`;
   try {
     const response = await axios.get(url, {
@@ -30,7 +30,7 @@ async function fetchQuizes() {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
-    quizzes.value = response.data;
+    quizStore.setQuizes(response.data);
   } catch (error) {
     if (error.response && [401, 404].includes(error.response.status)) {
       router.push('/login');
@@ -40,8 +40,10 @@ async function fetchQuizes() {
   }
 };
 
-const fetchCategories = () => {
-    if (quizStore.getCategories) {
+function fetchCategories() {
+  
+    if (quizStore.getCategories.length > 0) {
+      console.log("Categories already fetched");
       return;
     }
     axios.get('http://localhost:8080/rest/quiz/categories', {
@@ -121,7 +123,7 @@ onMounted(fetchQuizes, fetchCategories);
       <div v-else>
         <button @click="createQuiz = true"> Create quiz</button>
         <button @click="toggleDeleteMode">Delete quiz</button>
-        <QuizGrid :quizzes="quizzes" @selectQuiz="selectQuiz"/>
+        <QuizGrid :quizzes="quizStore.getQuizes" @selectQuiz="selectQuiz"/>
       </div>
       <div v-if="currentQuiz">
         <EditQuiz :quiz="currentQuiz" @submit="handleQuizSubmit"/>
