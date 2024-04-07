@@ -1,12 +1,14 @@
 <script setup>
 import {computed, ref} from 'vue';
 import ShareModal from './ShareModal.vue';
+import AuditLogModal from './AuditLogModal.vue';
 
 const props = defineProps(['quizzes']);
 const emit = defineEmits(['selectQuiz']);
 const currentQuiz = ref(null);
-const sharedQuiz = ref(null);
-const showModal = ref(false);
+const showSharingModal = ref(false);
+const selectedQuiz = ref(null);
+const showAuditLogModal = ref(false);
 
 const availableQuizzesTitle = computed(() => {
   if (props.quizzes.length > 0) {
@@ -21,13 +23,18 @@ function playQuiz(quiz) {
 }
 
 function shareQuiz(quiz) {
-  sharedQuiz.value = quiz;
-  showModal.value = true;
+  selectedQuiz.value = quiz;
+  showSharingModal.value = true;
+}
+
+function showAuditLog(quiz) {
+  selectedQuiz.value = quiz;
+  showAuditLogModal.value = true;
 }
 
 function closeModal() {
-  sharedQuiz.value = null;
-  showModal.value = false;
+  selectedQuiz.value = null;
+  showSharingModal.value = false;
 }
 </script>
 
@@ -40,12 +47,15 @@ function closeModal() {
         <p class="category">{{ quiz.category }}</p>
         <div class="questions-and-share">
           <button @click.stop="shareQuiz(quiz)" class="share-button">Share</button>
+          <button @click.stop="showAuditLog(quiz)" class="revision-button">Show history</button>
           <p class="questions">{{ quiz.questions ? `${quiz.questions.length} questions` : 'No questions' }}</p>
         </div>
       </div>
     </div>
     <ShareModal v-if="showModal" :quiz="sharedQuiz" @close="closeModal" />
   </div>
+  <ShareModal v-if="showSharingModal" :quiz="selectedQuiz" @close="showSharingModal = false"/>
+  <AuditLogModal v-if="showAuditLogModal" :quiz="selectedQuiz" @close="showAuditLogModal = false"/>
 </template>
 
 
@@ -133,6 +143,22 @@ p.questions {
 
 .share-button:hover {
   background: var(--button-bg-hover-blue);
+}
+
+.revision-button {
+  margin-top: 1em;
+  border: none;
+  padding: 0.5em 1em;
+  border-radius: 1em;
+  background: darkslategrey;
+  font-weight: bold;
+  color: white;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.revision-button:hover {
+  background: darkcyan;
 }
 
 @media (min-width: 720px) {

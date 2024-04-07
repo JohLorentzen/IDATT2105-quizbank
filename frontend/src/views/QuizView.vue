@@ -1,5 +1,6 @@
 <script setup>
-import {onMounted, ref} from 'vue';
+import { isUserLoggedIn } from "@/user-status.js";
+import {onBeforeMount, onMounted, ref} from 'vue';
 import axios from 'axios';
 import {useRouter} from 'vue-router';
 import Quiz from '@/components/Quiz.vue';
@@ -13,8 +14,13 @@ const currentQuiz = ref(null);
 const quizes = ref([]);
 const filteredQuizes = ref([])
 const router = useRouter();
+const abortFetch = ref(true);
 
 function fetchQuizes() {
+  if (abortFetch.value) {
+    return;
+  }
+
   const url = `${endpoints.BASE_URL}${endpoints.GET_ALL_QUIZZES}`
 
   axios.get(url, {
@@ -47,6 +53,9 @@ function filterChosenQuizes(filter) {
   }
 }
 
+onBeforeMount(() => {
+  abortFetch.value = !isUserLoggedIn();
+})
 onMounted(fetchQuizes);
 </script>
 <template>

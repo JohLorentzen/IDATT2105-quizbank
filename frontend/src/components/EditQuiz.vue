@@ -1,6 +1,8 @@
 <script setup>
 import { ref } from "vue";
+import { useQuizesStore } from "@/stores/quizes";
 import Papa from "papaparse";
+
 
 const props = defineProps({
   quiz: Object,
@@ -10,6 +12,8 @@ const currentQuestionIndex = ref(0);
 const emit = defineEmits(["submit"]);
 const quiz = ref(props.quiz);
 const newAlternative = ref("");
+const quizesStore = useQuizesStore();
+const categories = useQuizesStore().getCategories;
 
 const submit = () => {
   emit("submit", quiz.value);
@@ -116,12 +120,15 @@ const formatChoices = (question) => {
     <p>Difficulty: {{ quiz.difficultyLevel }}</p>
     <p>Questions: {{ quiz.questions.length }}</p>
     <input type="text" v-model="quiz.quizName" />
-    <input type="text" v-model="quiz.category" />
+    <select v-model="quiz.category">
+        <option v-for="category in categories" :value="category">{{ category }}</option>
+      </select>
     <select v-model="quiz.difficultyLevel">
       <option value="EASY">Easy</option>
       <option value="MEDIUM">Medium</option>
       <option value="HARD">Hard</option>
     </select>
+    <button @click="addQuestion">Add New Question</button>
     <div v-if="quiz.questions.length > 0">
       <div v-if="quiz.questions[currentQuestionIndex]">
         <h3>{{ quiz.questions[currentQuestionIndex].problem }}</h3>
@@ -185,7 +192,6 @@ const formatChoices = (question) => {
         <button @click="removeQuestion">Remove Question</button>
         <button @click="goToPreviousQuestion">Previous</button>
         <button @click="goToNextQuestion">Next</button>
-        <button @click="addQuestion">Add New Question</button>
       </div>
     </div>
 

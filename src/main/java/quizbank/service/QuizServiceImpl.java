@@ -71,7 +71,7 @@ public class QuizServiceImpl implements QuizService {
 
         quizRepository.save(quiz);
 
-        auditLogService.logAction(quizId, "Shared Quiz with User ID: " + userId + " as " + role, sharedBy);
+        auditLogService.logAction(quizId, "Shared quiz with " + user.getUsername() + " as " + role, sharedBy);
     }
 
     @Override

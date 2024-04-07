@@ -4,16 +4,22 @@ import QuizGrid from '@/components/QuizGrid.vue';
 import EditQuiz from '@/components/EditQuiz.vue';
 import endpoints from '@/endpoints.json';
 import axios from 'axios';
-import {onMounted, ref} from 'vue';
+import {onBeforeMount, onMounted, ref} from 'vue';
 import {useRouter} from 'vue-router';
+import {isUserLoggedIn} from "@/user-status.js";
 
 const router = useRouter();
 const quizzes = ref([]);
 const createQuiz = ref(false);
 const currentQuiz = ref(null);
 const deleteMode = ref(false);
+const abortFetch = ref(true);
 
-const fetchQuizes = async () => {
+async function fetchQuizes() {
+  console.log(abortFetch.value);
+  if (abortFetch.value) {
+    return;
+  }
 
   const url = `${endpoints.BASE_URL}${endpoints.MY_QUIZZES}`;
   try {
@@ -30,7 +36,7 @@ const fetchQuizes = async () => {
       console.error('Error fetching quizzes:', error);
     }
   }
-};
+}
 
 const postQuiz = async (quizData) => {
 
@@ -82,6 +88,9 @@ const deleteQuiz = async (quizId) => {
   }
 };
 
+onBeforeMount(() => {
+  abortFetch.value = !isUserLoggedIn();
+})
 onMounted(fetchQuizes);
 </script>
 <template>
@@ -94,7 +103,7 @@ onMounted(fetchQuizes);
       <div v-else>
         <button @click="createQuiz = true"> Create quiz</button>
         <button @click="toggleDeleteMode">Delete quiz</button>
-        <QuizGrid v-show="!showModal" :quizzes="quizzes" @selectQuiz="selectQuiz"/> <!-- Use v-show instead of v-if -->
+        <QuizGrid :quizzes="quizzes" @selectQuiz="selectQuiz"/>
       </div>
       <div v-if="currentQuiz">
         <EditQuiz :quiz="currentQuiz" @submit="handleQuizSubmit"/>

@@ -1,22 +1,28 @@
 <script setup>
-import {ref, onMounted} from 'vue';
+import {ref, onMounted, onBeforeMount} from 'vue';
 import axios from 'axios';
 import endpoints from "@/endpoints.json";
 import LineChart from "@/components/LineChart.vue";
+import {isUserLoggedIn} from "@/user-status.js";
 
 const quizAttempts = ref([]);
 const chartDataReal = ref([]);
+const abortFetch = ref(true);
 
 const fetchQuizAttempts = () => {
-  const url = `${endpoints.BASE_URL}${endpoints.GET_QUIZ_ATTEMPTS}/1`;
-  //TODO: Change the hardcoded user id to the logged in user id
+  if (abortFetch.value) {
+    return
+  }
+
+  const url = `${endpoints.BASE_URL}${endpoints.GET_QUIZ_ATTEMPTS}`;
   axios.get(url, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
   }).then(response => {
     quizAttempts.value = response.data;
-    quizAttempts.value.sort((a, b) => new Date(b.attemptTime) - new Date(a.attemptTime));
+    // Sort by attempt time in ascending order
+    quizAttempts.value.sort((a, b) => new Date(a.attemptTime) - new Date(b.attemptTime));
     prepareChartData();
   }).catch(error => {
     // Error handling
@@ -43,38 +49,68 @@ const formatDate = (date) => {
   return new Date(date).toLocaleString();
 };
 
-
+onBeforeMount(() => {
+  abortFetch.value = !isUserLoggedIn();
+})
 onMounted(fetchQuizAttempts);
 </script>
 
 <template>
   <main>
-    <div>
-      <h2>My Quiz Attempts</h2>
-      <line-chart :chartData="chartDataReal" style="height: 500px"/>
+    <div class="content-container">
+      <div class="chart-container">
+        <h2>My Quiz Attempts</h2>
+        <line-chart :chartData="chartDataReal" style="height: 500px;"></line-chart>
+      </div>
 
-      <table class="quiz-table">
-        <thead>
-        <tr class="quiz-table-header">
-          <th>Quiz Name</th>
-          <th>Date Attempted</th>
-          <th>Score</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="attempt in quizAttempts" :key="attempt.id" class="quiz-table-row">
-          <td>{{ attempt.quizName }}</td>
-          <td>{{ formatDate(attempt.attemptTime) }}</td>
-          <td>{{ attempt.score.toFixed(2) }}%</td>
-        </tr>
-        </tbody>
-      </table>
+      <div class="table-container">
+        <table class="quiz-table">
+          <thead>
+          <tr class="quiz-table-header">
+            <th>Quiz Name</th>
+            <th>Date Attempted</th>
+            <th>Score</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="attempt in quizAttempts" :key="attempt.id" class="quiz-table-row">
+            <td>{{ attempt.quizName }}</td>
+            <td>{{ formatDate(attempt.attemptTime) }}</td>
+            <td>{{ attempt.score.toFixed(2) }}%</td>
+          </tr>
+          </tbody>
+        </table>
 
+      </div>
     </div>
   </main>
 </template>
 
 <style scoped>
+.content-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.chart-container {
+  width: 50%;
+}
+
+.table-container {
+  width: 50%;
+}
+
+@media screen and (max-width: 600px) {
+  .content-container {
+    flex-direction: column;
+  }
+
+  .chart-container, .table-container {
+    width: 100%;
+  }
+}
+
+
 .quiz-table {
   width: 100%;
   border-collapse: collapse;
@@ -102,31 +138,4 @@ onMounted(fetchQuizAttempts);
   background-color: #ddd;
 }
 
-/* Responsive table */
-@media screen and (max-width: 600px) {
-  .quiz-table, .quiz-table-header, .quiz-table-row {
-    display: block;
-  }
-
-  .quiz-table-row {
-    margin-bottom: 10px;
-  }
-
-  .quiz-table-row td {
-    display: block;
-    text-align: right;
-    padding-left: 50%;
-    position: relative;
-  }
-
-  .quiz-table-row td::before {
-    content: attr(data-label);
-    position: absolute;
-    left: 0;
-    width: 50%;
-    padding-left: 15px;
-    font-weight: bold;
-    text-align: left;
-  }
-}
 </style>

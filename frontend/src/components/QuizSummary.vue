@@ -1,9 +1,11 @@
 <script setup>
+import {defineProps, defineEmits, ref, computed} from 'vue';
 
 const props = defineProps({
   questions: Array,
   answers: Array,
 });
+
 
 const emit = defineEmits(['toQuizzes'])
 

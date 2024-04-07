@@ -15,7 +15,5 @@ public interface QuestionService {
 
     QuestionDTO toDto(Question question);
 
-    Question toEntity(QuestionDTO questionDTO, int quizId);
-
     Set<String> getAllTags();
 }

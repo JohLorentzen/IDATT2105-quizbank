@@ -40,9 +40,9 @@ public class QuizAttemptsController {
 
     @Operation(summary = "Get quiz attempts for a user")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved quiz attempts")
-    @GetMapping("/quiz-attempts/{userId}")
-    public ResponseEntity<List<QuizAttemptDTO>> getUserQuizAttempts(@PathVariable Long userId) {
-        List<QuizAttemptDTO> attempts = quizAttemptService.getUserQuizAttempts(userId);
+    @GetMapping("/quiz-attempts")
+    public ResponseEntity<List<QuizAttemptDTO>> getUserQuizAttempts(Authentication authentication) {
+        List<QuizAttemptDTO> attempts = quizAttemptService.getUserQuizAttempts(userService.findUserByUsername(((UserDetails) authentication.getPrincipal()).getUsername()).getId());
         return ResponseEntity.ok(attempts);
     }
 

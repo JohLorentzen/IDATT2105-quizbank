@@ -1,10 +1,12 @@
 <script setup>
 import {onMounted, ref, watch, defineEmits, computed} from "vue";
+import { useQuizesStore } from "@/stores/quizes";
 import axios from 'axios';
 import { vOnClickOutside } from '@vueuse/components'
 
-const emit = defineEmits(['updateFilters'])
+const emit = defineEmits(['updateFilters']);
 
+const quizesStore = useQuizesStore();
 const searchTerm = ref("");
 const filters = ref({ categories: [], tags: [] });
 const matchingFilters = ref([]);
@@ -24,14 +26,23 @@ const matchingFilterMessage = computed(() => {
 
 const fetchFilters = async () => {
   try {
-    const [catResponse, tagResponse] = await Promise.all([
-      axios.get('http://localhost:8080/rest/quiz/categories', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }}),
-      axios.get('http://localhost:8080/rest/quiz/tags', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }})
-    ]);
-    filters.value.categories = catResponse.data;
-    filters.value.tags = tagResponse.data;
+    if (!quizesStore.getCategories.length > 0) {
+      const {data: categories} = await axios.get('http://localhost:8080/rest/quiz/categories', {
+        headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
+      });
+      quizesStore.setCategories(categories);
+    }
+
+    const { data: tags } = await axios.get('http://localhost:8080/rest/quiz/tags', {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    });
+
+    filters.value = {
+      categories: quizesStore.getCategories,
+      tags
+    };
   } catch (error) {
-    console.log("Error fetching filters: " + error);
+    console.error("Error fetching filters: " + error);
   }
 };
 
@@ -47,7 +58,9 @@ function setMatchingFilters() {
 }
 
 function chooseFilter(filter) {
-  chosenFilters.value.push(filter);
+  if (!chosenFilters.value.includes(filter)) {
+    chosenFilters.value.push(filter);
+  }
   searchTerm.value = "";
   setMatchingFilters();
   emit("updateFilters", chosenFilters.value);

@@ -53,11 +53,6 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public Question toEntity(QuestionDTO questionDTO, int quizId) {
-        return new Question();
-    }
-
-    @Override
     public Set<String> getAllTags() {
         return questionRepository.findAll().stream().map(Question::getTags).flatMap(Set::stream).collect(Collectors.toSet());
     }

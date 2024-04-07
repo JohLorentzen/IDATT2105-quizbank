@@ -66,8 +66,10 @@ public class UserService implements UserDetailsService {
     public HttpStatus updateUser(UserDTO newUserInfo, String oldUsername) {
         Optional<User> userSearch = userRepository.findByUsername(newUserInfo.getUsername());
         Optional<User> currentUserWrapped = userRepository.findByUsername(oldUsername);
+        if (currentUserWrapped.isEmpty()) {
+            throw new UsernameNotFoundException("User not found");
+        }
         User currentUser = currentUserWrapped.get();
-
         if (!newUserInfo.getPassword().isEmpty()) {
             currentUser.setPassword(passwordEncoder.encode(newUserInfo.getPassword()));
         }
