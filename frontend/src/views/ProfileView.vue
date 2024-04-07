@@ -1,11 +1,10 @@
 <script setup>
 import ProfileNavBar from "@/components/profile/ProfileNavBar.vue";
+import ProfileEdit from "@/components/profile/ProfileEdit.vue";
 </script>
 
 <template>
-  <main>
-    <ProfileNavBar />
-  </main>
+  <ProfileEdit />
 </template>
 
 <style scoped>

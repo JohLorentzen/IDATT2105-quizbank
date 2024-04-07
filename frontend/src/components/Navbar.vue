@@ -54,7 +54,6 @@ onUnmounted(() => {
         <nav>
           <RouterLink to="/">Home</RouterLink>
           <RouterLink to="/quiz">Play quiz</RouterLink>
-          <RouterLink to="/about">About</RouterLink>
           <RouterLink to="/createEdit">Your quizes</RouterLink>
           <RouterLink to="/quizAttempts">Your progress</RouterLink>
           <RouterLink class="login" to="/login" @click="handleLogout">{{ statusText }}</RouterLink>

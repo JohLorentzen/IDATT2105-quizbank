@@ -85,22 +85,23 @@ function saveChanges() {
 </script>
 
 <template>
-  <ProfileNavBar />
-  <form @submit.prevent="saveChanges">
-    <div class="feedback-container" :class="messageColor" v-if="updateStatus !== ''">
-      <p>{{ messageToUser }}</p>
-    </div>
-    <h1>Edit Profile</h1>
-    <div class="input-container">
-      <label for="username">Username</label>
-      <input type="text" id="username" v-model="username" autocomplete="off" />
-    </div>
-    <div class="input-container">
-      <label for="password">New password (leave blank to keep old password)</label>
-      <input type="password" id="password" v-model="password" />
-    </div>
-    <button :disabled="invalidFields" class="submit-btn" type="submit">{{buttonText}}</button>
-  </form>
+  <main>
+    <form @submit.prevent="saveChanges">
+      <div class="feedback-container" :class="messageColor" v-if="updateStatus !== ''">
+        <p>{{ messageToUser }}</p>
+      </div>
+      <h1>Edit Profile</h1>
+      <div class="input-container">
+        <label for="username">Username</label>
+        <input type="text" id="username" v-model="username" autocomplete="off" />
+      </div>
+      <div class="input-container">
+        <label for="password">New password (leave blank to keep old password)</label>
+        <input type="password" id="password" v-model="password" />
+      </div>
+      <button :disabled="invalidFields" class="submit-btn" type="submit">{{buttonText}}</button>
+    </form>
+  </main>
 </template>
 
 <style scoped>
@@ -109,10 +110,54 @@ h1, form, div, label, input, button, p {
   padding: 0;
 }
 
+main {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  background: var(--bg-very-light-blue);
+}
+
+form {
+  grid-column: 2 / -2;
+  background: var(--bg-light-gray);
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  align-self: center;
+  padding: 2em;
+  border-radius: 0.5em;
+  gap: 1em;
+}
+
+h1 {
+  font-weight: bold;
+  font-size: 2.6rem;
+}
+
+button {
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  padding: 1.4em 2.8em;
+  border-radius: 0.6em;
+  background-color: #0056b3;
+  color: white;
+}
+
+button:hover {
+  background-color: #004494;
+}
+
+button:disabled {
+  background-color: var(--bg-light-gray-shadow);
+  color: var(--text-color-grey);
+  cursor: default;
+}
+
 .feedback-container {
   padding: 0.8em 1.2em;
   border-radius: 3px;
 }
+
 
 .successful {
   background: #c1ff9b;
@@ -132,12 +177,6 @@ h1, form, div, label, input, button, p {
   font-size: 1rem;
 }
 
-.submit-btn {
-  display: block;
-  width: 30%;
-  margin: 1em auto;
-  padding: 0.4em 0.8em;
-}
 
 
 </style>
