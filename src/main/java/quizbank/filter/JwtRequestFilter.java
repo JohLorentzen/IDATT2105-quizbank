@@ -15,6 +15,9 @@ import quizbank.util.JwtUtil;
 
 import java.io.IOException;
 
+/**
+ * Filter class to intercept incoming requests and validate JWT tokens.
+ */
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 

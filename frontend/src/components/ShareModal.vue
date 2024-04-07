@@ -1,26 +1,9 @@
-<template>
-  <div v-if="showModal" class="modal">
-    <div class="modal-content">
-      <h2>Share quiz</h2>
-      <p>Share '{{quiz.quizName}}' with another user</p>
-      <input v-model="shareUserName" placeholder="Username" />
-      <select v-model="viewerOrEditor">
-        <option value="viewer">Viewer</option>
-        <option value="editor">Editor</option>
-      </select>
-      <button @click="shareQuiz">Share</button>
-      <button @click="$emit('close')" style="float: right; background: darkred">Close</button>
-    </div>
-  </div>
-</template>
-
 <script setup>
 import { ref } from 'vue';
 import axios from 'axios';
 
 const props = defineProps(['quiz']);
 const emit = defineEmits(['close']);
-const showModal = ref(true);
 const shareUserName = ref('');
 const viewerOrEditor = ref('viewer');
 
@@ -40,6 +23,27 @@ const shareQuiz = async () => {
 };
 </script>
 
+<template>
+  <div class="modal" @click="emit('close')">
+    <div class="modal-content" @click.stop="">
+      <h2>Share quiz</h2>
+      <p>Share '{{quiz.quizName}}' with another user</p>
+      <div class="input-container">
+        <input v-model="shareUserName" placeholder="Username" />
+        <select v-model="viewerOrEditor">
+          <option value="viewer">Viewer</option>
+          <option value="editor">Editor</option>
+        </select>
+      </div>
+      <div class="button-container">
+        <button @click="shareQuiz">Share</button>
+        <button @click="emit('close')" style="float: right; background: darkred">Close</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+
 <style scoped>
 .modal {
   position: fixed;
@@ -55,18 +59,44 @@ const shareQuiz = async () => {
 }
 
 .modal-content {
+  display: flex;
+  flex-direction: column;
   background-color: white;
-  padding: 20px;
   border-radius: 10px;
-  width: 80%;
-  max-width: 500px;
+  text-align: center;
+  padding: 1.4em 2em;
+}
+
+h2 {
+  font-weight: bold;
+  font-size: 2.4rem;
+}
+
+p {
+  margin-top: 1em;
+}
+
+.input-container {
+  margin-top: 1em;
+  display: flex;
+  width: 100%;
+  gap: 0.4em;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-container {
+  display: flex;
+  width: 100%;
+  gap: 1em;
+  justify-content: center;
+  margin-top: 0.8em;
 }
 
 button {
-  margin-top: 2em;
   border: none;
-  padding: 0.5em;
-  border-radius: 1em;
+  padding: 0.5em 1em;
+  border-radius: 1.4em;
   background: var(--button-bg-strong-blue);
   font-weight: bold;
   color: white;
@@ -91,7 +121,6 @@ input {
 
 select {
   padding: 0.5em;
-  margin: 0.5em;
   border: 1px solid var(--border-very-light-blue);
   border-radius: 0.5em;
 }

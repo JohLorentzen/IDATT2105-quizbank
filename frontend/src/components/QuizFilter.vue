@@ -2,6 +2,7 @@
 import { onMounted, ref, watch } from "vue";
 import { useQuizStore } from "@/stores/quiz";
 import axios from 'axios';
+import { vOnClickOutside } from '@vueuse/components'
 
 const emit = defineEmits(['updateFilters']);
 
@@ -10,6 +11,18 @@ const searchTerm = ref("");
 const filters = ref({ categories: [], tags: [] });
 const matchingFilters = ref([]);
 const chosenFilters = ref([]);
+const showResultContainer = ref(false);
+
+const matchingFilterMessage = computed(() => {
+  const numberOfMatches = matchingFilters.value.length;
+  let message;
+  if (numberOfMatches > 0) {
+    message = "Available filters";
+  } else {
+    message = "No matching filters";
+  }
+  return message;
+})
 
 const fetchFilters = async () => {
   try {
@@ -36,15 +49,20 @@ const fetchFilters = async () => {
 onMounted(fetchFilters);
 
 watch(searchTerm, newValue => {
-  matchingFilters.value = [...filters.value.categories, ...filters.value.tags]
-      .filter(filter => filter.toLowerCase().includes(newValue.toLowerCase()) && !chosenFilters.value.includes(filter));
+  setMatchingFilters()
 });
+
+function setMatchingFilters() {
+  matchingFilters.value = [...filters.value.categories, ...filters.value.tags]
+      .filter(filter => filter.toLowerCase().includes(searchTerm.value.toLowerCase()) && !chosenFilters.value.includes(filter)).slice(0, 10);
+}
 
 function chooseFilter(filter) {
   if (!chosenFilters.value.includes(filter)) {
     chosenFilters.value.push(filter);
   }
   searchTerm.value = "";
+  setMatchingFilters();
   emit("updateFilters", chosenFilters.value);
 }
 
@@ -55,39 +73,62 @@ function removeFilter(filter) {
     emit("updateFilters", chosenFilters.value);
   }
 }
+
+function showSuggestions() {
+  if (searchTerm.value === '' && showResultContainer.value === false) {
+    setMatchingFilters();
+  }
+  showResultContainer.value = true;
+}
+
+function hideSuggestions() {
+  showResultContainer.value = false;
+}
+
 </script>
 
 
 <template>
-  <div class="search-container">
-    <div class="row">
-      <input
-          type="text"
-          placeholder="Search for categories or tags..."
-          autocomplete="off"
-          v-model="searchTerm"
-      />
+  <div class="component-container">
+    <div class="search-container" v-on-click-outside="hideSuggestions">
+      <div class="row">
+        <input
+            type="text"
+            placeholder="Search for categories or tags..."
+            autocomplete="off"
+            v-model="searchTerm"
+            @focus="showSuggestions"
+        />
+      </div>
+      <div class="search-results" v-if="showResultContainer">
+        <p>{{ matchingFilterMessage }}</p>
+        <ul>
+          <li v-for="filter in matchingFilters" :key="filter" @click="chooseFilter(filter)">
+            {{ filter }}
+          </li>
+        </ul>
+      </div>
     </div>
-    <div class="search-results" v-if="searchTerm">
+    <div class="chosen-filters-container" v-if="chosenFilters.length > 0">
+      <p>Chosen Filters</p>
       <ul>
-        <li v-for="filter in matchingFilters" :key="filter" @click="chooseFilter(filter)">
+        <li v-for="filter in chosenFilters" :key="filter" @click="removeFilter(filter)">
           {{ filter }}
         </li>
       </ul>
     </div>
   </div>
-  <div class="chosen-filters-container" v-if="chosenFilters.length > 0">
-    <p>Chosen Filters</p>
-    <ul>
-      <li v-for="filter in chosenFilters" :key="filter" @click="removeFilter(filter)">
-        {{ filter }}
-      </li>
-    </ul>
-  </div>
 </template>
 
 
 <style scoped>
+.component-container {
+  display: grid;
+  grid-column: 2 / -2;
+  grid-template-rows: 50px 80px;
+  height: 140px;
+}
+
 .search-container, .chosen-filters-container {
   grid-column: 2 / -2;
   background-color: white;
@@ -95,13 +136,19 @@ function removeFilter(filter) {
 
 .search-container {
   font-size: 16px;
+  background: var(--bg-very-light-blue-shadow);
+  grid-row: 1 / 3;
+}
+
+.chosen-filters-container {
+  grid-row: 2 / 3;
+  align-self: center;
 }
 
 .row {
-  padding: 0.1em;
   display: flex;
   align-items: center;
-  border: 1px solid #cccccc;
+  border: 1px solid var(--input-field-border);
   border-radius: 0.1em;
 }
 
@@ -118,6 +165,9 @@ function removeFilter(filter) {
   padding: 1em;
   border-radius: 10px;
   box-shadow: 0 1px 15px rgba(0, 0, 0, 0.2);
+  background: white;
+  position: relative;
+  z-index: 10;
 }
 
 .search-results ul, .chosen-filters-container ul {
