@@ -18,6 +18,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Represents a quiz.
+ * Each quiz has a name, a category, a difficulty level, a creator, a list of questions, and a list of user roles.
+ */
 @Entity
 public class Quiz {
     @Id

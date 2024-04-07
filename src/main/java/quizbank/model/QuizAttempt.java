@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Represents a user's attempt at a quiz.
+ * Used to track the user's performance on quizzes.
+ */
 @Entity
 public class QuizAttempt {
     @Id
