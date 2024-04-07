@@ -37,7 +37,7 @@ const shareQuiz = async () => {
       </div>
       <div class="button-container">
         <button @click="shareQuiz">Share</button>
-        <button @click="emit('close')" style="float: right; background: darkred">Close</button>
+        <button id="close-button" @click="emit('close')" style="float: right; background: darkred">Close</button>
       </div>
     </div>
   </div>

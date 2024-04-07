@@ -120,7 +120,7 @@ function filterSharedStatus() {
         </ul>
       </div>
     </div>
-    <div class="chosen-filters-container" v-if="chosenFilters.length > 0">
+    <div class="chosen-filters-container" v-if="chosenFilters?.length > 0">
       <p>Chosen Filters</p>
       <ul>
         <li v-for="filter in chosenFilters" :key="filter" @click="removeFilter(filter)">
