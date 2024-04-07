@@ -22,8 +22,6 @@ const finishedQuizTitle = computed(() => {
   return (showResults.value) ? "Results" : "Quiz Completed"
 })
 
-const incorrectAnswersCount = computed(() => answers.value.length - correctAnswersCount.value);
-
 const submitAnswer = (submittedAnswer) => {
   const currentQuestion = props.selectedQuiz.questions[currentQuestionIndex.value];
   let isCorrect = false;
@@ -58,7 +56,6 @@ const restartQuiz = () => {
 };
 
 function postGrade() {
-
   const url = `${endpoints.BASE_URL}${endpoints.POST_ATTEMPT}`;
 
   const quizAttempt = {
@@ -100,7 +97,7 @@ function postGrade() {
       <QuizSummary v-else-if="showResults" :questions="selectedQuiz.questions" :answers="answers" @to-quizzes="emit('closeQuiz')"/>
       <div v-else class="finished-buttons">
         <button @click="restartQuiz" class="restart-quiz-button">Try again</button>
-        <button @click="postGrade" class="check-results-button">Check Results</button>
+        <button @click="showResults = true" class="check-results-button">Check Results</button>
         <button @click="emit('closeQuiz')" class="back-to-quizes-button">Back to Quizes</button>
       </div>
     </div>
