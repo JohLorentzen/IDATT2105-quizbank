@@ -22,6 +22,15 @@ public class User {
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL)
     private List<Quiz> quizzesCreated;
 
+    public User() {
+    }
+
+    public User(String username, String endcodedPassword) {
+        this.username = username;
+        this.password = endcodedPassword;
+    }
+
+
     public Long getId() {
         return id;
     }

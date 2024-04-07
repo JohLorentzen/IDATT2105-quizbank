@@ -54,7 +54,8 @@ public class SecurityConfig {
     public CorsFilter corsFilter() {
       CorsConfiguration config = new CorsConfiguration();
       config.setAllowCredentials(true);
-      config.addAllowedOrigin("http://localhost:5173"); // Allow your Vue app origin
+      config.addAllowedOrigin("http://localhost:5173");
+      config.addAllowedOrigin("http://localhost:4173");
       config.addAllowedHeader("*");
       config.addAllowedMethod("*");
 
