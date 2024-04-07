@@ -1,5 +1,5 @@
 <script setup>
-import {computed, defineEmits, onMounted, ref, watch} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {useQuizesStore} from "@/stores/quizes";
 import axios from 'axios';
 import {vOnClickOutside} from '@vueuse/components'

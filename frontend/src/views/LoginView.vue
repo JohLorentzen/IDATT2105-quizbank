@@ -1,6 +1,5 @@
 <script setup> 
 import Login from '../components/Login.vue';
-import ForgotPassword from '../components/ForgotPassword.vue';
 
 import { ref } from 'vue';
 

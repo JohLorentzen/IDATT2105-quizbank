@@ -1,5 +1,5 @@
 <script setup>
-import {ref, computed, defineEmits} from 'vue';
+import { ref, computed } from 'vue';
 import {useQuizStore} from '@/stores/quiz';
 import Question from "@/components/Question.vue";
 import QuizSummary from "@/components/QuizSummary.vue";

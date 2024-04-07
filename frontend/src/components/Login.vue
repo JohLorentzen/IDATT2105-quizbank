@@ -131,7 +131,6 @@ function login() {
     <div class="input-container">
       <label for="password">Password</label>
       <input type="password" id="password" v-model="password" placeholder="Type your password" :class="errorStylingPassword"/>
-      <a v-if="!createNewUser" @click="emit('showForgotPassword')">Forgot password?</a>
     </div>
     <button :disabled="userNotFound || usernameExists" class="login-btn" type="submit">{{ currentEvent }}</button>
     <div class="create-user-container">
