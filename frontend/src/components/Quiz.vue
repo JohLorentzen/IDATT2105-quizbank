@@ -83,13 +83,13 @@ function postGrade() {
 <template>
   <div class="component-container">
     <div class="quiz-container">
-      <h2 v-if="!quizCompleted" class="quiz-header">{{ selectedQuiz.quizName }}</h2>
+      <h2 v-if="!quizCompleted" class="quiz-header">{{ selectedQuiz?.quizName }}</h2>
       <h2 v-else class="finished-header">{{ finishedQuizTitle }}</h2>
       <div v-if="!quizCompleted">
         <Question
-            v-if="selectedQuiz.questions.length"
+            v-if="selectedQuiz?.questions.length"
             :key="currentQuestionIndex"
-            :question="selectedQuiz.questions[currentQuestionIndex]"
+            :question="selectedQuiz?.questions[currentQuestionIndex]"
             @submitAnswer="submitAnswer"
             class="question-container"
         />
