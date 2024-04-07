@@ -73,6 +73,7 @@ function newUser() {
   axios.post(url, userData, acceptedStatusCodes).then(response => {
     if (response.status === 201) {
       localStorage.setItem('token', response.data);
+      localStorage.setItem('username', username.value);
       userStore.setUsername(username.value);
       router.push('/quiz');
     } else if (response.status === 409) {
