@@ -7,7 +7,7 @@ import Heroimage from '../components/Heroimage.vue';
     <section class="info-section">
       <h1>What is Quizbank?</h1>
       <p>Quizbank is a platform that allows you to create, share and learn from quizzes. It is a fun and interactive way to learn new things and test your knowledge.</p>
-      <button @click="$router.push('/quiz')">Sign up now</button>
+      <button @click="$router.push('/login')">Sign up now</button>
     </section>
   </main>
 </template>
