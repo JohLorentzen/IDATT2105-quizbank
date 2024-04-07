@@ -10,7 +10,9 @@ const chartDataReal = ref([]);
 const abortFetch = ref(true);
 
 const fetchQuizAttempts = () => {
+  console.log(abortFetch.value)
   if (abortFetch.value) {
+    console.log("ABort")
     return
   }
 
@@ -87,9 +89,21 @@ onMounted(fetchQuizAttempts);
 </template>
 
 <style scoped>
+main {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+}
+
 .content-container {
+  margin-top: 1em;
   display: flex;
   justify-content: space-between;
+  grid-column: 2 / -2;
+}
+
+h2 {
+  font-weight: bold;
+  font-size: 2.4rem;
 }
 
 .chart-container {

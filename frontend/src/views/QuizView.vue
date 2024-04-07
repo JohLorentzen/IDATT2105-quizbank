@@ -101,12 +101,10 @@ function updateSharedStatus(sharedStatus) {
         v-if="!currentQuiz"
         :quizzes="filteredQuizes"
         @selectQuiz="currentQuiz = $event"/>
-    <section v-if="currentQuiz">
-      <button @click="currentQuiz = null" class="go-back">Go back</button>
       <Quiz
         :selectedQuiz="currentQuiz"
-        @closeQuiz="currentQuiz = null"/>
-    </section>
+        @closeQuiz="currentQuiz = null"
+        v-if="currentQuiz"/>
   </main>
 </template>
 
@@ -119,18 +117,7 @@ main {
   grid-auto-rows: minmax(min-content, max-content);
   padding: 2em 0;
 }
-.go-back {
-  background: var(--button-bg-strong-blue);
-  border: none;
-  color: white;
-  border-radius: 0.5em;
-  padding: 0.5em 1em;
-  margin: 1em 0;
-  cursor: pointer;
-}
-.go-back:hover {
-  background: var(--button-bg-hover-blue);
-}
+
 
 @media (min-width: 1480px) {
   main {

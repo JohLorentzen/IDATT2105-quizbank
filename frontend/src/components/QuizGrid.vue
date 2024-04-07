@@ -3,7 +3,7 @@ import {computed, ref} from 'vue';
 import ShareModal from './ShareModal.vue';
 import AuditLogModal from './AuditLogModal.vue';
 
-const props = defineProps(['quizzes']);
+const props = defineProps(['quizzes', 'displayOwn', 'deleteMode']);
 const emit = defineEmits(['selectQuiz']);
 const currentQuiz = ref(null);
 const showSharingModal = ref(false);
@@ -11,6 +11,10 @@ const selectedQuiz = ref(null);
 const showAuditLogModal = ref(false);
 
 const availableQuizzesTitle = computed(() => {
+  if (props.displayOwn) {
+    return "Your quizzes"
+  }
+
   if (props.quizzes.length > 0) {
     return "Available quizzes"
   }
@@ -18,8 +22,10 @@ const availableQuizzesTitle = computed(() => {
 });
 
 function playQuiz(quiz) {
-  currentQuiz.value = quiz;
-  emit('selectQuiz', currentQuiz.value);
+  if (!props.deleteMode) {
+    currentQuiz.value = quiz;
+  }
+  emit('selectQuiz', quiz);
 }
 
 function shareQuiz(quiz) {
@@ -135,12 +141,14 @@ h1 {
 
 .questions-and-share {
   display: flex;
-  justify-content: space-between;
+  justify-content: start;
   align-items: end;
   width: 100%;
+  gap: 0.8em;
 }
 
 p.questions {
+  margin-left: auto;
   font-size: 0.70rem;
   color: var(--text-color-grey);
 }

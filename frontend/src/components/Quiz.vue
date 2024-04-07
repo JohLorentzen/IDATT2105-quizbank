@@ -82,6 +82,7 @@ function postGrade() {
 
 <template>
   <div class="component-container">
+    <button @click="emit('closeQuiz')" class="go-back-btn">Go back</button>
     <div class="quiz-container">
       <h2 v-if="!quizCompleted" class="quiz-header">{{ selectedQuiz?.quizName }}</h2>
       <h2 v-else class="finished-header">{{ finishedQuizTitle }}</h2>
@@ -106,11 +107,27 @@ function postGrade() {
 
 <style scoped>
 .component-container {
+  position: relative;
   grid-column: 2 / -2;
   height: 80vh;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.go-back-btn {
+  position: absolute;
+  top: 1em;
+  left: 1em;
+  background: var(--button-bg-strong-blue);
+  border: none;
+  color: white;
+  border-radius: 0.5em;
+  padding: 0.8em 1.4em;
+  cursor: pointer;
+}
+.go-back-btn:hover {
+  background: var(--button-bg-hover-blue);
 }
 
 .quiz-container {
