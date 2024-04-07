@@ -20,6 +20,10 @@ const titleText = computed(() => {
     return "Create Quiz"
   }
 
+  if (currentQuiz.value) {
+    return "Edit Quiz"
+  }
+
   const numberOfQuizzes = quizzes.value.length;
   let message = `You have ${numberOfQuizzes} `
   switch (numberOfQuizzes) {
@@ -89,6 +93,7 @@ const postQuiz = async (quizData) => {
 const handleQuizSubmit = (quizData) => {
   postQuiz(quizData);
   router.push('/createEdit');
+  currentQuiz.value = null;
 };
 
 const toggleDeleteMode = () => {
@@ -130,7 +135,7 @@ onMounted(fetchQuizes);
     <div class="create-edit">
       <h1>{{ titleText }}</h1>
       <CreateQuiz v-if="createQuiz" @submitQuiz="handleQuizSubmit"/>
-      <div v-else>
+      <div v-else-if="!currentQuiz">
         <p>Get started by creating your own quiz</p>
         <div class="action-buttons">
           <button class="create-quiz-btn" @click="createQuiz = true"> Create quiz</button>
@@ -144,11 +149,10 @@ onMounted(fetchQuizes);
           </button>
         </div>
         <p class="warning" v-if="deleteMode">* Warning: You can now delete quizzes by clicking on them</p>
-        <QuizGrid v-if="quizzes.length > 0" :quizzes="quizzes" :display-own="true" @selectQuiz="selectQuiz"/>
+        <p class="warning" v-if="!deleteMode">* Note: You can edit your quizzes by clicking on them</p>
+        <QuizGrid v-if="quizzes.length > 0" :quizzes="quizzes" :deleteMode="deleteMode" :display-own="true" @selectQuiz="selectQuiz"/>
       </div>
-      <div v-if="currentQuiz">
-        <EditQuiz :quiz="currentQuiz" @submit="handleQuizSubmit"/>
-      </div>
+      <EditQuiz v-if="currentQuiz" :quiz="currentQuiz" @submit="handleQuizSubmit"/>
     </div>
   </main>
 </template>
@@ -187,22 +191,21 @@ button {
   cursor: pointer;
 }
 
-.create-quiz-btn {
-  background: var(--button-bg-strong-blue);
-  color: white;
-}
-
 .deleteOn {
   background-color: #ffa69e;
 }
 
 .warning {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   margin-bottom: 2em;
+}
+
+.create-quiz-btn {
+  background: var(--button-bg-strong-blue);
+  color: white;
 }
 
 .create-quiz-btn:hover {
   background: var(--button-bg-hover-blue);
 }
-
 </style>

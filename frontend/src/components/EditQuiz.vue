@@ -1,7 +1,9 @@
 <script setup>
-import { ref } from "vue";
+import {computed, ref} from "vue";
 import { useQuizesStore } from "@/stores/quizes";
 import Papa from "papaparse";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import router from "@/router/index.js";
 
 
 const props = defineProps({
@@ -14,6 +16,14 @@ const quiz = ref(props.quiz);
 const newAlternative = ref("");
 const quizesStore = useQuizesStore();
 const categories = useQuizesStore().getCategories;
+
+const questionNumberTitle = computed(() => {
+  const totalNumberOfQuestions = quiz.value.questions.length;
+  if (totalNumberOfQuestions === 0) {
+    return "No questions added yet.."
+  }
+  return `Question no. ${currentQuestionIndex.value + 1} / ${totalNumberOfQuestions}`
+})
 
 const submit = () => {
   emit("submit", quiz.value);
@@ -114,67 +124,81 @@ const formatChoices = (question) => {
 };
 </script>
 <template>
-  <div>
-    <h2>{{ quiz.quizName }}</h2>
-    <p>Category: {{ quiz.category }}</p>
-    <p>Difficulty: {{ quiz.difficultyLevel }}</p>
-    <p>Questions: {{ quiz.questions.length }}</p>
-    <input type="text" v-model="quiz.quizName" />
-    <select v-model="quiz.category">
-        <option v-for="category in categories" :value="category">{{ category }}</option>
-      </select>
-    <select v-model="quiz.difficultyLevel">
-      <option value="EASY">Easy</option>
-      <option value="MEDIUM">Medium</option>
-      <option value="HARD">Hard</option>
-    </select>
-    <button @click="addQuestion">Add New Question</button>
-    <div v-if="quiz.questions.length > 0">
-      <div v-if="quiz.questions[currentQuestionIndex]">
-        <h3>{{ quiz.questions[currentQuestionIndex].problem }}</h3>
-        <input
-          type="text"
-          v-model="quiz.questions[currentQuestionIndex].problem"
-          placeholder="New question"
-        />
-        <p>{{ quiz.questions[currentQuestionIndex].solution }}</p>
-        <input
-          type="text"
-          v-model="quiz.questions[currentQuestionIndex].solution"
-          placeholder="New solution"
-        />
-        <p>{{ quiz.questions[currentQuestionIndex].type }}</p>
-        <select v-model="quiz.questions[currentQuestionIndex].type">
-          <option value="FILL_IN_THE_BLANKS">Fill in the blanks</option>
-          <option value="MULTIPLE_CHOICE">Multiple choice</option>
-          <option value="TRUE_FALSE">True or False</option>
+  <div class="component-container">
+      <div class="quiz-container">
+        <h2>Quiz</h2>
+      <div class="label-input-div">
+        <label>Quiz Name</label>
+        <input type="text" v-model="quiz.quizName" />
+      </div>
+      <div class="label-input-div">
+        <label>Category</label>
+        <select v-model="quiz.category">
+          <option v-for="category in categories" :value="category">{{ category }}</option>
         </select>
-        <!-- Multiple choice alternatives -->
-        <div
-          v-if="quiz.questions[currentQuestionIndex].type === 'MULTIPLE_CHOICE'"
-        >
-          <ul>
-            <li
-              v-for="(choice, index) in quiz.questions[currentQuestionIndex]
-                .choices"
-              :key="index"
-            >
-              {{ choice }}
-              <button @click="removeAlternative(index)">Remove</button>
-            </li>
-          </ul>
+      </div>
+      <div class="label-input-div">
+        <label>Difficulty</label>
+        <select v-model="quiz.difficultyLevel">
+          <option value="EASY">Easy</option>
+          <option value="MEDIUM">Medium</option>
+          <option value="HARD">Hard</option>
+        </select>
+      </div>
+      <p>Questions: {{ quiz.questions.length }}</p>
+    </div>
+    <div class="question-container">
+      <div class="navigate-questions-container">
+        <FontAwesomeIcon icon="chevron-left" class="navigation fa-2x" @click="goToPreviousQuestion"/>
+        <h2>{{ questionNumberTitle }}</h2>
+        <FontAwesomeIcon icon="chevron-right" class="navigation fa-2x" @click="goToNextQuestion"/>
+      </div>
+      <div class="question-fields" v-if="quiz.questions[currentQuestionIndex]">
+        <div class="label-input-div">
+          <label>Question</label>
           <input
-            type="text"
-            v-model="newAlternative"
-            placeholder="New alternative"
+              type="text"
+              v-model="quiz.questions[currentQuestionIndex].problem"
+              placeholder="New question"
           />
-          <button @click="addAlternative">Add Alternative</button>
+        </div>
+        <div class="label-input-div">
+          <p>Question type</p>
+          <select v-model="quiz.questions[currentQuestionIndex].type">
+            <option value="FILL_IN_THE_BLANKS">Fill in the blanks</option>
+            <option value="MULTIPLE_CHOICE">Multiple choice</option>
+            <option value="TRUE_FALSE">True or False</option>
+          </select>
+        </div>
+        <div class="label-input-div">
+          <label>Answer</label>
+          <input
+              type="text"
+              v-model="quiz.questions[currentQuestionIndex].solution"
+              placeholder="New solution"
+          />
+        </div>
+        <p v-if="quiz.questions[currentQuestionIndex].type === 'MULTIPLE_CHOICE'" class="alternatives-title">Add alternatives</p>
+        <div v-if="quiz.questions[currentQuestionIndex].type === 'MULTIPLE_CHOICE'" class="add-alternative-container">
+          <input type="text" id="alternativeInput" v-model="newAlternative" placeholder="type alternative.."/>
+          <button type="button" @click="addAlternative()">
+            Add alternative
+          </button>
+        </div>
+        <div v-if="quiz.questions[currentQuestionIndex].type === 'MULTIPLE_CHOICE'">
+          <p class="alternative-list-title">Alternatives (click to remove)</p>
+          <ul>
+            <div class="alternative" v-for="(choice, index) in quiz.questions[currentQuestionIndex].choices" :key="index" @click="removeAlternative(index)">
+              <li>{{ choice }}</li>
+              <FontAwesomeIcon icon="xmark" />
+            </div>
+          </ul>
         </div>
         <!-- Image handling -->
         <div v-if="quiz.questions[currentQuestionIndex].image">
           <img
-            :src="`data:image/jpeg;base64,${quiz.questions[currentQuestionIndex].image}`"
-            alt="Question Image"
+              :src="`data:image/jpeg;base64,${quiz.questions[currentQuestionIndex].image}`"
+              alt="Question Image"
           />
           <button @click="removeImage(quiz.questions[currentQuestionIndex])">
             Remove Image
@@ -182,47 +206,119 @@ const formatChoices = (question) => {
         </div>
         <div v-else>
           <input
-            type="file"
-            @change="
+              type="file"
+              @change="
               (event) =>
                 handleFileChange(event, quiz.questions[currentQuestionIndex])
             "
           />
         </div>
-        <button @click="removeQuestion">Remove Question</button>
-        <button @click="goToPreviousQuestion">Previous</button>
-        <button @click="goToNextQuestion">Next</button>
+      </div>
+      <div class="button-container">
+        <button v-if="quiz.questions.length > 0" class="remove-q-btn" @click="removeQuestion">Remove Question</button>
+        <button class="add-q-btn" @click="addQuestion">Add New Question</button>
+      </div>
+      </div>
+      <div class="save-changes-container">
+        <button class="save-changes-btn" @click="submit">Save changes</button>
+        <button class="export-btn" @click="exportQuizToCSV">Export quiz</button>
       </div>
     </div>
-
-    <button @click="submit">Submit</button>
-
-    <button @click="exportQuizToCSV">Export quiz</button>
-  </div>
 </template>
 <style scoped>
-form {
+.component-container {
+  grid-column: 2 / -2;
+  margin: 1em auto 0;
+  display: flex;
+  gap: 2em;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.quiz-container, .question-container {
+  padding: 1em;
+  background-color: var(--bg-light-gray);
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  border-radius: 1em;
+  max-width: 600px;
+  gap: 0.4em;
+  flex-grow: 1;
 }
 
-input,
-select,
-button {
-  padding: 0.5rem;
-  border-radius: 5px;
-  border: 1px solid #cacaca;
+h2 {
+  font-weight: bold;
+  font-size: 2rem;
 }
 
-button {
-  background-color: #4caf50;
-  color: white;
+.label-input-div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+}
+
+input, select {
+  font-size: 1rem;
+  padding: 0.4em;
+}
+
+.navigate-questions-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navigation {
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #45a049;
+.add-alternative-container {
+  display: flex;
+  align-items: center;
+}
+
+.alternatives-title {
+  font-weight: bold;
+  margin-top: 0.4em;
+}
+
+#alternativeInput {
+  flex-grow: 2;
+  margin: 0;
+}
+
+.add-alternative-container button {
+  padding: 0.74em 0.4em;
+  border: none;
+  background-color: var(--bg-very-light-blue-shadow);
+  color: var(--text-color);
+  font-weight: bolder;
+}
+
+.alternative {
+  margin: 0.1em;
+  font-weight: bolder;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.3em;
+  padding: 0.2em;
+}
+
+.alternative:hover {
+  background: #ffa69e;
+  cursor: pointer;
+}
+
+.alternative-list-title {
+  margin: 1em 0 0.3em;
+  color: var(--text-color-grey)
+}
+
+.question-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
 }
 
 .custum-file-upload {
@@ -270,13 +366,70 @@ ul {
   padding: 0;
 }
 
-li {
-  margin: 0.5rem 0;
-}
-
 img {
   max-width: 100%;
   height: auto;
   border-radius: 5px;
+}
+
+.button-container {
+  display: flex;
+  gap: 1em;
+  justify-content: center;
+}
+
+button {
+  padding: 0.8em 1.6em;
+  border: none;
+  cursor: pointer;
+  border-radius: 0.4em;
+}
+
+.remove-q-btn {
+  border: 2px solid #ffa69e;
+  background: none;
+  font-weight: bold;
+  color: var(--text-color-grey);
+}
+
+.remove-q-btn:hover {
+  background: #ffa69e;
+}
+
+.add-q-btn, .save-changes-btn {
+  background: var(--button-bg-strong-blue);
+  color: white;
+  font-weight: bold;
+}
+
+.add-q-btn:hover, .save-changes-btn:hover {
+  background: var(--button-bg-hover-blue);
+}
+
+.save-changes-container {
+  display: flex;
+  max-width: 600px;
+  gap: 1em;
+  justify-content: center;
+}
+
+.save-changes-container button {
+  padding: 1em 2em;
+}
+
+.save-changes-btn {
+  text-transform: uppercase;
+}
+
+.export-btn {
+  text-transform: uppercase;
+  font-weight: bold;
+  background-color: var(--bg-light-gray);
+  color: var(--button-bg-strong-blue)
+}
+
+.export-btn:hover {
+  background: var(--bg-light-gray-shadow);
+  color: var(--text-color);
 }
 </style>

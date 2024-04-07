@@ -10,10 +10,10 @@ import router from './router'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-import { faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faXmark, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { faFacebook, faXTwitter, faInstagram, faLinkedin } from '@fortawesome/free-brands-svg-icons'
 
-library.add(faXmark);
+library.add(faXmark, faChevronLeft, faChevronRight);
 library.add(faFacebook, faXTwitter, faInstagram, faLinkedin);
 
 const app = createApp(App)
