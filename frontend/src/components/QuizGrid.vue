@@ -36,6 +36,19 @@ function closeModal() {
   selectedQuiz.value = null;
   showSharingModal.value = false;
 }
+
+function difficultyClass(quiz) {
+  switch (quiz.difficultyLevel.toLowerCase()) {
+    case 'hard':
+      return 'difficulty-hard';
+    case 'medium':
+      return 'difficulty-medium';
+    case 'easy':
+      return 'difficulty-easy';
+    default:
+      return '';
+  }
+}
 </script>
 
 <template>
@@ -44,7 +57,10 @@ function closeModal() {
     <div v-if="!currentQuiz" class="quiz-grid">
       <div class="quiz-card" v-for="quiz in quizzes" :key="quiz.quizId" @click="playQuiz(quiz)">
         <h2>{{ quiz.quizName }}</h2>
-        <p class="category">{{ quiz.category }}</p>
+        <div class="category-difficulty-container">
+          <p class="category">{{ quiz.category }}</p>
+          <p class="difficulty" :class="difficultyClass(quiz)">{{ quiz.difficultyLevel }}</p>
+        </div>
         <div class="questions-and-share">
           <button @click.stop="shareQuiz(quiz)" class="share-button">Share</button>
           <button @click.stop="showAuditLog(quiz)" class="revision-button">Show history</button>
@@ -52,7 +68,7 @@ function closeModal() {
         </div>
       </div>
     </div>
-    <ShareModal v-if="showModal" :quiz="sharedQuiz" @close="closeModal" />
+    <ShareModal v-if="showModal" :quiz="sharedQuiz" @close="closeModal"/>
   </div>
   <ShareModal v-if="showSharingModal" :quiz="selectedQuiz" @close="showSharingModal = false"/>
   <AuditLogModal v-if="showAuditLogModal" :quiz="selectedQuiz" @close="showAuditLogModal = false"/>
@@ -100,7 +116,7 @@ h1 {
 .quiz-card:focus {
   cursor: pointer;
   background-color: var(--bg-very-light-blue-hover);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
 }
 
@@ -131,15 +147,15 @@ p.questions {
 }
 
 .share-button {
-   border: none;
-   padding: 0.5em 1em;
-   border-radius: 1.4em;
-   background: var(--button-bg-strong-blue);
-   font-weight: bold;
-   color: white;
-   font-size: 0.8rem;
-   cursor: pointer;
- }
+  border: none;
+  padding: 0.5em 1em;
+  border-radius: 1.4em;
+  background: var(--button-bg-strong-blue);
+  font-weight: bold;
+  color: white;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
 
 .share-button:hover {
   background: var(--button-bg-hover-blue);
@@ -197,6 +213,7 @@ p.questions {
   .quiz-grid {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
+
   .quiz-grid h2 {
     font-size: 1.6rem;
   }
@@ -207,6 +224,30 @@ p.questions {
 
   p.questions {
     font-size: 1rem;
+  }
+
+  .difficulty {
+    font-size: 0.8rem;
+    font-weight: bold;
+    align-self: center;
+    margin-left: 1em;
+  }
+
+  .difficulty-hard {
+    color: darkred;
+  }
+
+  .difficulty-medium {
+    color: darkblue;
+  }
+
+  .difficulty-easy {
+    color: darkgreen;
+  }
+
+  .category-difficulty-container {
+    display: flex;
+    justify-content: space-between;
   }
 }
 </style>
