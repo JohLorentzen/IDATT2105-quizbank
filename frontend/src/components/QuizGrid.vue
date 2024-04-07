@@ -3,7 +3,7 @@ import {computed, ref} from 'vue';
 import ShareModal from './ShareModal.vue';
 import AuditLogModal from './AuditLogModal.vue';
 
-const props = defineProps(['quizzes']);
+const props = defineProps(['quizzes', 'displayOwn']);
 const emit = defineEmits(['selectQuiz']);
 const currentQuiz = ref(null);
 const showSharingModal = ref(false);
@@ -11,6 +11,10 @@ const selectedQuiz = ref(null);
 const showAuditLogModal = ref(false);
 
 const availableQuizzesTitle = computed(() => {
+  if (props.displayOwn) {
+    return "Your quizzes"
+  }
+
   if (props.quizzes.length > 0) {
     return "Available quizzes"
   }

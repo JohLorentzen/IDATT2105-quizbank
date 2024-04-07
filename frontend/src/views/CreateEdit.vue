@@ -21,7 +21,14 @@ const titleText = computed(() => {
   }
 
   const numberOfQuizzes = quizzes.value.length;
-  return `You have ${numberOfQuizzes} quizzes`
+  let message = `You have ${numberOfQuizzes} `
+  switch (numberOfQuizzes) {
+    case 1:
+      message += "quiz";
+      break;
+    default: message += "quizzes"
+  }
+  return message;
 })
 
 async function fetchQuizes() {
@@ -109,9 +116,11 @@ onMounted(fetchQuizes);
       <CreateQuiz v-if="createQuiz" @submitQuiz="handleQuizSubmit"/>
       <div v-else>
         <p>Get started by creating your own quiz</p>
-        <button @click="createQuiz = true"> Create quiz</button>
-        <button v-if="quizzes.length > 0" @click="toggleDeleteMode">Delete quiz</button>
-        <QuizGrid :quizzes="quizzes" @selectQuiz="selectQuiz"/>
+        <div class="action-buttons">
+          <button class="create-quiz-btn" @click="createQuiz = true"> Create quiz</button>
+          <button v-if="quizzes.length > 0" @click="toggleDeleteMode">Delete quiz</button>
+        </div>
+        <QuizGrid v-if="quizzes.length > 0" :quizzes="quizzes" :display-own="true" @selectQuiz="selectQuiz"/>
       </div>
       <div v-if="currentQuiz">
         <EditQuiz :quiz="currentQuiz" @submit="handleQuizSubmit"/>
@@ -134,7 +143,30 @@ h1 {
   font-size: 2.6em;
 }
 
+.action-buttons {
+  display: flex;
+  margin: 1em 0 2em;
+  gap: 1em;
+}
+
 .create-edit {
   grid-column: 2 / -2;
+  align-self: center;
 }
+
+.create-quiz-btn {
+  border: none;
+  padding: 1em 2em;
+  border-radius: 0.6em;
+  background: var(--button-bg-strong-blue);
+  font-weight: bold;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.create-quiz-btn:hover {
+  background: var(--button-bg-hover-blue);
+}
+
 </style>
