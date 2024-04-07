@@ -68,7 +68,6 @@ function difficultyClass(quiz) {
         </div>
       </div>
     </div>
-    <ShareModal v-if="showModal" :quiz="sharedQuiz" @close="closeModal"/>
   </div>
   <ShareModal v-if="showSharingModal" :quiz="selectedQuiz" @close="showSharingModal = false"/>
   <AuditLogModal v-if="showAuditLogModal" :quiz="selectedQuiz" @close="showAuditLogModal = false"/>
