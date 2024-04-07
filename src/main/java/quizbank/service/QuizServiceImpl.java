@@ -93,9 +93,9 @@ public class QuizServiceImpl implements QuizService {
     /**
      * Shares a quiz with a user.
      *
-     * @param quizId the ID of the quiz to be shared
-     * @param userId the ID of the user to share the quiz with
-     * @param role the role of the user for the shared quiz
+     * @param quizId   the ID of the quiz to be shared
+     * @param userId   the ID of the user to share the quiz with
+     * @param role     the role of the user for the shared quiz
      * @param sharedBy the username of the user who shared the quiz
      */
     @Override
@@ -160,6 +160,8 @@ public class QuizServiceImpl implements QuizService {
         dto.setQuestions(new QuestionServiceImpl().toDto(quiz.getQuestions()));
         dto.setCategory(quiz.getCategory().toString());
         dto.setDifficultyLevel(quiz.getDifficultyLevel().toString());
+        dto.setSharedUsers(quiz.getUserRoles().stream()
+                .map(userRole -> userRole.getUser().getUsername()).collect(Collectors.toList()));
         return dto;
     }
 

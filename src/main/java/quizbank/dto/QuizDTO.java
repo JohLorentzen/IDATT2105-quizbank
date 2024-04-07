@@ -14,6 +14,7 @@ public class QuizDTO {
     private String category;
 
     private List<QuestionDTO> questions;
+    private List<String> sharedUsers;
 
     public QuizDTO() {
     }
@@ -65,4 +66,14 @@ public class QuizDTO {
     public void setQuestions(List<QuestionDTO> questions) {
         this.questions = questions;
     }
+
+    public List<String> getSharedUsers() {
+        return sharedUsers;
+    }
+
+    public void setSharedUsers(List<String> sharedUsers) {
+        this.sharedUsers = sharedUsers;
+    }
+
+
 }

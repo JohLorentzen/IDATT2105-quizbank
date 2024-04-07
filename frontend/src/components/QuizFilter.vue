@@ -4,7 +4,7 @@ import {useQuizesStore} from "@/stores/quizes";
 import axios from 'axios';
 import {vOnClickOutside} from '@vueuse/components'
 
-const emit = defineEmits(['updateFilters', 'updateDifficultyFilter']);
+const emit = defineEmits(['updateFilters', 'updateDifficultyFilter', 'updateSharedStatusFilter']);
 
 const quizesStore = useQuizesStore();
 const searchTerm = ref("");
@@ -91,6 +91,11 @@ function filterDifficulty() {
   emit('updateDifficultyFilter', selectedDifficulty.value);
 }
 
+const selectedSharedStatus = ref(false);
+
+function filterSharedStatus() {
+  emit('updateSharedStatusFilter', selectedSharedStatus.value);
+}
 </script>
 
 
@@ -124,13 +129,18 @@ function filterDifficulty() {
       </ul>
     </div>
     <div class="custom-select-container">
-      <label for="difficultyFilter">Filter by Difficulty</label>
+      <label for="difficultyFilter">Filter by difficulty</label>
       <select class="custom-select" id="difficultySelect" v-model="selectedDifficulty" @change="filterDifficulty">
         <option value="">All</option>
         <option value="easy">Easy</option>
         <option value="medium">Medium</option>
         <option value="hard">Hard</option>
       </select>
+    </div>
+    <div class="custom-checkbox-container">
+      <input type="checkbox" id="sharedFilter" v-model="selectedSharedStatus" @change="filterSharedStatus"
+             class="share-check-box">
+      <label for="sharedFilter">Only show quizzes shared with me</label>
     </div>
   </div>
 </template>
@@ -270,6 +280,25 @@ function filterDifficulty() {
   border-color: #aaa;
 }
 
+.custom-checkbox-container {
+  display: flex;
+  align-items: center;
+}
+
+.custom-checkbox-container label {
+  margin-left: 10px;
+}
+
+.share-check-box {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  align-self: center;
+}
+
+.share-check-box:checked {
+  background-color: #2196F3;
+}
 
 @media (min-width: 720px) {
   .search-container {
