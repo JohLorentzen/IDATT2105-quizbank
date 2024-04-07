@@ -17,82 +17,90 @@ These instructions will get your copy of the project up and running on your loca
 ### Setting Up the Backend
 
 1. **Navigate to the Backend Directory:**
-
-   \`\`\`sh
-   cd path/to/backend
-   \`\`\`
-
+```
+   $ cd project-root
+```
 2. **Build the Project with Maven:**
 
    This command compiles the project and downloads the necessary dependencies.
 
-   \`\`\`sh
-   mvn clean install
-   \`\`\`
+```
+   $ mvn clean install
+```
 
 3. **Run the Spring Boot Application:**
 
-   \`\`\`sh
-   mvn spring-boot:run
-   \`\`\`
+```
+   $ mvn spring-boot:run
+```
 
    The backend server will start on `http://localhost:8080`.
 
 ### Setting Up the Frontend
 
 1. **Navigate to the Frontend Directory:**
-
-   \`\`\`sh
-   cd path/to/frontend
-   \`\`\`
-
+```
+   $ cd project-root/frontend
+```
 2. **Install Dependencies:**
 
-   \`\`\`sh
-   npm install
-   \`\`\`
+```
+   $ npm install
+```
 
 3. **Build the Application:**
 
    For a production build, run:
 
-   \`\`\`sh
-   npm run build
-   \`\`\`
+```
+   $ npm run build
+```
 
 4. **Preview the Production Build:**
 
    To preview the production build on your local machine, use:
 
-   \`\`\`sh
-   npm run preview
-   \`\`\`
+```
+   $ npm run preview
+```
 
    The application will be available at `http://localhost:4173`.
 
 ### Running Tests
 
-- **Backend Tests:**
+- **Backend Test:**
+
+  Navigate to backend:
+```
+   $ cd project-root
+```
 
   Run backend tests using Maven:
 
-  \`\`\`sh
-  mvn test
-  \`\`\`
+
+```
+   $ mvn test
+```
 
 - **Frontend Tests:**
 
-  Navigate to the frontend Execute frontend unit tests by running in the frontend folder:
+  Navigate to the frontend root folder:
+```
+   $ cd project-root/frontend
+```
 
-  \`\`\`sh
-  npm run test:unit
-  \`\`\`
+
+   and run the commands:
+
+```
+   $ npm run test:unit
+```
 
   For end-to-end tests:
 
-  \`\`\`sh
-  npm run test:e2e
-  \`\`\`
+```
+   $ npm run test:e2e
+```
 
 ### Manual Testing
 
@@ -119,5 +127,3 @@ For testing purposes, the following user accounts are available:
 ## Authors
 
 Johannes, Sondre and Jens
-
-See: [contributors](https://github.com/your/project/contributors) who participated in this project.
