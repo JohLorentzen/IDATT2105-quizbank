@@ -94,9 +94,26 @@ These instructions will get your copy of the project up and running on your loca
   npm run test:e2e
   \`\`\`
 
+### Manual Testing
+
+  - #### Test Users
+For testing purposes, the following user accounts are available:
+
+- **Main Test User:**
+  - Username: `testuser`
+  - Password: `password`
+
+- **Other Users:**
+  - Username: `testuser1`
+  - Password: `password`
+  - Username: `testuser2`
+  - Password: `password`
+
 ### Documentation
 
 - Backend API documentation is available at `http://localhost:8080/swagger-ui.html` after starting the backend server.
+
+
 
 
 ## Authors
